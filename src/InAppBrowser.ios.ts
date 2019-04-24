@@ -22,6 +22,9 @@ declare var UIApplication: any;
 const InAppBrowser = (NSObject as any).extend({
   redirectResolve: null,
   redirectReject: null,
+  isAvailable(): Promise<boolean> {
+    return Promise.resolve(ios.MajorVersion >= 9)
+  },
   open(url: string, options: InAppBrowserOptions = {}): Promise<BrowserResult> {
     const self = this;
     return new Promise(function (resolve, reject) {
@@ -31,7 +34,7 @@ const InAppBrowser = (NSObject as any).extend({
 
       const safariVC = SFSafariViewController.alloc().initWithURLEntersReaderIfAvailable(
         NSURL.URLWithString(inAppBrowserOptions.url),
-        options.readerMode
+        inAppBrowserOptions.readerMode
       );
       safariVC.delegate = self;
 
@@ -61,11 +64,18 @@ const InAppBrowser = (NSObject as any).extend({
       safariHackVC.setNavigationBarHiddenAnimated(true, false);
 
       const app = ios.getter(UIApplication, UIApplication.sharedApplication);
-
-      const animated = true;
-      const completionHandler = null;
-      app.keyWindow.rootViewController.presentViewControllerAnimatedCompletion(safariHackVC, animated, completionHandler);
+      app.keyWindow.rootViewController.presentViewControllerAnimatedCompletion(safariHackVC, true, null);
     })
+  },
+  close() {
+    const self = this;
+    const app = ios.getter(UIApplication, UIApplication.sharedApplication);
+    app.keyWindow.rootViewController.dismissViewControllerAnimatedCompletion(true, function () {
+      self.redirectResolve({
+        type: 'dismiss'
+      });
+      self.flowDidFinish();
+    });
   },
   safariViewControllerDidCompleteInitialLoad(controller: SFSafariViewController, didLoadSuccessfully: boolean): void {
     console.log('Delegate, safariViewControllerDidCompleteInitialLoad: ' + didLoadSuccessfully);
