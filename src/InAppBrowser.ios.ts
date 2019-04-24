@@ -81,27 +81,31 @@ const InAppBrowser = (<any>NSObject).extend({
   openAuth(authUrl: string, redirectURL: string): Promise<AuthSessionResult> {
     const self = this;
     if (ios.MajorVersion >= 11) {
-      const url = NSURL.URLWithString(authUrl);
-      const authSession = SFAuthenticationSession.alloc().initWithURLCallbackURLSchemeCompletionHandler(
-        url,
-        redirectURL,
-        function (callbackURL, error) {
-          if (!error) {
-            self.redirectResolve({
-              type: 'success',
-              url: callbackURL.absoluteString
-            });
+      return new Promise(function (resolve, reject) {
+        if (!self.initializeWebBrowser(resolve, reject)) return
+        
+        const url = NSURL.URLWithString(authUrl);
+        const authSession = SFAuthenticationSession.alloc().initWithURLCallbackURLSchemeCompletionHandler(
+          url,
+          redirectURL,
+          function (callbackURL, error) {
+            if (!error) {
+              self.redirectResolve({
+                type: 'success',
+                url: callbackURL.absoluteString
+              });
+            }
+            else {
+              self.redirectResolve({
+                type: 'cancel'
+              });
+            }
+            self.flowDidFinish();
           }
-          else {
-            self.redirectResolve({
-              type: 'cancel'
-            });
-          }
-          self.flowDidFinish();
-        }
-      )
-      authSession.start();
-      self.authSession = authSession;
+        )
+        authSession.start();
+        self.authSession = authSession;
+      });
     }
     else {
       self.flowDidFinish();
