@@ -19,9 +19,10 @@ type InAppBrowserOptions = {
 
 declare var UIApplication: any;
 
-const InAppBrowser = (NSObject as any).extend({
+const InAppBrowser = (<any>NSObject).extend({
   redirectResolve: null,
   redirectReject: null,
+  authSession: <SFAuthenticationSession> null,
   isAvailable(): Promise<boolean> {
     return Promise.resolve(ios.MajorVersion >= 9)
   },
@@ -77,14 +78,64 @@ const InAppBrowser = (NSObject as any).extend({
       self.flowDidFinish();
     });
   },
+  openAuth(authUrl: string, redirectURL: string): Promise<AuthSessionResult> {
+    const self = this;
+    if (ios.MajorVersion >= 11) {
+      const url = NSURL.URLWithString(authUrl);
+      const authSession = SFAuthenticationSession.alloc().initWithURLCallbackURLSchemeCompletionHandler(
+        url,
+        redirectURL,
+        function (callbackURL, error) {
+          if (!error) {
+            self.redirectResolve({
+              type: 'success',
+              url: callbackURL.absoluteString
+            });
+          }
+          else {
+            self.redirectResolve({
+              type: 'cancel'
+            });
+          }
+          self.flowDidFinish();
+        }
+      )
+      authSession.start();
+      self.authSession = authSession;
+    }
+    else {
+      self.flowDidFinish();
+      return Promise.resolve({
+        type: 'cancel',
+        message: 'openAuth requires iOS 11 or greater'
+      });
+    }
+  },
+  closeAuth() {
+    if (ios.MajorVersion >= 11) {
+      const authSession: SFAuthenticationSession = this.authSession;
+      authSession.cancel();
+      if (this.redirectResolve) {
+        this.redirectResolve({
+          type: 'dismiss'
+        });
+        this.flowDidFinish();
+      }
+    }
+    else {
+      this.close();
+    }
+  },
   safariViewControllerDidCompleteInitialLoad(controller: SFSafariViewController, didLoadSuccessfully: boolean): void {
     console.log('Delegate, safariViewControllerDidCompleteInitialLoad: ' + didLoadSuccessfully);
   },
   safariViewControllerDidFinish(controller: SFSafariViewController): void {
-    this.redirectResolve({
-      type: 'cancel'
-    });
-    this.flowDidFinish();
+    if (this.redirectResolve) {
+      this.redirectResolve({
+        type: 'cancel'
+      });
+      this.flowDidFinish();
+    }
   },
   flowDidFinish() {
     this.redirectResolve = null;

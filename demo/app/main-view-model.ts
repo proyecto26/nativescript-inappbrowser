@@ -1,6 +1,6 @@
 import { Observable } from 'tns-core-modules/data/observable'
-import { openUrl } from "tns-core-modules/utils/utils"
-import { alert } from "tns-core-modules/ui/dialogs"
+import { openUrl } from 'tns-core-modules/utils/utils'
+import { alert } from 'tns-core-modules/ui/dialogs'
 import InAppBrowser from 'nativescript-inappbrowser'
 
 export class HelloWorldModel extends Observable {
@@ -14,9 +14,10 @@ export class HelloWorldModel extends Observable {
   }
 
   openLink = async () => {
-    if (await InAppBrowser.isAvailable()) {
-      try{
-        const response = await InAppBrowser.open(this.url, {
+    try {
+      const { url } = this
+      if (await InAppBrowser.isAvailable()) {
+        const result = await InAppBrowser.open(url, {
           // iOS Properties
           dismissButtonStyle: 'cancel',
           preferredBarTintColor: 'gray',
@@ -43,20 +44,20 @@ export class HelloWorldModel extends Observable {
         })
         alert({
           title: 'Response',
-          message: JSON.stringify(response),
+          message: JSON.stringify(result),
           okButtonText: 'Ok'
         })
       }
-      catch(error) {
-        alert({
-          title: 'Error',
-          message: error.message,
-          okButtonText: 'Ok'
-        })
+      else {
+        openUrl(url);
       }
     }
-    else {
-      openUrl(this.url);
+    catch(error) {
+      alert({
+        title: 'Error',
+        message: error.message,
+        okButtonText: 'Ok'
+      })
     }
   }
 
@@ -67,7 +68,7 @@ export class HelloWorldModel extends Observable {
   set url(value: string) {
     if (this._url !== value) {
       this._url = value
-      this.notifyPropertyChange("url", value)
+      this.notifyPropertyChange('url', value)
     }
   }
 }
