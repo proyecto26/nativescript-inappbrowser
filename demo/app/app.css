@@ -1,0 +1,28 @@
+﻿@import '~nativescript-theme-core/css/core.light.css';
+
+TextField {
+  border-width: 1;
+  border-color: gray;
+  height: 45;
+  margin-top: 5;
+}
+
+.p {
+  font-size: 14;
+  color: #333333;
+  margin: 5;
+}
+
+.my-button {
+  background-color: transparent;
+  border-radius: 5;
+  color: blue;
+  font-family: FontAwesome;
+  font-size: 18;
+  vertical-align: middle;
+  width: 80%;
+}
+
+.my-button:active {
+  color:black;
+}
