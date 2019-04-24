@@ -25,9 +25,9 @@ export class InAppBrowser extends NSObject implements SFSafariViewControllerDele
   protected static redirectReject: any = null
 
   public static init(): InAppBrowser {
-		const delegate = <InAppBrowser>InAppBrowser.new();
-		return delegate;
-	}
+    const delegate = <InAppBrowser>InAppBrowser.new();
+    return delegate;
+  }
 
   static open(url: string, options: InAppBrowserOptions = {}): Promise<any> {
 
@@ -76,8 +76,8 @@ export class InAppBrowser extends NSObject implements SFSafariViewControllerDele
   }
 
   safariViewControllerDidCompleteInitialLoad(controller: SFSafariViewController, didLoadSuccessfully: boolean): void {
-		console.log('Delegate, safariViewControllerDidCompleteInitialLoad: ' + didLoadSuccessfully);
-	}
+    console.log('Delegate, safariViewControllerDidCompleteInitialLoad: ' + didLoadSuccessfully);
+  }
 
   safariViewControllerDidFinish(controller: SFSafariViewController): void {
     InAppBrowser.redirectResolve({
