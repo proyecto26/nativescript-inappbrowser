@@ -1,6 +1,6 @@
 import { Observable } from 'tns-core-modules/data/observable';
 import { alert } from "tns-core-modules/ui/dialogs"
-import { InAppBrowser } from 'nativescript-inappbrowser';
+import InAppBrowser from 'nativescript-inappbrowser';
 
 export class HelloWorldModel extends Observable {
   private _url: string;

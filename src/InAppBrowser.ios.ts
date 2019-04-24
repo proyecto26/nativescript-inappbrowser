@@ -19,20 +19,13 @@ type InAppBrowserOptions = {
 
 declare var UIApplication: any;
 
-export class InAppBrowser extends NSObject implements SFSafariViewControllerDelegate {
-  public static ObjCProtocols = [SFSafariViewControllerDelegate];
-  protected static redirectResolve: any = null
-  protected static redirectReject: any = null
-
-  public static init(): InAppBrowser {
-    const delegate = <InAppBrowser>InAppBrowser.new();
-    return delegate;
-  }
-
-  static open(url: string, options: InAppBrowserOptions = {}): Promise<any> {
-
+const InAppBrowser = (NSObject as any).extend({
+  redirectResolve: null,
+  redirectReject: null,
+  open(url: string, options: InAppBrowserOptions = {}): Promise<BrowserResult> {
+    const self = this;
     return new Promise(function (resolve, reject) {
-      if (!InAppBrowser.initializeWebBrowser(resolve, reject)) return
+      if (!self.initializeWebBrowser(resolve, reject)) return
 
       const inAppBrowserOptions = getDefaultOptions(url, options);
 
@@ -40,7 +33,7 @@ export class InAppBrowser extends NSObject implements SFSafariViewControllerDele
         NSURL.URLWithString(inAppBrowserOptions.url),
         options.readerMode
       );
-      safariVC.delegate = InAppBrowser.init();
+      safariVC.delegate = self;
 
       if (ios.MajorVersion >= 11) {
         if (inAppBrowserOptions.dismissButtonStyle === 'done') {
@@ -73,33 +66,31 @@ export class InAppBrowser extends NSObject implements SFSafariViewControllerDele
       const completionHandler = null;
       app.keyWindow.rootViewController.presentViewControllerAnimatedCompletion(safariHackVC, animated, completionHandler);
     })
-  }
-
+  },
   safariViewControllerDidCompleteInitialLoad(controller: SFSafariViewController, didLoadSuccessfully: boolean): void {
     console.log('Delegate, safariViewControllerDidCompleteInitialLoad: ' + didLoadSuccessfully);
-  }
-
+  },
   safariViewControllerDidFinish(controller: SFSafariViewController): void {
-    InAppBrowser.redirectResolve({
+    this.redirectResolve({
       type: 'cancel'
     });
-    InAppBrowser.flowDidFinish();
-  }
-
-  static flowDidFinish() {
-    InAppBrowser.redirectResolve = null;
-    InAppBrowser.redirectReject = null;
-  }
-
-  static initializeWebBrowser(resolve, reject): boolean {
-    if (InAppBrowser.redirectResolve) {
+    this.flowDidFinish();
+  },
+  flowDidFinish() {
+    this.redirectResolve = null;
+    this.redirectReject = null;
+  },
+  initializeWebBrowser(resolve, reject): boolean {
+    if (this.redirectResolve) {
       reject('Another InAppBrowser is already being presented.');
       return false;
     }
-    InAppBrowser.redirectResolve = resolve;
-    InAppBrowser.redirectReject = reject;
+    this.redirectResolve = resolve;
+    this.redirectReject = reject;
     return true;
   }
-}
+}, {
+  protocols: [SFSafariViewControllerDelegate]
+});
 
-export default InAppBrowser
+export default InAppBrowser.new()
