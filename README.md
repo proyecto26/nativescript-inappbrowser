@@ -31,9 +31,10 @@ import InAppBrowser from 'nativescript-inappbrowser'
 
 ...
   openLink = async () => {
-    if (await InAppBrowser.isAvailable()) {
-      try{
-        const response = await InAppBrowser.open(this.url, {
+    try {
+      const url = 'https://www.google.com'
+      if (await InAppBrowser.isAvailable()) {
+        const result = await InAppBrowser.open(url, {
           // iOS Properties
           dismissButtonStyle: 'cancel',
           preferredBarTintColor: 'gray',
@@ -60,20 +61,20 @@ import InAppBrowser from 'nativescript-inappbrowser'
         })
         alert({
           title: 'Response',
-          message: JSON.stringify(response),
+          message: JSON.stringify(result),
           okButtonText: 'Ok'
         })
       }
-      catch(error) {
-        alert({
-          title: 'Error',
-          message: error.message,
-          okButtonText: 'Ok'
-        })
+      else {
+        openUrl(url);
       }
     }
-    else {
-      openUrl(this.url);
+    catch(error) {
+      alert({
+        title: 'Error',
+        message: error.message,
+        okButtonText: 'Ok'
+      })
     }
   }
 ...
