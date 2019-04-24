@@ -25,49 +25,55 @@ Methods       | Action
 ### Demo
 
 ```javascript
-import { alert } from "tns-core-modules/ui/dialogs"
+import { openUrl } from 'tns-core-modules/utils/utils'
+import { alert } from 'tns-core-modules/ui/dialogs'
 import InAppBrowser from 'nativescript-inappbrowser'
 
 ...
   openLink = async () => {
-    try{
-      const response = await InAppBrowser.open(this.url, {
-        // iOS Properties
-        dismissButtonStyle: 'cancel',
-        preferredBarTintColor: 'gray',
-        preferredControlTintColor: 'white',
-        readerMode: false,
-        // Android Properties
-        showTitle: true,
-        toolbarColor: '#6200EE',
-        secondaryToolbarColor: 'black',
-        enableUrlBarHiding: true,
-        enableDefaultShare: true,
-        forceCloseOnRedirection: false,
-        // Specify full animation resource identifier(package:anim/name)
-        // or only resource name(in case of animation bundled with app).
-        animations: {
-          startEnter: 'slide_in_right',
-          startExit: 'slide_out_left',
-          endEnter: 'slide_in_right',
-          endExit: 'slide_out_left',
-        },
-        headers: {
-          'my-custom-header': 'my custom header value'
-        }
-      })
-      alert({
-        title: 'Response',
-        message: JSON.stringify(response),
-        okButtonText: 'Ok'
-      })
+    if (await InAppBrowser.isAvailable()) {
+      try{
+        const response = await InAppBrowser.open(this.url, {
+          // iOS Properties
+          dismissButtonStyle: 'cancel',
+          preferredBarTintColor: 'gray',
+          preferredControlTintColor: 'white',
+          readerMode: false,
+          // Android Properties
+          showTitle: true,
+          toolbarColor: '#6200EE',
+          secondaryToolbarColor: 'black',
+          enableUrlBarHiding: true,
+          enableDefaultShare: true,
+          forceCloseOnRedirection: false,
+          // Specify full animation resource identifier(package:anim/name)
+          // or only resource name(in case of animation bundled with app).
+          animations: {
+            startEnter: 'slide_in_right',
+            startExit: 'slide_out_left',
+            endEnter: 'slide_in_right',
+            endExit: 'slide_out_left',
+          },
+          headers: {
+            'my-custom-header': 'my custom header value'
+          }
+        })
+        alert({
+          title: 'Response',
+          message: JSON.stringify(response),
+          okButtonText: 'Ok'
+        })
+      }
+      catch(error) {
+        alert({
+          title: 'Error',
+          message: error.message,
+          okButtonText: 'Ok'
+        })
+      }
     }
-    catch(error) {
-      alert({
-        title: 'Error',
-        message: error.message,
-        okButtonText: 'Ok'
-      })
+    else {
+      openUrl(this.url);
     }
   }
 ...
