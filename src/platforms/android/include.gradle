@@ -1,11 +1,19 @@
 /* Include.gradle configuration: http://docs.nativescript.org/plugins/plugins#includegradle-specification */
 
-android {
-	
+repositories {
+    mavenCentral()
 }
 
 dependencies {
-    // Describe plugin native Android dependencies like
-	// implementation "groupName:pluginName:ver" 
-    // EXAMPLE: implementation "com.facebook.fresco:fresco:0.9.0+"
+    def DEFAULT_SUPPORT_LIB_VERSION = "27.1.1"
+    def supportLibVersion = DEFAULT_SUPPORT_LIB_VERSION
+    if (project.hasProperty('supportLibVersion')) {
+        supportLibVersion = project.supportLibVersion
+    } else if (project.hasProperty('supportVersion')) {
+        supportLibVersion = project.supportVersion
+    }
+
+    implementation "com.android.support:support-annotations:$supportLibVersion"
+    implementation "com.android.support:customtabs:$supportLibVersion"
+    implementation 'org.greenrobot:eventbus:3.+'
 }

@@ -1,11 +1,8 @@
 import { Color } from 'tns-core-modules/color';
 import { ios } from 'tns-core-modules/utils/utils';
-import { ios as iosApp } from 'tns-core-modules/application';
 
 import {
-  RedirectEvent,
   BrowserResult,
-  RedirectResult,
   AuthSessionResult,
   getDefaultOptions
 } from './InAppBrowser.common';
@@ -15,48 +12,46 @@ type InAppBrowserOptions = {
   preferredBarTintColor?: string,
   preferredControlTintColor?: string,
   readerMode?: boolean
-}
-
-declare var UIApplication: any;
+};
 
 const InAppBrowser = (<any>NSObject).extend({
   redirectResolve: null,
   redirectReject: null,
   authSession: <SFAuthenticationSession> null,
   isAvailable(): Promise<boolean> {
-    return Promise.resolve(ios.MajorVersion >= 9)
+    return Promise.resolve(ios.MajorVersion >= 9);
   },
-  open(url: string, options: InAppBrowserOptions = {}): Promise<BrowserResult> {
+  open(url: string, inAppBrowserOptions: InAppBrowserOptions = {}): Promise<BrowserResult> {
     const self = this;
     return new Promise(function (resolve, reject) {
-      if (!self.initializeWebBrowser(resolve, reject)) return
+      if (!self.initializeWebBrowser(resolve, reject)) return;
 
-      const inAppBrowserOptions = getDefaultOptions(url, options);
+      const options = getDefaultOptions(url, inAppBrowserOptions);
 
       const safariVC = SFSafariViewController.alloc().initWithURLEntersReaderIfAvailable(
-        NSURL.URLWithString(inAppBrowserOptions.url),
-        inAppBrowserOptions.readerMode
+        NSURL.URLWithString(options.url),
+        options.readerMode
       );
       safariVC.delegate = self;
 
       if (ios.MajorVersion >= 11) {
-        if (inAppBrowserOptions.dismissButtonStyle === 'done') {
+        if (options.dismissButtonStyle === 'done') {
           safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Done;
         }
-        else if (inAppBrowserOptions.dismissButtonStyle === 'close') {
+        else if (options.dismissButtonStyle === 'close') {
           safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Close;
         }
-        else if (inAppBrowserOptions.dismissButtonStyle === 'cancel') {
+        else if (options.dismissButtonStyle === 'cancel') {
           safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Cancel;
         }
       }
 
       if (ios.MajorVersion >= 10) {
-        if (inAppBrowserOptions.preferredBarTintColor) {
-          safariVC.preferredBarTintColor = new Color(inAppBrowserOptions.preferredBarTintColor).ios;
+        if (options.preferredBarTintColor) {
+          safariVC.preferredBarTintColor = new Color(options.preferredBarTintColor).ios;
         }
-        if (inAppBrowserOptions.preferredControlTintColor) {
-          safariVC.preferredControlTintColor = new Color(inAppBrowserOptions.preferredControlTintColor).ios;
+        if (options.preferredControlTintColor) {
+          safariVC.preferredControlTintColor = new Color(options.preferredControlTintColor).ios;
         }
       }
 
@@ -66,7 +61,7 @@ const InAppBrowser = (<any>NSObject).extend({
 
       const app = ios.getter(UIApplication, UIApplication.sharedApplication);
       app.keyWindow.rootViewController.presentViewControllerAnimatedCompletion(safariHackVC, true, null);
-    })
+    });
   },
   close() {
     const self = this;
@@ -82,8 +77,7 @@ const InAppBrowser = (<any>NSObject).extend({
     const self = this;
     if (ios.MajorVersion >= 11) {
       return new Promise(function (resolve, reject) {
-        if (!self.initializeWebBrowser(resolve, reject)) return
-        
+        if (!self.initializeWebBrowser(resolve, reject)) return;
         const url = NSURL.URLWithString(authUrl);
         const authSession = SFAuthenticationSession.alloc().initWithURLCallbackURLSchemeCompletionHandler(
           url,
@@ -102,17 +96,18 @@ const InAppBrowser = (<any>NSObject).extend({
             }
             self.flowDidFinish();
           }
-        )
+        );
         authSession.start();
         self.authSession = authSession;
       });
     }
     else {
       self.flowDidFinish();
-      return Promise.resolve({
+      const response: AuthSessionResult = {
         type: 'cancel',
         message: 'openAuth requires iOS 11 or greater'
-      });
+      };
+      return Promise.resolve(response);
     }
   },
   closeAuth() {
@@ -158,4 +153,4 @@ const InAppBrowser = (<any>NSObject).extend({
   protocols: [SFSafariViewControllerDelegate]
 });
 
-export default InAppBrowser.new()
+export default InAppBrowser.new();

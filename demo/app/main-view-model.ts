@@ -1,21 +1,21 @@
-import { Observable } from 'tns-core-modules/data/observable'
-import { openUrl } from 'tns-core-modules/utils/utils'
-import { alert } from 'tns-core-modules/ui/dialogs'
-import InAppBrowser from 'nativescript-inappbrowser'
+import { Observable } from 'tns-core-modules/data/observable';
+import { openUrl } from 'tns-core-modules/utils/utils';
+import { alert } from 'tns-core-modules/ui/dialogs';
+import InAppBrowser from 'nativescript-inappbrowser';
 
 export class HelloWorldModel extends Observable {
-  private _url: string
+  private _url: string;
 
   constructor() {
-    super()
+    super();
 
     // Initialize default values.
-    this._url = 'https://www.google.com'
+    this._url = 'https://www.google.com';
   }
 
   openLink = async () => {
     try {
-      const { url } = this
+      const { url } = this;
       if (await InAppBrowser.isAvailable()) {
         const result = await InAppBrowser.open(url, {
           // iOS Properties
@@ -41,12 +41,12 @@ export class HelloWorldModel extends Observable {
           headers: {
             'my-custom-header': 'my custom header value'
           }
-        })
+        });
         alert({
           title: 'Response',
           message: JSON.stringify(result),
           okButtonText: 'Ok'
-        })
+        });
       }
       else {
         openUrl(url);
@@ -57,18 +57,18 @@ export class HelloWorldModel extends Observable {
         title: 'Error',
         message: error.message,
         okButtonText: 'Ok'
-      })
+      });
     }
   }
 
   get url(): string {
-    return this._url
+    return this._url;
   }
 
   set url(value: string) {
     if (this._url !== value) {
-      this._url = value
-      this.notifyPropertyChange('url', value)
+      this._url = value;
+      this.notifyPropertyChange('url', value);
     }
   }
 }

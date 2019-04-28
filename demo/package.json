@@ -3,12 +3,15 @@
     "id": "org.nativescript.demo",
     "tns-ios": {
       "version": "5.3.1"
+    },
+    "tns-android": {
+      "version": "5.3.1"
     }
   },
   "dependencies": {
+    "nativescript-inappbrowser": "file:../src",
     "nativescript-theme-core": "^1.0.4",
     "nativescript-unit-test-runner": "^0.4.1",
-    "nativescript-inappbrowser": "file:../src",
     "tns-core-modules": "^5.0.0"
   },
   "devDependencies": {
