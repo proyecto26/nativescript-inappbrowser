@@ -12,7 +12,11 @@ declare namespace org {
         public unregister(subscriber: java.lang.Object): void;
       }
 
-      export class Subscribe {}
+      // export function Subscribe(
+      //   target: Object,
+      //   key: string | symbol,
+      //   descriptor: PropertyDescriptor
+      // ): PropertyDescriptor;
     }
   }
 }

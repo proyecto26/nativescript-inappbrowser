@@ -5,7 +5,8 @@
 		To read more about android permissions go to https://developer.android.com/guide/topics/permissions/index.html -->
 	<!--EXAMPLE: uses-permission android:name="android.permission.INTERNET"/> -->
     <application>
-        <activity android:name="org.nativescript.ChromeTabsManagerActivity">
+        <activity
+            android:name="com.proyecto26.inappbrowser.ChromeTabsManagerActivity">
         </activity>
     </application>
 </manifest>

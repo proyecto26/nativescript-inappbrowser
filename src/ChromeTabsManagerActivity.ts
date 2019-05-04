@@ -3,47 +3,33 @@ import Context = android.content.Context;
 import Intent = android.content.Intent;
 import Bundle = android.os.Bundle;
 
-import EventBus = org.greenrobot.eventbus.EventBus;
+import { Observable } from 'tns-core-modules/data/observable';
+// import { android as androidApp } from 'tns-core-modules/application';
 
-export class ChromeTabsDismissedEvent extends java.lang.Object {
+export class ChromeTabsEvent extends Observable {
   public message: String;
   public resultType: String;
-
-  constructor (message: String, resultType: String) {
-    super();
-
-    this.message = message;
-    this.resultType = resultType;
-    return global.__native(this);
-  }
 }
 
-// @Interfaces([org.greenrobot.eventbus.Subscribe])
-@JavaProxy("org.nativescript.ChromeTabsManagerActivity")
-export class ChromeTabsManagerActivity extends Activity {
-  static KEY_BROWSER_INTENT = "browserIntent";
+export const BROWSER_ACTIVITY_EVENTS = new ChromeTabsEvent();
+
+const KEY_BROWSER_INTENT = 'browserIntent';
+
+/**
+ * Manages the custom chrome tabs intent by detecting when it is dismissed by the user and allowing
+ * to close it programmatically when needed.
+ */
+@JavaProxy('com.proyecto26.inappbrowser.ChromeTabsManagerActivity')
+export class ChromeTabsManagerActivity extends android.app.Activity {
   private mOpened = false;
 
-  public static createStartIntent(context: Context, authIntent: Intent): Intent {
-    const intent = ChromeTabsManagerActivity.createBaseIntent(context);
-    intent.putExtra(ChromeTabsManagerActivity.KEY_BROWSER_INTENT, authIntent);
-    return intent;
-  }
-
-  public static createDismissIntent(context: Context): Intent {
-    const intent = ChromeTabsManagerActivity.createBaseIntent(context);
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    return intent;
-  }
-
-  private static createBaseIntent(context: Context): Intent {
-    return new Intent(context, ChromeTabsManagerActivity.class);
+  constructor() {
+    super();
+    return global.__native(this);
   }
 
   public onCreate(savedInstanceState?: Bundle): void {
     super.onCreate(savedInstanceState);
-
-    const KEY_BROWSER_INTENT = ChromeTabsManagerActivity.KEY_BROWSER_INTENT;
 
     // This activity gets opened in 2 different ways. If the extra KEY_BROWSER_INTENT is present we
     // start that intent and if it is not it means this activity was started with FLAG_ACTIVITY_CLEAR_TOP
@@ -66,13 +52,23 @@ export class ChromeTabsManagerActivity extends Activity {
     if (!this.mOpened) {
       this.mOpened = true;
     } else {
-      EventBus.getDefault().post(new ChromeTabsDismissedEvent("chrome tabs activity closed", "cancel"));
+      BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity closed');
+      BROWSER_ACTIVITY_EVENTS.set('resultType', 'cancel');
+      BROWSER_ACTIVITY_EVENTS.notify({
+        eventName: 'dismiss',
+        object: BROWSER_ACTIVITY_EVENTS
+      });
       this.finish();
     }
   }
 
   onDestroy(): void {
-    EventBus.getDefault().post(new ChromeTabsDismissedEvent("chrome tabs activity destroyed", "dismiss"));
+    BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity destroyed');
+    BROWSER_ACTIVITY_EVENTS.set('resultType', 'dismiss');
+    BROWSER_ACTIVITY_EVENTS.notify({
+      eventName: 'dismiss',
+      object: BROWSER_ACTIVITY_EVENTS
+    });
     super.onDestroy();
   }
 
@@ -80,4 +76,20 @@ export class ChromeTabsManagerActivity extends Activity {
     super.onNewIntent(intent);
     this.setIntent(intent);
   }
+}
+
+export const createStartIntent = (context: Context, authIntent: Intent): Intent => {
+  let intent = createBaseIntent(context);
+  intent.putExtra(KEY_BROWSER_INTENT, authIntent);
+  return intent;
+}
+
+export const createDismissIntent = (context: Context): Intent => {
+  let intent = createBaseIntent(context);
+  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+  return intent;
+}
+
+export const createBaseIntent = (context: Context): Intent => {
+  return new Intent(context, ChromeTabsManagerActivity.class);
 }

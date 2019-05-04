@@ -12,7 +12,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/jdnichollsc/nativescript-inappbrowser.git"
+        "url": "https://github.com/proyecto26/nativescript-inappbrowser.git"
     },
     "scripts": {
         "tsc": "tsc",
@@ -38,17 +38,18 @@
         "iOS",
         "browser",
         "inappbrowser",
-        "in-app-browser"
+        "in-app-browser",
+        "InAppBrowser"
     ],
     "author": {
         "name": "Juan David Nicholls Cardona",
         "email": "jdnichollsc@hotmail.com"
     },
     "bugs": {
-        "url": "https://github.com/jdnichollsc/nativescript-inappbrowser/issues"
+        "url": "https://github.com/proyecto26/nativescript-inappbrowser/issues"
     },
     "license": "Apache-2.0",
-    "homepage": "https://github.com/jdnichollsc/nativescript-inappbrowser",
+    "homepage": "https://github.com/proyecto26/nativescript-inappbrowser",
     "readmeFilename": "README.md",
     "devDependencies": {
         "tns-core-modules": "^5.0.0",

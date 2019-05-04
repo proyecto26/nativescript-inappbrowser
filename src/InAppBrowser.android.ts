@@ -1,9 +1,8 @@
 import { Color } from 'tns-core-modules/color';
 import { ad } from 'tns-core-modules/utils/utils';
 import { android as androidApp } from 'tns-core-modules/application';
-import EventBus = org.greenrobot.eventbus.EventBus;
-// const Subscribe = org.greenrobot.eventbus.Subscribe;
-import { ChromeTabsManagerActivity, ChromeTabsDismissedEvent } from './ChromeTabsManagerActivity';
+import { ChromeTabsEvent, BROWSER_ACTIVITY_EVENTS, createStartIntent } from './ChromeTabsManagerActivity';
+import { EventData } from 'tns-core-modules/data/observable';
 
 declare const android: any;
 const customtabs = android.support.customtabs || {};
@@ -33,7 +32,6 @@ type InAppBrowserOptions = {
   headers?: { [key: string]: string }
 };
 
-// @JavaProxy("org.greenrobot.eventbus.Subscribe")
 class InAppBrowserModule extends java.lang.Object {
   private static ERROR_CODE = "InAppBrowser";
   private static KEY_TOOLBAR_COLOR = "toolbarColor";
@@ -49,18 +47,23 @@ class InAppBrowserModule extends java.lang.Object {
   private static KEY_ANIMATION_END_ENTER = "endEnter";
   private static KEY_ANIMATION_END_EXIT = "endExit";
 
-  private redirectResolve: any;
+  private static redirectResolve: any;
   private currentActivity: any;
-  private animationIdentifierPattern = /^.+:.+/;
+  //private animationIdentifierPattern = /^.+:.+/;
+
+  constructor() {
+    super();
+    return global.__native(this);
+  }
 
   isAvailable(): Promise<boolean> {
     return Promise.resolve(true);
   }
 
   open(url: string, inAppBrowserOptions: InAppBrowserOptions = {}): Promise<BrowserResult> {
-    const mOpenBrowserPromise = this.redirectResolve;
+    const mOpenBrowserPromise = InAppBrowserModule.redirectResolve;
     if (mOpenBrowserPromise) {
-      this.redirectResolve = null;
+      InAppBrowserModule.redirectResolve = null;
       const response: BrowserResult = { type: 'cancel' };
       return Promise.resolve(response);
     }
@@ -99,7 +102,7 @@ class InAppBrowserModule extends java.lang.Object {
     }
     const context = ad.getApplicationContext();
     if (options[InAppBrowserModule.KEY_ANIMATIONS]) {
-      const animations = options[InAppBrowserModule.KEY_ANIMATIONS];
+      // const animations = options[InAppBrowserModule.KEY_ANIMATIONS];
       // applyAnimation(context, builder, animations);
     }
 
@@ -111,39 +114,35 @@ class InAppBrowserModule extends java.lang.Object {
 
     const intent = customTabsIntent.intent;
     intent.setData(Uri.parse(new java.lang.String(url)));
-    if (options[InAppBrowserModule.KEY_SHOW_PAGE_TITLE] !== undefined) {
+    if (options[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]) {
       builder.setShowTitle(!!options[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]);
     }
     else {
       intent.putExtra(CustomTabsIntent.EXTRA_TITLE_VISIBILITY_STATE, CustomTabsIntent.NO_TITLE);
     }
 
-    this.registerEventBus();
+    this.registerEvent();
 
-    context.startActivity(
-      ChromeTabsManagerActivity.createStartIntent(this.currentActivity, intent)
+    this.currentActivity.startActivity(
+      createStartIntent(this.currentActivity, intent)
     );
 
-    const self = this;
     return new Promise(function (resolve) {
-      self.redirectResolve = resolve;
+      InAppBrowserModule.redirectResolve = resolve;
     });
   }
 
-  private applyAnimation(): void {
+  public onEvent(event: EventData): void {
+    alert("Hey");
+    const browserEvent = <ChromeTabsEvent>event.object;
+    BROWSER_ACTIVITY_EVENTS.off('dismiss');
+    InAppBrowserModule.redirectResolve({ type: browserEvent.resultType });
+    InAppBrowserModule.redirectResolve = null;
+    alert("Good");
   }
 
-  // @Subscribe
-  public onEvent(event: ChromeTabsDismissedEvent): void {
-    EventBus.getDefault().unregister(this);
-    this.redirectResolve({ type: event.resultType });
-    this.redirectResolve = null;
-  }
-
-  private registerEventBus(): void {
-    if (!EventBus.getDefault().isRegistered(this)) {
-      EventBus.getDefault().register(this);
-    }
+  private registerEvent(): void {
+    BROWSER_ACTIVITY_EVENTS.on('dismiss', this.onEvent);
   }
 }
 
