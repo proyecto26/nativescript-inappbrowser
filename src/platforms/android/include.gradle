@@ -15,5 +15,4 @@ dependencies {
 
     implementation "com.android.support:support-annotations:$supportLibVersion"
     implementation "com.android.support:customtabs:$supportLibVersion"
-    implementation 'org.greenrobot:eventbus:3.+'
 }

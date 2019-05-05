@@ -7,6 +7,11 @@ TextField {
   margin-top: 5;
 }
 
+.content {
+  padding-left: 20;
+  padding-right: 20;
+}
+
 .p {
   font-size: 14;
   color: #333333;

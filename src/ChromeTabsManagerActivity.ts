@@ -1,10 +1,8 @@
-import Activity = android.app.Activity;
 import Context = android.content.Context;
 import Intent = android.content.Intent;
 import Bundle = android.os.Bundle;
 
 import { Observable } from 'tns-core-modules/data/observable';
-// import { android as androidApp } from 'tns-core-modules/application';
 
 export class ChromeTabsEvent extends Observable {
   public message: String;

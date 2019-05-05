@@ -1,6 +1,6 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded" class="page"
   xmlns:ui="nativescript-inappbrowser">
-  <StackLayout class="p-20" verticalAlignment="center">
+  <StackLayout class="content" verticalAlignment="center">
     <Label text="Welcome InAppBrowser&#xA;for NativeScript" class="t-20 text-center c-black" textWrap="true"/>
     <Label text="Type the url" class="text-center p"/>
     <StackLayout class="input-field">
