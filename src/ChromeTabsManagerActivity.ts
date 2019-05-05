@@ -82,14 +82,14 @@ export const createStartIntent = (context: Context, authIntent: Intent): Intent 
   let intent = createBaseIntent(context);
   intent.putExtra(KEY_BROWSER_INTENT, authIntent);
   return intent;
-}
+};
 
 export const createDismissIntent = (context: Context): Intent => {
   let intent = createBaseIntent(context);
   intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
   return intent;
-}
+};
 
 export const createBaseIntent = (context: Context): Intent => {
   return new Intent(context, ChromeTabsManagerActivity.class);
-}
+};

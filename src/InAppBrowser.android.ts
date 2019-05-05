@@ -29,7 +29,7 @@ type Animations = {
   startExit: string,
   endEnter: string,
   endExit: string
-}
+};
 
 type InAppBrowserOptions = {
   showTitle?: boolean,
@@ -122,7 +122,7 @@ class InAppBrowserModule extends java.lang.Object {
     const keyHeaders = options[InAppBrowserModule.KEY_HEADERS];
     if (keyHeaders && keyHeaders.length) {
       const headers = new Bundle();
-      for (var key in keyHeaders) {
+      for (const key in keyHeaders) {
         if (keyHeaders.hasOwnProperty(key)) {
           headers.putString(key, keyHeaders[key]);
         }

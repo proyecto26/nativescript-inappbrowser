@@ -14,7 +14,7 @@ export class HelloWorldModel extends Observable {
   }
 
   sleep (timeout) {
-    return new Promise(resolve => setTimeout(resolve, timeout))
+    return new Promise(resolve => setTimeout(resolve, timeout));
   }
 
   openLink = async () => {
@@ -46,7 +46,7 @@ export class HelloWorldModel extends Observable {
             'my-custom-header': 'my custom header value'
           }
         });
-        await this.sleep(800)
+        await this.sleep(800);
         alert({
           title: 'Response',
           message: JSON.stringify(result),
@@ -57,7 +57,7 @@ export class HelloWorldModel extends Observable {
         openUrl(url);
       }
     }
-    catch(error) {
+    catch (error) {
       alert({
         title: 'Error',
         message: error.message,
