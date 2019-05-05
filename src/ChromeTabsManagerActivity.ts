@@ -55,7 +55,7 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
       BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity closed');
       BROWSER_ACTIVITY_EVENTS.set('resultType', 'cancel');
       BROWSER_ACTIVITY_EVENTS.notify({
-        eventName: 'dismiss',
+        eventName: 'DismissedEvent',
         object: BROWSER_ACTIVITY_EVENTS
       });
       this.finish();
@@ -66,7 +66,7 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
     BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity destroyed');
     BROWSER_ACTIVITY_EVENTS.set('resultType', 'dismiss');
     BROWSER_ACTIVITY_EVENTS.notify({
-      eventName: 'dismiss',
+      eventName: 'DismissedEvent',
       object: BROWSER_ACTIVITY_EVENTS
     });
     super.onDestroy();

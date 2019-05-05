@@ -1,20 +1,35 @@
+import Uri = android.net.Uri;
+import Bundle = android.os.Bundle;
+import Intent = android.content.Intent;
+import Context = android.content.Context;
+import Browser = android.provider.Browser;
+import Pattern = java.util.regex.Pattern;
+import AssertionError = java.lang.AssertionError;
+import CustomTabsIntent = android.support.customtabs.CustomTabsIntent;
+
 import { Color } from 'tns-core-modules/color';
 import { ad } from 'tns-core-modules/utils/utils';
 import { android as androidApp } from 'tns-core-modules/application';
-import { ChromeTabsEvent, BROWSER_ACTIVITY_EVENTS, createStartIntent } from './ChromeTabsManagerActivity';
+import {
+  ChromeTabsEvent,
+  BROWSER_ACTIVITY_EVENTS,
+  createStartIntent,
+  createDismissIntent
+} from './ChromeTabsManagerActivity';
 import { EventData } from 'tns-core-modules/data/observable';
-
-declare const android: any;
-const customtabs = android.support.customtabs || {};
-const CustomTabsIntent = customtabs.CustomTabsIntent;
-const Intent = android.content.Intent;
-const Uri = android.net.Uri;
 
 import {
   BrowserResult,
   AuthSessionResult,
   getDefaultOptions
 } from './InAppBrowser.common';
+
+type Animations = {
+  startEnter: string,
+  startExit: string,
+  endEnter: string,
+  endExit: string
+}
 
 type InAppBrowserOptions = {
   showTitle?: boolean,
@@ -23,12 +38,7 @@ type InAppBrowserOptions = {
   enableUrlBarHiding?: boolean,
   enableDefaultShare?: boolean,
   forceCloseOnRedirection?: boolean,
-  animations?: {
-    startEnter: string,
-    startExit: string,
-    endEnter: string,
-    endExit: string
-  },
+  animations?: Animations,
   headers?: { [key: string]: string }
 };
 
@@ -48,8 +58,9 @@ class InAppBrowserModule extends java.lang.Object {
   private static KEY_ANIMATION_END_EXIT = "endExit";
 
   private static redirectResolve: any;
+  private static redirectReject: any;
   private currentActivity: any;
-  //private animationIdentifierPattern = /^.+:.+/;
+  private animationIdentifierPattern = Pattern.compile("^.+:.+/");
 
   constructor() {
     super();
@@ -63,7 +74,7 @@ class InAppBrowserModule extends java.lang.Object {
   open(url: string, inAppBrowserOptions: InAppBrowserOptions = {}): Promise<BrowserResult> {
     const mOpenBrowserPromise = InAppBrowserModule.redirectResolve;
     if (mOpenBrowserPromise) {
-      InAppBrowserModule.redirectResolve = null;
+      this.flowDidFinish();
       const response: BrowserResult = { type: 'cancel' };
       return Promise.resolve(response);
     }
@@ -102,18 +113,30 @@ class InAppBrowserModule extends java.lang.Object {
     }
     const context = ad.getApplicationContext();
     if (options[InAppBrowserModule.KEY_ANIMATIONS]) {
-      // const animations = options[InAppBrowserModule.KEY_ANIMATIONS];
-      // applyAnimation(context, builder, animations);
+      const animations = options[InAppBrowserModule.KEY_ANIMATIONS];
+      this.applyAnimation(context, builder, animations);
     }
 
     const customTabsIntent = builder.build();
+
+    const keyHeaders = options[InAppBrowserModule.KEY_HEADERS];
+    if (keyHeaders && keyHeaders.length) {
+      const headers = new Bundle();
+      for (var key in keyHeaders) {
+        if (keyHeaders.hasOwnProperty(key)) {
+          headers.putString(key, keyHeaders[key]);
+        }
+      }
+      customTabsIntent.intent.putExtra(Browser.EXTRA_HEADERS, headers);
+    }
+
     if (options[InAppBrowserModule.KEY_FORCE_CLOSE_ON_REDIRECTION]) {
       customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
       customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     const intent = customTabsIntent.intent;
-    intent.setData(Uri.parse(new java.lang.String(url)));
+    intent.setData(Uri.parse(url));
     if (options[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]) {
       builder.setShowTitle(!!options[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]);
     }
@@ -124,25 +147,89 @@ class InAppBrowserModule extends java.lang.Object {
     this.registerEvent();
 
     this.currentActivity.startActivity(
-      createStartIntent(this.currentActivity, intent)
+      createStartIntent(this.currentActivity, intent),
+      customTabsIntent.startAnimationBundle
     );
 
-    return new Promise(function (resolve) {
+    return new Promise(function (resolve, reject) {
       InAppBrowserModule.redirectResolve = resolve;
+      InAppBrowserModule.redirectReject = reject;
     });
   }
 
+  public close(): void {
+    if (!InAppBrowserModule.redirectResolve) {
+      return;
+    }
+
+    if (!this.currentActivity) {
+      InAppBrowserModule.redirectReject(new Error(InAppBrowserModule.ERROR_CODE));
+      this.flowDidFinish();
+      return;
+    }
+
+    BROWSER_ACTIVITY_EVENTS.off('DismissedEvent');
+
+    const response: BrowserResult = { type: 'dismiss' };
+    InAppBrowserModule.redirectResolve(response);
+    this.flowDidFinish();
+
+    this.currentActivity.startActivity(createDismissIntent(this.currentActivity));
+  }
+
   public onEvent(event: EventData): void {
-    alert("Hey");
+    BROWSER_ACTIVITY_EVENTS.off('DismissedEvent');
+
+    if (!InAppBrowserModule.redirectResolve) {
+      throw new AssertionError();
+    }
+
     const browserEvent = <ChromeTabsEvent>event.object;
-    BROWSER_ACTIVITY_EVENTS.off('dismiss');
-    InAppBrowserModule.redirectResolve({ type: browserEvent.resultType });
-    InAppBrowserModule.redirectResolve = null;
-    alert("Good");
+    InAppBrowserModule.redirectResolve({
+      type: browserEvent.resultType,
+      message: browserEvent.message
+    });
+    this.flowDidFinish();
   }
 
   private registerEvent(): void {
-    BROWSER_ACTIVITY_EVENTS.on('dismiss', this.onEvent);
+    BROWSER_ACTIVITY_EVENTS.once('DismissedEvent', (e) => this.onEvent(e));
+  }
+
+  private resolveAnimationIdentifierIfNeeded(context: Context, identifier: string): number {
+    if (this.animationIdentifierPattern.matcher(identifier).find()) {
+      return context.getResources().getIdentifier(identifier, null, null);
+    } else {
+      return context.getResources().getIdentifier(identifier, "anim", context.getPackageName());
+    }
+  }
+
+  private applyAnimation(context: Context, builder: CustomTabsIntent.Builder, animations: Animations): void {
+    const startEnterAnimationId = animations[InAppBrowserModule.KEY_ANIMATION_START_ENTER]
+      ? this.resolveAnimationIdentifierIfNeeded(context, animations[InAppBrowserModule.KEY_ANIMATION_START_ENTER])
+      : -1;
+    const startExitAnimationId = animations[InAppBrowserModule.KEY_ANIMATION_START_EXIT]
+      ? this.resolveAnimationIdentifierIfNeeded(context, animations[InAppBrowserModule.KEY_ANIMATION_START_EXIT])
+      : -1;
+    const endEnterAnimationId = animations[InAppBrowserModule.KEY_ANIMATION_END_ENTER]
+      ? this.resolveAnimationIdentifierIfNeeded(context, animations[InAppBrowserModule.KEY_ANIMATION_END_ENTER])
+      : -1;
+    const endExitAnimationId = animations[InAppBrowserModule.KEY_ANIMATION_END_EXIT]
+      ? this.resolveAnimationIdentifierIfNeeded(context, animations[InAppBrowserModule.KEY_ANIMATION_END_EXIT])
+      : -1;
+
+    if (startEnterAnimationId !== -1 && startExitAnimationId !== -1) {
+      builder.setStartAnimations(context, startEnterAnimationId, startExitAnimationId);
+    }
+
+    if (endEnterAnimationId !== -1 && endExitAnimationId !== -1) {
+      builder.setExitAnimations(context, endEnterAnimationId, endExitAnimationId);
+    }
+  }
+
+  private flowDidFinish(): void {
+    InAppBrowserModule.redirectResolve = null;
+    InAppBrowserModule.redirectReject = null;
   }
 }
 

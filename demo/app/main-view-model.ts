@@ -13,6 +13,10 @@ export class HelloWorldModel extends Observable {
     this._url = 'https://www.google.com';
   }
 
+  sleep (timeout) {
+    return new Promise(resolve => setTimeout(resolve, timeout))
+  }
+
   openLink = async () => {
     try {
       const { url } = this;
@@ -35,13 +39,14 @@ export class HelloWorldModel extends Observable {
           animations: {
             startEnter: 'slide_in_right',
             startExit: 'slide_out_left',
-            endEnter: 'slide_in_right',
-            endExit: 'slide_out_left',
+            endEnter: 'slide_in_left',
+            endExit: 'slide_out_right',
           },
           headers: {
             'my-custom-header': 'my custom header value'
           }
         });
+        await this.sleep(800)
         alert({
           title: 'Response',
           message: JSON.stringify(result),
