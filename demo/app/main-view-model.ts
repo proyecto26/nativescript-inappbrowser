@@ -2,6 +2,7 @@ import { Observable } from 'tns-core-modules/data/observable';
 import { openUrl } from 'tns-core-modules/utils/utils';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import InAppBrowser from 'nativescript-inappbrowser';
+import { android } from "tns-core-modules/application";
 
 export class HelloWorldModel extends Observable {
   private _url: string;
@@ -11,6 +12,17 @@ export class HelloWorldModel extends Observable {
 
     // Initialize default values.
     this._url = 'https://www.google.com';
+  }
+
+  get url(): string {
+    return this._url;
+  }
+
+  set url(value: string) {
+    if (this._url !== value) {
+      this._url = value;
+      this.notifyPropertyChange('url', value);
+    }
   }
 
   sleep (timeout) {
@@ -24,7 +36,7 @@ export class HelloWorldModel extends Observable {
         const result = await InAppBrowser.open(url, {
           // iOS Properties
           dismissButtonStyle: 'cancel',
-          preferredBarTintColor: 'gray',
+          preferredBarTintColor: '#453AA4',
           preferredControlTintColor: 'white',
           readerMode: false,
           // Android Properties
@@ -66,14 +78,24 @@ export class HelloWorldModel extends Observable {
     }
   }
 
-  get url(): string {
-    return this._url;
+  getDeepLink = (path = '') => {
+    const scheme = 'my-demo';
+    const prefix = android ? `${scheme}://demo/` : `${scheme}://`;
+    return prefix + path;
   }
 
-  set url(value: string) {
-    if (this._url !== value) {
-      this._url = value;
-      this.notifyPropertyChange('url', value);
+  tryDeepLinking = async () => {
+    const redirectToURL = `https://proyecto26.github.io/react-native-inappbrowser/`;
+    const redirectUrl = this.getDeepLink('home');
+    const url = `${redirectToURL}?redirect_url=${encodeURIComponent(redirectUrl)}`;
+    if (await InAppBrowser.isAvailable()) {
+      const result = await InAppBrowser.openAuth(url, redirectUrl);
+      await this.sleep(800);
+      alert({
+        title: 'Response',
+        message: JSON.stringify(result),
+        okButtonText: 'Ok'
+      });
     }
   }
 }

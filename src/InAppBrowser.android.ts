@@ -21,7 +21,9 @@ import { EventData } from 'tns-core-modules/data/observable';
 import {
   BrowserResult,
   AuthSessionResult,
-  getDefaultOptions
+  getDefaultOptions,
+  openAuthSessionPolyfillAsync,
+  closeAuthSessionPolyfillAsync
 } from './InAppBrowser.common';
 
 type Animations = {
@@ -177,13 +179,33 @@ class InAppBrowserModule extends java.lang.Object {
     this.currentActivity.startActivity(createDismissIntent(this.currentActivity));
   }
 
+  async openAuth(
+    url: string,
+    redirectUrl: string,
+    inAppBrowserOptions: InAppBrowserOptions = {}
+  ): Promise<AuthSessionResult> {
+    const options = getDefaultOptions(url, inAppBrowserOptions);
+    try {
+      return await openAuthSessionPolyfillAsync(
+        url, redirectUrl, options, (startUrl, opt) => this.open(startUrl, opt)
+      );
+    } finally {
+      this.close();
+      closeAuthSessionPolyfillAsync();
+    }
+  }
+
+  public closeAuth(): void {
+    this.close();
+    closeAuthSessionPolyfillAsync();
+  }
+
   public onEvent(event: EventData): void {
     BROWSER_ACTIVITY_EVENTS.off('DismissedEvent');
 
     if (!InAppBrowserModule.redirectResolve) {
       throw new AssertionError();
     }
-
     const browserEvent = <ChromeTabsEvent>event.object;
     InAppBrowserModule.redirectResolve({
       type: browserEvent.resultType,

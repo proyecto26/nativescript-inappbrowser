@@ -13,5 +13,6 @@
       </TextField>
     </StackLayout>
     <Button text="Open link" class="my-button btn" tap="{{ openLink }}"></Button>
+    <Button text="Try deep linking" class="my-button btn" tap="{{ tryDeepLinking }}"></Button>
   </StackLayout>
 </Page>
