@@ -48,7 +48,7 @@
     "bugs": {
         "url": "https://github.com/proyecto26/nativescript-inappbrowser/issues"
     },
-    "license": "Apache-2.0",
+    "license": "MIT",
     "homepage": "https://github.com/proyecto26/nativescript-inappbrowser",
     "readmeFilename": "README.md",
     "devDependencies": {
