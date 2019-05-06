@@ -1,7 +1,7 @@
 {
     "name": "nativescript-inappbrowser",
     "version": "1.0.0",
-    "description": "InAppBrowser for React Native",
+    "description": "InAppBrowser for NativeScript",
     "main": "InAppBrowser",
     "typings": "index.d.ts",
     "nativescript": {
