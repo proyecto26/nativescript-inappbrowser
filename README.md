@@ -100,6 +100,9 @@ import InAppBrowser from 'nativescript-inappbrowser'
 ...
 ```
 
+## Credits 👍
+* **React Native InAppBrowser:** [InAppBrowser for React Native](https://github.com/proyecto26/react-native-inappbrowser)
+
 ## Contributors ✨
 Thanks goes to these wonderful people:
 <!-- CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
