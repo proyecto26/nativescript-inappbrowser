@@ -1,3 +1,18 @@
+[![Build Status][build-status]][build-url]
+[![NPM version][npm-image]][npm-url]
+[![Downloads][downloads-image]][npm-url]
+[![TotalDownloads][total-downloads-image]][npm-url]
+[![Twitter Follow][twitter-image]][twitter-url]
+
+[build-status]:https://travis-ci.org/proyecto26/nativescript-inappbrowser.svg?branch=master
+[build-url]:https://travis-ci.org/proyecto26/nativescript-inappbrowser
+[npm-image]:http://img.shields.io/npm/v/nativescript-inappbrowser.svg
+[npm-url]:https://npmjs.org/package/nativescript-inappbrowser
+[downloads-image]:http://img.shields.io/npm/dm/nativescript-inappbrowser.svg
+[total-downloads-image]:http://img.shields.io/npm/dt/nativescript-inappbrowser.svg?label=total%20downloads
+[twitter-image]:https://img.shields.io/twitter/follow/jdnichollsc.svg?style=social&label=Follow%20me
+[twitter-url]:https://twitter.com/jdnichollsc
+
 <p align="center">
   <h1 align="center">InAppBrowser for NativeScript</h1>
 </p>
