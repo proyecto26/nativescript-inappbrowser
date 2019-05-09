@@ -45,9 +45,10 @@ matrix:
       sudo: required
       jdk: oraclejdk8
       before_script:
-        - echo no | android create avd --force -n test -t android-28 -b armeabi-v7a
+        - echo no | android create avd --force -n test -t android-22 -b armeabi-v7a
         - emulator -avd test -no-audio -no-window &
         - android-wait-for-emulator
+        - adb shell input keyevent 82 &
       before_install:
         - nvm install 8
       script: cd src && npm run test.android
@@ -65,15 +66,15 @@ android:
     - tools
     - platform-tools
     # The BuildTools version used by your project
-    - build-tools-28.0.3
+    - build-tools-26.0.2
     # The SDK version used to compile your project
-    - android-28
+    - android-26
     # Additional components
     - extra-android-m2repository
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
-    # - sys-img-x86-android-26
-    - sys-img-armeabi-v7a-android-28
+    - sys-img-x86-android-26
+    - sys-img-armeabi-v7a-android-17
 
 before_install:
     - sudo pip install --upgrade pip
