@@ -47,12 +47,17 @@ matrix:
       before_script:
         - android list targets
         - echo no | android create avd --force -n test -t android-21 -b armeabi-v7a
-        - emulator -avd test -no-audio -no-window &
+        - emulator -avd test -no-skin -no-audio -no-window &
         - android-wait-for-emulator
         - adb shell input keyevent 82 &
+        # Unlock screen
+        - adb shell input keyevent 82
       before_install:
         - nvm install 8
+        - adb logcat > logcat.log &
       script: cd src && npm run test.android
+      after_failure:
+        - cat logcat.log
     - os: osx
       language: node_js
       node_js: "8"
@@ -76,6 +81,8 @@ android:
     # if you need to run emulator(s) during your tests
     - sys-img-x86-android-28
     - sys-img-armeabi-v7a-android-22
+
+    - ADB_INSTALL_TIMEOUT=20 # minutes (2 minutes by default)
 
 before_install:
     - sudo pip install --upgrade pip
