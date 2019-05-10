@@ -2,14 +2,14 @@
   <a href="./LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license" />
   </a>
+  <a href="https://npmjs.org/package/nativescript-inappbrowser">
+    <img src="http://img.shields.io/npm/v/nativescript-inappbrowser.svg" alt="Current npm package version" />
+  </a>
   <a href="https://github.com/proyecto26/nativescript-inappbrowser/graphs/commit-activity">
     <img src="https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg" alt="Maintenance" />
   </a>
   <a href="https://travis-ci.org/proyecto26/nativescript-inappbrowser">
     <img src="https://travis-ci.org/proyecto26/nativescript-inappbrowser.svg?branch=master" alt="Build Status" />
-  </a>
-  <a href="https://npmjs.org/package/nativescript-inappbrowser">
-    <img src="http://img.shields.io/npm/v/nativescript-inappbrowser.svg" alt="Current npm package version" />
   </a>
   <a href="https://npmjs.org/package/nativescript-inappbrowser">
     <img src="http://img.shields.io/npm/dm/nativescript-inappbrowser.svg" alt="Downloads" />
