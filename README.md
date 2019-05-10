@@ -1,18 +1,26 @@
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg)](https://github.com/proyecto26/nativescript-inappbrowser/graphs/commit-activity)
-[![Build Status][build-status]][build-url]
-[![NPM version][npm-image]][npm-url]
-[![Downloads][downloads-image]][npm-url]
-[![TotalDownloads][total-downloads-image]][npm-url]
-[![Twitter Follow][twitter-image]][twitter-url]
-
-[build-status]:https://travis-ci.org/proyecto26/nativescript-inappbrowser.svg?branch=master
-[build-url]:https://travis-ci.org/proyecto26/nativescript-inappbrowser
-[npm-image]:http://img.shields.io/npm/v/nativescript-inappbrowser.svg
-[npm-url]:https://npmjs.org/package/nativescript-inappbrowser
-[downloads-image]:http://img.shields.io/npm/dm/nativescript-inappbrowser.svg
-[total-downloads-image]:http://img.shields.io/npm/dt/nativescript-inappbrowser.svg?label=total%20downloads
-[twitter-image]:https://img.shields.io/twitter/follow/jdnichollsc.svg?style=social&label=Follow%20me
-[twitter-url]:https://twitter.com/jdnichollsc
+<p align="center">
+  <a href="./LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license" />
+  </a>
+  <a href="https://github.com/proyecto26/nativescript-inappbrowser/graphs/commit-activity">
+    <img src="https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg" alt="Maintenance" />
+  </a>
+  <a href="https://travis-ci.org/proyecto26/nativescript-inappbrowser">
+    <img src="https://travis-ci.org/proyecto26/nativescript-inappbrowser.svg?branch=master" alt="Build Status" />
+  </a>
+  <a href="https://npmjs.org/package/nativescript-inappbrowser">
+    <img src="http://img.shields.io/npm/v/nativescript-inappbrowser.svg" alt="Current npm package version" />
+  </a>
+  <a href="https://npmjs.org/package/nativescript-inappbrowser">
+    <img src="http://img.shields.io/npm/dm/nativescript-inappbrowser.svg" alt="Downloads" />
+  </a>
+  <a href="https://npmjs.org/package/nativescript-inappbrowser">
+    <img src="http://img.shields.io/npm/dt/nativescript-inappbrowser.svg?label=total%20downloads" alt="Total downloads" />
+  </a>
+  <a href="https://twitter.com/intent/follow?screen_name=jdnichollsc">
+    <img src="https://img.shields.io/twitter/follow/jdnichollsc.svg?label=Follow%20@jdnichollsc" alt="Follow @jdnichollsc" />
+  </a>
+</p>
 
 <p align="center">
   <h1 align="center">InAppBrowser for NativeScript</h1>
