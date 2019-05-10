@@ -39,19 +39,22 @@ matrix:
       jdk: oraclejdk8
       script: 
         - cd src && npm i && npm run tsc && cd ../demo && tns build ios
-    # - os: linux
-    #   language: android
-    #   dist: precise
-    #   sudo: required
-    #   jdk: oraclejdk8
-    #   before_script:
-    #     - android list targets
-    #     - echo no | android create avd --force -n test -t android-19 -b armeabi-v7a
-    #     - emulator -avd test -no-skin -no-audio -no-window &
-    #     - android-wait-for-emulator
-    #   before_install:
-    #     - nvm install 8
-    #   script: cd src && npm run test.android
+    - os: linux
+      language: android
+      dist: precise
+      sudo: required
+      jdk: oraclejdk8
+      before_script:
+        - android list targets
+        - echo no | android create avd --force -n test -t android-24 --abi arm64-v8a
+        - emulator -avd test -no-window -memory 1500 -gpu swiftshader -camera-back none -camera-front none -no-boot-anim -no-snapshot-save -no-snapstorage &
+        - android-wait-for-emulator
+      before_install:
+        - nvm install 8
+        - adb logcat > logcat.log &
+      script: cd src && npm run test.android
+      after_failure:
+        - cat logcat.log
     - os: osx
       language: node_js
       node_js: "8"
@@ -66,18 +69,16 @@ android:
     - tools
     - platform-tools
     # The BuildTools version used by your project
-    - build-tools-26.0.2
     - build-tools-28.0.3
     # The SDK version used to compile your project
-    - android-26
+    - android-24 # needed for test vms
     - android-28
     # Additional components
     - extra-android-m2repository
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
     # - sys-img-x86-android-28
-    - sys-img-armeabi-v7a-android-22
-    - sys-img-armeabi-v7a-android-26
+    - sys-img-arm64-v8a-android-24
     - sys-img-armeabi-v7a-android-28
 
     - ADB_INSTALL_TIMEOUT=20 # minutes (2 minutes by default)
