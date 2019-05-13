@@ -10,13 +10,13 @@ import CustomTabsIntent = android.support.customtabs.CustomTabsIntent;
 import { Color } from 'tns-core-modules/color';
 import { ad } from 'tns-core-modules/utils/utils';
 import { android as androidApp } from 'tns-core-modules/application';
+import { EventData } from 'tns-core-modules/data/observable';
 import {
   ChromeTabsEvent,
   BROWSER_ACTIVITY_EVENTS,
   createStartIntent,
   createDismissIntent
 } from './ChromeTabsManagerActivity';
-import { EventData } from 'tns-core-modules/data/observable';
 
 import {
   BrowserResult,
