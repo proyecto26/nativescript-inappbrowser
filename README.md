@@ -22,9 +22,8 @@
   </a>
 </p>
 
-<p align="center">
-  <h1 align="center">InAppBrowser for NativeScript</h1>
-</p>
+<h1 align="center">InAppBrowser for NativeScript</h1>
+<h4 align="center"><a href="https://developer.chrome.com/multidevice/android/customtabs#whatarethey">Chrome Custom Tabs</a> for Android & <a href="https://developer.apple.com/documentation/safariservices">SafariServices</a>/<a href="https://developer.apple.com/documentation/authenticationservices">AuthenticationServices</a> for iOS.</h4>
 
 <p align="center">
   <img width="400px" src="img/inappbrowser.png">
@@ -42,7 +41,7 @@ Methods       | Action
 ------------- | ------
 `open`        | Opens the url with Safari in a modal on iOS using **SFSafariViewController**, and Chrome in a new custom tab on Android. On iOS, the modal Safari will not share cookies with the system Safari.
 `close`       | Dismisses the system's presented web browser
-`openAuth`    | Opens the url with Safari in a modal on iOS using **SFAuthenticationSession**, and Chrome in a new custom tab on Android. On iOS, the user will be asked whether to allow the app to authenticate using the given url.
+`openAuth`    | Opens the url with Safari in a modal on iOS using **SFAuthenticationSession/ASWebAuthenticationSession**, and Chrome in a new custom tab on Android. On iOS, the user will be asked whether to allow the app to authenticate using the given url.
 `closeAuth`   | Dismisses the current authentication session
 `isAvailable` | Detect if the device supports this plugin
 

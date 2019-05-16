@@ -17,7 +17,7 @@ type InAppBrowserOptions = {
 const InAppBrowser = (<any>NSObject).extend({
   redirectResolve: null,
   redirectReject: null,
-  authSession: <SFAuthenticationSession> null,
+  authSession: <SFAuthenticationSession | ASWebAuthenticationSession> null,
   isAvailable(): Promise<boolean> {
     return Promise.resolve(ios.MajorVersion >= 9);
   },
@@ -83,7 +83,7 @@ const InAppBrowser = (<any>NSObject).extend({
         if (!self.initializeWebBrowser(resolve, reject)) return;
 
         const url = NSURL.URLWithString(authUrl);
-        const authSession = SFAuthenticationSession.alloc().initWithURLCallbackURLSchemeCompletionHandler(
+        self.authSession = (ios.MajorVersion >= 12 ? ASWebAuthenticationSession : SFAuthenticationSession).alloc().initWithURLCallbackURLSchemeCompletionHandler(
           url,
           redirectUrl,
           function (callbackURL, error) {
@@ -101,8 +101,7 @@ const InAppBrowser = (<any>NSObject).extend({
             self.flowDidFinish();
           }
         );
-        authSession.start();
-        self.authSession = authSession;
+        self.authSession.start();
       });
     }
     else {
@@ -116,7 +115,7 @@ const InAppBrowser = (<any>NSObject).extend({
   },
   closeAuth() {
     if (ios.MajorVersion >= 11) {
-      const authSession: SFAuthenticationSession = this.authSession;
+      const authSession: SFAuthenticationSession | ASWebAuthenticationSession = this.authSession;
       authSession.cancel();
       if (this.redirectResolve) {
         this.redirectResolve({
@@ -128,9 +127,6 @@ const InAppBrowser = (<any>NSObject).extend({
     else {
       this.close();
     }
-  },
-  safariViewControllerDidCompleteInitialLoad(controller: SFSafariViewController, didLoadSuccessfully: boolean): void {
-    console.log('Delegate, safariViewControllerDidCompleteInitialLoad: ' + didLoadSuccessfully);
   },
   safariViewControllerDidFinish(controller: SFSafariViewController): void {
     if (this.redirectResolve) {
