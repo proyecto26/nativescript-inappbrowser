@@ -27,7 +27,9 @@ export function getDefaultOptions(url, options) {
     ...options,
     url,
     dismissButtonStyle: options.dismissButtonStyle || 'close',
-    readerMode: options.readerMode !== undefined ? options.readerMode : false
+    readerMode: options.readerMode !== undefined ? options.readerMode : false,
+    animated: options.animated !== undefined ? options.animated : true,
+    modalEnabled: options.modalEnabled !== undefined ? options.modalEnabled : true
   };
 }
 

@@ -5,7 +5,6 @@ import Context = android.content.Context;
 import Browser = android.provider.Browser;
 import Pattern = java.util.regex.Pattern;
 import AssertionError = java.lang.AssertionError;
-import CustomTabsIntent = android.support.customtabs.CustomTabsIntent;
 
 import { Color } from 'tns-core-modules/color';
 import { ad } from 'tns-core-modules/utils/utils';
@@ -25,6 +24,14 @@ import {
   openAuthSessionPolyfillAsync,
   closeAuthSessionPolyfillAsync
 } from './InAppBrowser.common';
+
+declare let global: any;
+
+type Builder = androidx.browser.customtabs.CustomTabsIntent.Builder;
+const CustomTabsIntent = (useAndroidX() ? androidx.browser : android.support).customtabs.CustomTabsIntent;
+function useAndroidX() {
+  return global.androidx && global.androidx.browser;
+}
 
 type Animations = {
   startEnter: string,
@@ -77,8 +84,10 @@ class InAppBrowserModule extends java.lang.Object {
     const mOpenBrowserPromise = InAppBrowserModule.redirectResolve;
     if (mOpenBrowserPromise) {
       this.flowDidFinish();
-      const response: BrowserResult = { type: 'cancel' };
-      return Promise.resolve(response);
+      const result: BrowserResult = {
+        type: 'cancel'
+      };
+      return Promise.resolve(result);
     }
 
     this.currentActivity = androidApp.foregroundActivity || androidApp.startActivity;
@@ -135,6 +144,7 @@ class InAppBrowserModule extends java.lang.Object {
     if (options[InAppBrowserModule.KEY_FORCE_CLOSE_ON_REDIRECTION]) {
       customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
       customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
     }
 
     const intent = customTabsIntent.intent;
@@ -172,11 +182,15 @@ class InAppBrowserModule extends java.lang.Object {
 
     BROWSER_ACTIVITY_EVENTS.off('DismissedEvent');
 
-    const response: BrowserResult = { type: 'dismiss' };
-    InAppBrowserModule.redirectResolve(response);
+    const result: BrowserResult = {
+      type: 'dismiss'
+    };
+    InAppBrowserModule.redirectResolve(result);
     this.flowDidFinish();
 
-    this.currentActivity.startActivity(createDismissIntent(this.currentActivity));
+    this.currentActivity.startActivity(
+      createDismissIntent(this.currentActivity)
+    );
   }
 
   async openAuth(
@@ -226,7 +240,7 @@ class InAppBrowserModule extends java.lang.Object {
     }
   }
 
-  private applyAnimation(context: Context, builder: CustomTabsIntent.Builder, animations: Animations): void {
+  private applyAnimation(context: Context, builder: Builder, animations: Animations): void {
     const startEnterAnimationId = animations[InAppBrowserModule.KEY_ANIMATION_START_ENTER]
       ? this.resolveAnimationIdentifierIfNeeded(context, animations[InAppBrowserModule.KEY_ANIMATION_START_ENTER])
       : -1;

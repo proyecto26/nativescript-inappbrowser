@@ -39,20 +39,24 @@ export class HelloWorldModel extends Observable {
           preferredBarTintColor: '#453AA4',
           preferredControlTintColor: 'white',
           readerMode: false,
+          animated: false,
+          modalPresentationStyle: 'overFullScreen',
+          modalTransitionStyle: 'partialCurl',
+          modalEnabled: false,
           // Android Properties
           showTitle: true,
           toolbarColor: '#6200EE',
           secondaryToolbarColor: 'black',
           enableUrlBarHiding: true,
           enableDefaultShare: true,
-          forceCloseOnRedirection: false,
+          forceCloseOnRedirection: true,
           // Specify full animation resource identifier(package:anim/name)
           // or only resource name(in case of animation bundled with app).
           animations: {
             startEnter: 'slide_in_right',
             startExit: 'slide_out_left',
             endEnter: 'slide_in_left',
-            endExit: 'slide_out_right',
+            endExit: 'slide_out_right'
           },
           headers: {
             'my-custom-header': 'my custom header value'

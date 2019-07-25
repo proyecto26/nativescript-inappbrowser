@@ -11,13 +11,56 @@ type InAppBrowserOptions = {
   dismissButtonStyle?: 'done' | 'close' | 'cancel',
   preferredBarTintColor?: string,
   preferredControlTintColor?: string,
-  readerMode?: boolean
+  readerMode?: boolean,
+  animated?: boolean,
+  modalPresentationStyle?:
+    | 'fullScreen'
+    | 'pageSheet'
+    | 'formSheet'
+    | 'currentContext'
+    | 'custom'
+    | 'overFullScreen'
+    | 'overCurrentContext'
+    | 'popover'
+    | 'none',
+  modalTransitionStyle?:
+    | 'coverVertical'
+    | 'flipHorizontal'
+    | 'crossDissolve'
+    | 'partialCurl',
+  modalEnabled?: boolean
+};
+
+const getPresentationStyle = function (styleKey: string) {
+  const styles = {
+    fullScreen: UIModalPresentationStyle.FullScreen,
+    pageSheet: UIModalPresentationStyle.PageSheet,
+    formSheet: UIModalPresentationStyle.FormSheet,
+    currentContext: UIModalPresentationStyle.CurrentContext,
+    custom: UIModalPresentationStyle.Custom,
+    overFullScreen: UIModalPresentationStyle.OverFullScreen,
+    overCurrentContext: UIModalPresentationStyle.OverCurrentContext,
+    popover: UIModalPresentationStyle.Popover,
+    none: UIModalPresentationStyle.None
+  };
+  return styles[styleKey] || UIModalPresentationStyle.OverFullScreen;
+};
+
+const getTransitionStyle = function (styleKey: string) {
+  const styles = {
+    coverVertical: UIModalTransitionStyle.CoverVertical,
+    flipHorizontal: UIModalTransitionStyle.FlipHorizontal,
+    crossDissolve: UIModalTransitionStyle.CrossDissolve,
+    partialCurl: UIModalTransitionStyle.PartialCurl
+  };
+  return styles[styleKey] || UIModalTransitionStyle.CoverVertical;
 };
 
 const InAppBrowser = (<any>NSObject).extend({
   redirectResolve: null,
   redirectReject: null,
   authSession: <SFAuthenticationSession | ASWebAuthenticationSession> null,
+  animated: false,
   isAvailable(): Promise<boolean> {
     return Promise.resolve(ios.MajorVersion >= 9);
   },
@@ -26,10 +69,11 @@ const InAppBrowser = (<any>NSObject).extend({
     return new Promise(function (resolve, reject) {
       if (!self.initializeWebBrowser(resolve, reject)) return;
 
-      const options = getDefaultOptions(url, inAppBrowserOptions);
+      const options: InAppBrowserOptions = getDefaultOptions(url, inAppBrowserOptions);
+      self.animated = options.animated;
 
       const safariVC = SFSafariViewController.alloc().initWithURLEntersReaderIfAvailable(
-        NSURL.URLWithString(options.url),
+        NSURL.URLWithString(options['url']),
         options.readerMode
       );
       safariVC.delegate = self;
@@ -55,22 +99,33 @@ const InAppBrowser = (<any>NSObject).extend({
         }
       }
 
-      safariVC.modalPresentationStyle = UIModalPresentationStyle.OverFullScreen;
-      const safariHackVC = UINavigationController.alloc().initWithRootViewController(safariVC);
-      safariHackVC.setNavigationBarHiddenAnimated(true, false);
+      const ctrl = UIApplication.sharedApplication.keyWindow.rootViewController;
+      
+      if (options.modalEnabled) {
+        safariVC.modalPresentationStyle = getPresentationStyle(options.modalPresentationStyle);
+        if (options.animated) {
+          safariVC.modalTransitionStyle = getTransitionStyle(options.modalTransitionStyle);
+        }
 
-      const app = ios.getter(UIApplication, UIApplication.sharedApplication);
-      app.keyWindow.rootViewController.presentViewControllerAnimatedCompletion(safariHackVC, true, null);
+        const safariHackVC = UINavigationController.alloc().initWithRootViewController(safariVC);
+        safariHackVC.setNavigationBarHiddenAnimated(true, false);
+        ctrl.presentViewControllerAnimatedCompletion(safariHackVC, options.animated, null);
+      }
+      else {
+        ctrl.presentViewControllerAnimatedCompletion(safariVC, options.animated, null);
+      }
     });
   },
   close() {
     const self = this;
-    const app = ios.getter(UIApplication, UIApplication.sharedApplication);
-    app.keyWindow.rootViewController.dismissViewControllerAnimatedCompletion(true, function () {
-      self.redirectResolve({
-        type: 'dismiss'
-      });
-      self.flowDidFinish();
+    const ctrl = UIApplication.sharedApplication.keyWindow.rootViewController;
+    ctrl.dismissViewControllerAnimatedCompletion(self.animated, function () {
+      if (self.redirectResolve) {
+        self.redirectResolve({
+          type: 'dismiss'
+        });
+        self.flowDidFinish();
+      }
     });
   },
   async openAuth(
@@ -83,7 +138,9 @@ const InAppBrowser = (<any>NSObject).extend({
         if (!self.initializeWebBrowser(resolve, reject)) return;
 
         const url = NSURL.URLWithString(authUrl);
-        self.authSession = (ios.MajorVersion >= 12 ? ASWebAuthenticationSession : SFAuthenticationSession).alloc().initWithURLCallbackURLSchemeCompletionHandler(
+        self.authSession = (
+          ios.MajorVersion >= 12 ? ASWebAuthenticationSession : SFAuthenticationSession
+        ).alloc().initWithURLCallbackURLSchemeCompletionHandler(
           url,
           redirectUrl,
           function (callbackURL, error) {
@@ -129,6 +186,7 @@ const InAppBrowser = (<any>NSObject).extend({
     }
   },
   safariViewControllerDidFinish(controller: SFSafariViewController): void {
+    controller.dismissViewControllerAnimatedCompletion(this.animated, null);
     if (this.redirectResolve) {
       this.redirectResolve({
         type: 'cancel'
