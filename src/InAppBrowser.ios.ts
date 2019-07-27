@@ -186,15 +186,17 @@ const InAppBrowser = (<any>NSObject).extend({
     }
   },
   dismissWithoutAnimation(controller: SFSafariViewController): void {
-    const animationKey = 'dismissInAppBrowser';
-    const ctrl = UIApplication.sharedApplication.keyWindow.rootViewController;
     const transition = CATransition.animation();
     transition.duration = 0.0;
     transition.timingFunction = CAMediaTimingFunction.functionWithName(kCAMediaTimingFunctionEaseInEaseOut);
     transition.type = kCATransitionFade;
     transition.subtype = kCATransitionFromBottom;
+
     controller.view.alpha = 0.05;
     controller.view.frame = CGRectMake(0.0, 0.0, 0.5, 0.5);
+
+    const ctrl = UIApplication.sharedApplication.keyWindow.rootViewController;
+    const animationKey = 'dismissInAppBrowser';
     ctrl.view.layer.addAnimationForKey(transition, animationKey);
     ctrl.dismissViewControllerAnimatedCompletion(false, () => {
       ctrl.view.layer.removeAnimationForKey(animationKey);
