@@ -34,7 +34,7 @@ declare module 'nativescript-inappbrowser' {
       | 'crossDissolve'
       | 'partialCurl',
     modalEnabled?: boolean
-  }
+  };
 
   type InAppBrowserAndroidOptions = {
     showTitle?: boolean,
@@ -50,7 +50,7 @@ declare module 'nativescript-inappbrowser' {
       endExit: string
     },
     headers?: { [key: string]: string }
-  }
+  };
 
   export type InAppBrowserOptions = InAppBrowserAndroidOptions | InAppBrowseriOSOptions;
 

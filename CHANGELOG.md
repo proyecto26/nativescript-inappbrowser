@@ -27,6 +27,7 @@ in case of vulnerabilities.
 - Activating Open Collective and Create **CONTRIBUTING.md** to see how to contribute.
 - Added `animated`, `modalPresentationStyle` and `modalTransitionStyle` properties for iOS options.
 - Present the **SafariViewController** modally or as push instead using the `modalEnabled` property.
+- Add workaround to dismiss **SafariViewController** without animation.
 
 ### BREAKING CHANGES
 
