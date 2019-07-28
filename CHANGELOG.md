@@ -21,6 +21,8 @@ in case of vulnerabilities.
 -->
 
 ## [Unreleased]
+
+## [2.0.0] - 2019-07-27
 ### Added
 - **Android:** Migrate to AndroidX by [@jdnichollsc].
 - Include a **CHANGELOG.md** to see the history of the changes of the project.
@@ -40,5 +42,6 @@ in case of vulnerabilities.
 - Methods to open and close external urls to authenticate the user **(openAuth, closeAuth)** using deep linking.
 - `isAvailable` method to detect if the device supports the plugin.
 
-[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/proyecto26/react-native-inappbrowser/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/proyecto26/nativescript-inappbrowser/releases/tag/v1.0.0
