@@ -24,7 +24,7 @@ in case of vulnerabilities.
 
 ## [2.0.0] - 2019-07-27
 ### Added
-- **Android:** Migrate to AndroidX by [@jdnichollsc].
+- **Android:** Migrate to AndroidX by [@jdnichollsc](https://github.com/jdnichollsc) ([3e7ca9a](https://github.com/proyecto26/nativescript-inappbrowser/commit/3e7ca9a6f41f182a62b61435ef13c9c5fa043978)).
 - Include a **CHANGELOG.md** to see the history of the changes of the project.
 - Activating Open Collective and Create **CONTRIBUTING.md** to see how to contribute.
 - Added `animated`, `modalPresentationStyle` and `modalTransitionStyle` properties for iOS options.
