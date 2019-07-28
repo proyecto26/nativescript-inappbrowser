@@ -43,5 +43,5 @@ in case of vulnerabilities.
 - `isAvailable` method to detect if the device supports the plugin.
 
 [Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.0.0...HEAD
-[2.0.0]: https://github.com/proyecto26/react-native-inappbrowser/compare/v1.0.0...v2.0.0
+[2.0.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/proyecto26/nativescript-inappbrowser/releases/tag/v1.0.0
