@@ -89,9 +89,9 @@ export class HelloWorldModel extends Observable {
   }
 
   tryDeepLinking = async () => {
-    const redirectToURL = `https://proyecto26.github.io/react-native-inappbrowser/`;
+    const loginUrl = `https://proyecto26.github.io/react-native-inappbrowser/`;
     const redirectUrl = this.getDeepLink('home');
-    const url = `${redirectToURL}?redirect_url=${encodeURIComponent(redirectUrl)}`;
+    const url = `${loginUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`;
     if (await InAppBrowser.isAvailable()) {
       const result = await InAppBrowser.openAuth(url, redirectUrl);
       await this.sleep(800);
