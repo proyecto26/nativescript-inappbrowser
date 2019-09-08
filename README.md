@@ -5,14 +5,17 @@
   <a href="https://npmjs.org/package/nativescript-inappbrowser">
     <img src="http://img.shields.io/npm/v/nativescript-inappbrowser.svg" alt="Current npm package version" />
   </a>
+  <a href="https://travis-ci.org/proyecto26/nativescript-inappbrowser">
+    <img src="https://travis-ci.org/proyecto26/nativescript-inappbrowser.svg?branch=master" alt="Build Status" />
+  </a>
   <a href="https://github.com/proyecto26/nativescript-inappbrowser/graphs/commit-activity">
     <img src="https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg" alt="Maintenance" />
   </a>
+  <a href="https://tidelift.com/subscription/pkg/npm-nativescript-inappbrowser?utm_source=npm-nativescript-inappbrowser&utm_medium=referral&utm_campaign=readme">
+    <img src="https://tidelift.com/badges/package/npm/nativescript-inappbrowser" alt="Tidelift Subscription" />
+  </a>
   <a href="https://opencollective.com/proyecto26" alt="Financial Contributors on Open Collective">
     <img src="https://opencollective.com/proyecto26/all/badge.svg?label=financial+contributors" />
-  </a>
-  <a href="https://travis-ci.org/proyecto26/nativescript-inappbrowser">
-    <img src="https://travis-ci.org/proyecto26/nativescript-inappbrowser.svg?branch=master" alt="Build Status" />
   </a>
   <a href="https://npmjs.org/package/nativescript-inappbrowser">
     <img src="http://img.shields.io/npm/dm/nativescript-inappbrowser.svg" alt="Downloads" />
