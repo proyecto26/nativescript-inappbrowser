@@ -159,7 +159,7 @@ const classMembers = {
           }
         );
         if(ios.MajorVersion >= 13) {
-          self.authSession.start();
+          self.authSession.presentationContextProvider = self;
         }
         self.authSession.start();
       });
