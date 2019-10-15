@@ -56,7 +56,7 @@ const getTransitionStyle = function (styleKey: string) {
   return styles[styleKey] || UIModalTransitionStyle.CoverVertical;
 };
 
-const InAppBrowser = (<any>NSObject).extend({
+const classMembers = {
   redirectResolve: null,
   redirectReject: null,
   authSession: <SFAuthenticationSession | ASWebAuthenticationSession> null,
@@ -158,6 +158,9 @@ const InAppBrowser = (<any>NSObject).extend({
             self.flowDidFinish();
           }
         );
+        if(ios.MajorVersion >= 13) {
+          self.authSession.start();
+        }
         self.authSession.start();
       });
     }
@@ -184,6 +187,9 @@ const InAppBrowser = (<any>NSObject).extend({
     else {
       this.close();
     }
+  },
+  presentationAnchorForWebAuthenticationSession: function (session: ASWebAuthenticationSession): UIWindow {
+    return UIApplication.sharedApplication.keyWindow;
   },
   dismissWithoutAnimation(controller: SFSafariViewController): void {
     const transition = CATransition.animation();
@@ -229,8 +235,18 @@ const InAppBrowser = (<any>NSObject).extend({
     this.redirectReject = reject;
     return true;
   }
-}, {
-  protocols: [SFSafariViewControllerDelegate]
-});
+};
+
+const nativeSignatures =
+  ios.MajorVersion >= 13
+    ? {
+        protocols: [
+          SFSafariViewControllerDelegate,
+          ASWebAuthenticationPresentationContextProviding
+        ]
+      }
+    : { protocols: [SFSafariViewControllerDelegate] };
+
+const InAppBrowser = (<any>NSObject).extend(classMembers, nativeSignatures);
 
 export default InAppBrowser.new();
