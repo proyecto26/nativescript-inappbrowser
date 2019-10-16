@@ -22,6 +22,10 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [2.0.1] - 2019-10-15
+### Fixed
+- **iOS:** Conform to the new iOS 13 API for ASWebAuthenticationSession. ASWebAuthenticationSession now requires a delegate that provides a display context for the authentication session. [#14](https://github.com/proyecto26/nativescript-inappbrowser/issues/14) 
+
 ## [2.0.0] - 2019-07-27
 ### Added
 - **Android:** Migrate to AndroidX by [@jdnichollsc](https://github.com/jdnichollsc) ([3e7ca9a](https://github.com/proyecto26/nativescript-inappbrowser/commit/3e7ca9a6f41f182a62b61435ef13c9c5fa043978)).
