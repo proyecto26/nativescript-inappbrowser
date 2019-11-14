@@ -18,6 +18,8 @@
 		"tsc": "npm i && tsc",
 		"build": "npm run tsc && npm run build.native",
 		"build.native": "node scripts/build-native.js",
+		"test.android": "npm i && npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch",
+		"test.ios": "npm i && npm run tsc && npm run tslint && cd ../demo && tns build ios && tns test ios --justlaunch",
 		"tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"",
 		"ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/node_modules/**' --exclude '**/platforms/**'",
 		"prepack": "npm run build.native",
