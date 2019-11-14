@@ -40,9 +40,10 @@ export class HelloWorldModel extends Observable {
           preferredControlTintColor: 'white',
           readerMode: false,
           animated: true,
-          modalPresentationStyle: 'overFullScreen',
+          modalPresentationStyle: 'fullScreen',
           modalTransitionStyle: 'partialCurl',
           modalEnabled: true,
+          enableBarCollapsing: false,
           // Android Properties
           showTitle: true,
           toolbarColor: '#6200EE',

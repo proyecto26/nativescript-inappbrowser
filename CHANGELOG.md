@@ -22,9 +22,15 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
-## [2.0.1] - 2019-10-15
+## [2.1.0] - 2019-11-13
+### Added
+- Added support for `automatic` modal presentation style from **iOS**.
+- Added `enableBarCollapsing` option to determines whether the browser's tool bars will collapse or not from **iOS**.
+
 ### Fixed
-- **iOS:** Conform to the new iOS 13 API for ASWebAuthenticationSession. ASWebAuthenticationSession now requires a delegate that provides a display context for the authentication session. [#14](https://github.com/proyecto26/nativescript-inappbrowser/issues/14) 
+- Fixed issue with `ASWebAuthenticationSession` to support **iOS 13** by [@cgoboncan-ebsi](https://github.com/cgoboncan-ebsi) [#14](https://github.com/proyecto26/nativescript-inappbrowser/issues/14).
+- Fixed **Android** Activity issue closing the browser and restoring the state by using `onSaveInstanceState`
+- Fixed Android auth redirection by using `AndroidApplication.activityResumedEvent`.
 
 ## [2.0.0] - 2019-07-27
 ### Added
@@ -46,6 +52,7 @@ in case of vulnerabilities.
 - Methods to open and close external urls to authenticate the user **(openAuth, closeAuth)** using deep linking.
 - `isAvailable` method to detect if the device supports the plugin.
 
-[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/proyecto26/nativescript-inappbrowser/releases/tag/v1.0.0

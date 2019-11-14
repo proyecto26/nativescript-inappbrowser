@@ -5,12 +5,12 @@
 		To read more about android permissions go to https://developer.android.com/guide/topics/permissions/index.html -->
 	<!--EXAMPLE: uses-permission android:name="android.permission.INTERNET"/> -->
 
-    <uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.INTERNET" />
 
-    <application>
-        <activity
-            android:name="com.proyecto26.inappbrowser.ChromeTabsManagerActivity"
-            android:exported="true">
-        </activity>
-    </application>
+	<application>
+		<activity
+			android:name="com.proyecto26.inappbrowser.ChromeTabsManagerActivity"
+			android:exported="true">
+		</activity>
+	</application>
 </manifest>

@@ -4,6 +4,8 @@ import {
   android,
   resumeEvent,
   ApplicationEventData,
+  AndroidApplication,
+  AndroidActivityEventData
 } from 'tns-core-modules/application';
 
 export type RedirectEvent = {
@@ -61,7 +63,35 @@ export function openAuthSessionPolyfillAsync(
     options?: any,
   ) => Promise<BrowserResult>
 ): Promise<AuthSessionResult> {
-  return Promise.race([_waitForRedirectAsync(returnUrl), open(startUrl, options)]);
+  return Promise.race([
+    open(startUrl, options).then(function(result: AuthSessionResult) {
+      return _checkResultAndReturnUrl(returnUrl, result);
+    }),
+    _waitForRedirectAsync(returnUrl)
+  ]);
+}
+
+function _checkResultAndReturnUrl(
+  returnUrl: string,
+  result: AuthSessionResult
+): Promise<AuthSessionResult> {
+  return new Promise(function(resolve) {
+    if (android) {
+      android.once(
+        AndroidApplication.activityResumedEvent,
+        function(args: AndroidActivityEventData) {
+          const url = '' + args.activity.getIntent().getData();
+          if (url.startsWith(returnUrl)) {
+            resolve({ url: url, type: 'success' });
+          } else {
+            resolve(result);
+          }
+        }
+      );
+    } else {
+      resolve(result);
+    }
+  });
 }
 
 export function closeAuthSessionPolyfillAsync(): void {
