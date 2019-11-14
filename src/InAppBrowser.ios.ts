@@ -135,6 +135,8 @@ class InAppBrowserModule extends NSObject {
         }
         if (ios.MajorVersion >= 13) {
           safariHackVC.modalInPresentation = true;
+          if (safariHackVC['setModalInPresentation'])
+            safariHackVC['setModalInPresentation'](true);
         }
         safariHackVC.presentationController.delegate = this;
 
@@ -186,7 +188,7 @@ class InAppBrowserModule extends NSObject {
           }
         );
         if (ios.MajorVersion >= 13) {
-          this.authSession['presentationContextProvider'] = this;
+          (this.authSession as ASWebAuthenticationSession).presentationContextProvider = this;
         }
         this.authSession.start();
       });
