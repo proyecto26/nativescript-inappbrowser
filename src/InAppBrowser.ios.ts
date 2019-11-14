@@ -60,13 +60,14 @@ const getTransitionStyle = function (styleKey: string): UIModalTransitionStyle {
   return styles[styleKey] !== undefined ? styles[styleKey] : UIModalTransitionStyle.CoverVertical;
 };
 
-const protocols = [
+const DEFAULT_PROTOCOLS = [
   SFSafariViewControllerDelegate,
   UIAdaptivePresentationControllerDelegate
 ];
-if (ios.MajorVersion >= 13) {
-  protocols.push(ASWebAuthenticationPresentationContextProviding);
-}
+const protocols = ios.MajorVersion >= 13 ? [
+  ...DEFAULT_PROTOCOLS,
+  ASWebAuthenticationPresentationContextProviding
+] : DEFAULT_PROTOCOLS;
 
 class InAppBrowserModule extends NSObject {
 
