@@ -265,4 +265,4 @@ class InAppBrowserModule extends NSObject {
   }
 }
 
-export default InAppBrowserModule.new();
+export default InAppBrowserModule.new() as InAppBrowserModule;
