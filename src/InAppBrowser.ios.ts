@@ -68,55 +68,58 @@ if (ios.MajorVersion >= 13) {
   protocols.push(ASWebAuthenticationPresentationContextProviding);
 }
 
-const InAppBrowser = (<any>NSObject).extend({
-  safariVC: <SFSafariViewController> null,
-  redirectResolve: null,
-  redirectReject: null,
-  authSession: <SFAuthenticationSession | ASWebAuthenticationSession> null,
-  animated: false,
-  isAvailable(): Promise<boolean> {
+class InAppBrowserModule extends NSObject {
+
+  public static ObjCProtocols = protocols;
+
+  private safariVC: SFSafariViewController = null;
+  private redirectResolve = null;
+  private redirectReject = null;
+  private authSession: SFAuthenticationSession | ASWebAuthenticationSession = null;
+  private animated = false;
+
+  public isAvailable(): Promise<boolean> {
     return Promise.resolve(ios.MajorVersion >= 9);
-  },
-  open(authURL: string, inAppBrowserOptions: InAppBrowserOptions = {}): Promise<BrowserResult> {
-    const self = this;
-    return new Promise(function (resolve, reject) {
-      if (!self.initializeWebBrowser(resolve, reject)) return;
+  }
+  public open(authURL: string, inAppBrowserOptions: InAppBrowserOptions = {}): Promise<BrowserResult> {
+    return new Promise((resolve, reject) => {
+      if (!this.initializeWebBrowser(resolve, reject)) return;
 
       const options: InAppBrowserOptions = getDefaultOptions(authURL, inAppBrowserOptions);
-      self.animated = options.animated;
+      this.animated = options.animated;
 
       const url = NSURL.URLWithString(options['url']);
       if (ios.MajorVersion >= 11) {
         const config = SFSafariViewControllerConfiguration.alloc().init();
         config.barCollapsingEnabled = options.enableBarCollapsing;
         config.entersReaderIfAvailable = options.readerMode;
-        self.safariVC = SFSafariViewController.alloc().initWithURLConfiguration(url, config);
+        this.safariVC = SFSafariViewController.alloc().initWithURLConfiguration(url, config);
       } else {
-        self.safariVC = SFSafariViewController.alloc().initWithURLEntersReaderIfAvailable(
+        this.safariVC = SFSafariViewController.alloc().initWithURLEntersReaderIfAvailable(
           url,
           options.readerMode
         );
       }
-      self.safariVC.delegate = self;
+      this.safariVC.delegate = this;
 
       if (ios.MajorVersion >= 11) {
         if (options.dismissButtonStyle === 'done') {
-          self.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Done;
+          this.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Done;
         }
         else if (options.dismissButtonStyle === 'close') {
-          self.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Close;
+          this.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Close;
         }
         else if (options.dismissButtonStyle === 'cancel') {
-          self.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Cancel;
+          this.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Cancel;
         }
       }
 
       if (ios.MajorVersion >= 10) {
         if (options.preferredBarTintColor) {
-          self.safariVC.preferredBarTintColor = new Color(options.preferredBarTintColor).ios;
+          this.safariVC.preferredBarTintColor = new Color(options.preferredBarTintColor).ios;
         }
         if (options.preferredControlTintColor) {
-          self.safariVC.preferredControlTintColor = new Color(options.preferredControlTintColor).ios;
+          this.safariVC.preferredControlTintColor = new Color(options.preferredControlTintColor).ios;
         }
       }
 
@@ -124,82 +127,80 @@ const InAppBrowser = (<any>NSObject).extend({
 
       if (options.modalEnabled) {
         // This is a hack to present the SafariViewController modally
-        const safariHackVC = UINavigationController.alloc().initWithRootViewController(self.safariVC);
+        const safariHackVC = UINavigationController.alloc().initWithRootViewController(this.safariVC);
         safariHackVC.setNavigationBarHiddenAnimated(true, false);
         safariHackVC.modalPresentationStyle = getPresentationStyle(options.modalPresentationStyle);
-        if (self.animated) {
+        if (this.animated) {
           safariHackVC.modalTransitionStyle = getTransitionStyle(options.modalTransitionStyle);
         }
         if (ios.MajorVersion >= 13) {
           safariHackVC.modalInPresentation = true;
         }
-        safariHackVC.presentationController.delegate = self;
+        safariHackVC.presentationController.delegate = this;
 
         ctrl.presentViewControllerAnimatedCompletion(safariHackVC, options.animated, null);
       }
       else {
-        ctrl.presentViewControllerAnimatedCompletion(self.safariVC, options.animated, null);
+        ctrl.presentViewControllerAnimatedCompletion(this.safariVC, options.animated, null);
       }
     });
-  },
-  close() {
-    const self = this;
+  }
+  public close() {
     const ctrl = UIApplication.sharedApplication.keyWindow.rootViewController;
-    ctrl.dismissViewControllerAnimatedCompletion(self.animated, function () {
-      if (self.redirectResolve) {
-        self.redirectResolve({
+    ctrl.dismissViewControllerAnimatedCompletion(this.animated, () => {
+      if (this.redirectResolve) {
+        this.redirectResolve({
           type: 'dismiss'
         });
-        self.flowDidFinish();
+        this.flowDidFinish();
       }
     });
-  },
-  async openAuth(
+  }
+  public async openAuth(
     authUrl: string,
     redirectUrl: string
   ): Promise<AuthSessionResult> {
-    const self = this;
     if (ios.MajorVersion >= 11) {
-      return new Promise<AuthSessionResult>(function (resolve, reject) {
-        if (!self.initializeWebBrowser(resolve, reject)) return;
+      return new Promise<AuthSessionResult>((resolve, reject) => {
+        if (!this.initializeWebBrowser(resolve, reject)) return;
 
         const url = NSURL.URLWithString(authUrl);
-        self.authSession = (
+        this.authSession = (
           ios.MajorVersion >= 12 ? ASWebAuthenticationSession : SFAuthenticationSession
         ).alloc().initWithURLCallbackURLSchemeCompletionHandler(
           url,
           redirectUrl,
-          function (callbackURL, error) {
+          (callbackURL, error) => {
             if (!error) {
-              self.redirectResolve({
+              this.redirectResolve({
                 type: 'success',
                 url: callbackURL.absoluteString
               });
             }
             else {
-              self.redirectResolve({
+              this.redirectResolve({
                 type: 'cancel'
               });
             }
-            self.flowDidFinish();
+            this.flowDidFinish();
           }
         );
         if (ios.MajorVersion >= 13) {
-          self.authSession.presentationContextProvider = self;
+          this.authSession['presentationContextProvider'] = this;
         }
-        self.authSession.start();
+        this.authSession.start();
       });
     }
     else {
-      self.flowDidFinish();
+      this.flowDidFinish();
       const response: AuthSessionResult = {
         type: 'cancel',
         message: 'openAuth requires iOS 11 or greater'
       };
       return Promise.resolve(response);
     }
-  },
-  closeAuth() {
+  }
+  public closeAuth() {
     if (ios.MajorVersion >= 11) {
       const authSession: SFAuthenticationSession | ASWebAuthenticationSession = this.authSession;
       authSession.cancel();
@@ -213,11 +214,11 @@ const InAppBrowser = (<any>NSObject).extend({
     else {
       this.close();
     }
-  },
-  presentationAnchorForWebAuthenticationSession: function (session: ASWebAuthenticationSession): UIWindow {
+  }
+  public presentationAnchorForWebAuthenticationSession(session: ASWebAuthenticationSession): UIWindow {
     return UIApplication.sharedApplication.keyWindow;
-  },
-  dismissWithoutAnimation(controller: SFSafariViewController): void {
+  }
+  private dismissWithoutAnimation(controller: SFSafariViewController): void {
     const transition = CATransition.animation();
     transition.duration = 0;
     transition.timingFunction = CAMediaTimingFunction.functionWithName(kCAMediaTimingFunctionLinear);
@@ -233,8 +234,8 @@ const InAppBrowser = (<any>NSObject).extend({
     ctrl.dismissViewControllerAnimatedCompletion(false, () => {
       ctrl.view.layer.removeAnimationForKey(animationKey);
     });
-  },
-  safariViewControllerDidFinish(
+  }
+  public safariViewControllerDidFinish(
     controller: SFSafariViewController
   ): void {
     if (!this.animated) {
@@ -246,14 +247,14 @@ const InAppBrowser = (<any>NSObject).extend({
       });
       this.flowDidFinish();
     }
-  },
-
-  flowDidFinish() {
+  }
+  private flowDidFinish() {
     this.safariVC = null;
     this.redirectResolve = null;
     this.redirectReject = null;
-  },
-  initializeWebBrowser(resolve, reject): boolean {
+  }
+
+  private initializeWebBrowser (resolve, reject) {
     if (this.redirectResolve) {
       reject('Another InAppBrowser is already being presented.');
       return false;
@@ -262,8 +263,6 @@ const InAppBrowser = (<any>NSObject).extend({
     this.redirectReject = reject;
     return true;
   }
-}, {
-  protocols: protocols
-});
+}
 
-export default InAppBrowser.new();
+export default InAppBrowserModule.new();
