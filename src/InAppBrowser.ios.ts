@@ -45,8 +45,8 @@ const getPresentationStyle = function (styleKey: string): UIModalPresentationSty
     overCurrentContext: UIModalPresentationStyle.OverCurrentContext,
     popover: UIModalPresentationStyle.Popover
   };
-  const defaultModalPresentationStyle = ios.MajorVersion >= 13 ? 
-  UIModalPresentationStyle.Automatic : UIModalPresentationStyle.FullScreen;
+  const defaultModalPresentationStyle = ios.MajorVersion >= 13 ?
+    UIModalPresentationStyle.Automatic : UIModalPresentationStyle.FullScreen;
   return styles[styleKey] !== undefined ? styles[styleKey] : defaultModalPresentationStyle;
 };
 
@@ -184,7 +184,7 @@ const InAppBrowser = (<any>NSObject).extend({
             self.flowDidFinish();
           }
         );
-        if(ios.MajorVersion >= 13) {
+        if (ios.MajorVersion >= 13) {
           self.authSession.presentationContextProvider = self;
         }
         self.authSession.start();
