@@ -77,7 +77,7 @@ function _checkResultAndReturnUrl(
   result: AuthSessionResult
 ): Promise<AuthSessionResult> {
   return new Promise(function(resolve) {
-    if (android) {
+    if (android && result.type !== 'cancel') {
       android.once(
         AndroidApplication.activityResumedEvent,
         function(args: AndroidActivityEventData) {
