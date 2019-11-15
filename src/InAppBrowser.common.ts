@@ -24,14 +24,15 @@ export type RedirectResult = {
 
 export type AuthSessionResult = RedirectResult | BrowserResult;
 
-export function getDefaultOptions(url, options) {
+export function getDefaultOptions(url: string, options: any) {
   return {
     ...options,
     url,
     dismissButtonStyle: options.dismissButtonStyle || 'close',
-    readerMode: options.readerMode !== undefined ? options.readerMode : false,
+    readerMode: !!options.readerMode,
     animated: options.animated !== undefined ? options.animated : true,
-    modalEnabled: options.modalEnabled !== undefined ? options.modalEnabled : true
+    modalEnabled: options.modalEnabled !== undefined ? options.modalEnabled : true,
+    enableBarCollapsing: !!options.enableBarCollapsing
   };
 }
 
