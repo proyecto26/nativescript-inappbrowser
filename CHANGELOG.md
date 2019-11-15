@@ -22,6 +22,10 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [2.2.0] - 2019-11-14
+### Added
+- Validate if the **type** of the auth result is different to `cancel` before to check the url of the last redirection from **Android**.
+
 ## [2.1.1] - 2019-11-14
 ### Fixed
 - Fixed issue about `headers` option not working from **Android** [#16](https://github.com/proyecto26/nativescript-inappbrowser/issues/16).
@@ -56,7 +60,8 @@ in case of vulnerabilities.
 - Methods to open and close external urls to authenticate the user **(openAuth, closeAuth)** using deep linking.
 - `isAvailable` method to detect if the device supports the plugin.
 
-[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.1.1...HEAD
+[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v1.0.0...v2.0.0
