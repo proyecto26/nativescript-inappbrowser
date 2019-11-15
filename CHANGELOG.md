@@ -22,6 +22,9 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Fixed
+- Fixed issue about `headers` option not working from **Android** [#16](https://github.com/proyecto26/nativescript-inappbrowser/issues/16).
+
 ## [2.1.0] - 2019-11-13
 ### Added
 - Added support for `automatic` modal presentation style from **iOS**.

@@ -95,7 +95,7 @@ class InAppBrowserModule extends java.lang.Object {
       return Promise.reject(new Error(InAppBrowserModule.ERROR_CODE));
     }
 
-    const options = getDefaultOptions(url, inAppBrowserOptions);
+    const options: InAppBrowserOptions = getDefaultOptions(url, inAppBrowserOptions);
 
     const builder = new CustomTabsIntent.Builder();
     if (options[InAppBrowserModule.KEY_TOOLBAR_COLOR]) {
@@ -131,7 +131,7 @@ class InAppBrowserModule extends java.lang.Object {
     const customTabsIntent = builder.build();
 
     const keyHeaders = options[InAppBrowserModule.KEY_HEADERS];
-    if (keyHeaders && keyHeaders.length) {
+    if (keyHeaders) {
       const headers = new Bundle();
       for (const key in keyHeaders) {
         if (keyHeaders.hasOwnProperty(key)) {
