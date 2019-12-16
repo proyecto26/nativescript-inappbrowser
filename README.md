@@ -142,6 +142,37 @@ import InAppBrowser from 'nativescript-inappbrowser'
 ...
 ```
 
+### Authentication Flow using Deep Linking
+
+Define your app scheme and replace `my-scheme` and `my-host` with your info.
+
+- Enable deep linking (Android) - **[AndroidManifest.xml](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/Android/src/main/AndroidManifest.xml#L45)**
+```
+<intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data android:scheme="my-scheme" android:host="my-host" android:pathPrefix="" />
+</intent-filter>
+```
+
+- Enable deep linking (iOS) - **[Info.plist](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/iOS/Info.plist#L28)**
+```
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleURLName</key>
+    <string>my-scheme</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>my-scheme</string>
+    </array>
+  </dict>
+</array>
+```
+
 ### Authentication
 
 Using in-app browser tabs (like SFAuthenticationSession/ASWebAuthenticationSession and Android Custom Tabs) where available. Embedded user-agents, known as web-views (like UIWebView and WKWebView), are explicitly not supported due to the usability and security reasons documented in [Section 8.12 of RFC 8252](https://tools.ietf.org/html/rfc8252#section-8.12).
