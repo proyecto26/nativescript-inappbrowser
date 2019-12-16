@@ -144,7 +144,8 @@ import InAppBrowser from 'nativescript-inappbrowser'
 
 ### Authentication Flow using Deep Linking
 
-Define your app scheme and replace `my-scheme` and `my-host` with your info.
+In order to redirect back to your application from a web browser, you must specify a unique URI to your app. To do this,
+define your app scheme and replace `my-scheme` and `my-host` with your info.
 
 - Enable deep linking (Android) - **[AndroidManifest.xml](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/Android/src/main/AndroidManifest.xml#L45)**
 ```
