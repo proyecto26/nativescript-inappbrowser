@@ -66,6 +66,7 @@ Property       | Description
 `modalTransitionStyle` (String)      | The transition style to use when presenting the view controller. [`coverVertical`/`flipHorizontal`/`crossDissolve`/`partialCurl`]
 `modalEnabled` (Boolean)             | Present the **SafariViewController** modally or as push instead. [`true`/`false`]
 `enableBarCollapsing` (Boolean)      | Determines whether the browser's tool bars will collapse or not. [`true`/`false`]
+`ephemeralWebSession` (Boolean)      | Prevent re-use cookies of previous session (openAuth only) [`true`/`false`]
 
 ### Android Options
 Property       | Description
@@ -141,6 +142,86 @@ import InAppBrowser from 'nativescript-inappbrowser'
   }
 ...
 ```
+
+### Authentication Flow using Deep Linking
+
+In order to redirect back to your application from a web browser, you must specify a unique URI to your app. To do this,
+define your app scheme and replace `my-scheme` and `my-host` with your info.
+
+- Enable deep linking (Android) - **[AndroidManifest.xml](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/Android/src/main/AndroidManifest.xml#L41)**
+```
+<intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data android:scheme="my-scheme" android:host="my-host" android:pathPrefix="" />
+</intent-filter>
+```
+
+- Enable deep linking (iOS) - **[Info.plist](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/iOS/Info.plist#L21)**
+```
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleURLName</key>
+    <string>my-scheme</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>my-scheme</string>
+    </array>
+  </dict>
+</array>
+```
+
+- utilities.ts
+```javascript
+import { android } from "tns-core-modules/application";
+export const getDeepLink = (path = "") => {
+  const scheme = 'my-scheme';
+  const prefix = android ? `${scheme}://my-host/` : `${scheme}://`;
+  return prefix + path;
+}
+```
+
+- home-page.ts
+```javascript
+import { openUrl } from 'tns-core-modules/utils/utils';
+import InAppBrowser from 'nativescript-inappbrowser';
+import { getDeepLink } from './utilities';
+...
+  async onLogin() {
+    const deepLink = getDeepLink("callback")
+    const url = `https://my-auth-login-page.com?redirect_uri=${deepLink}`
+    try {
+      if (await InAppBrowser.isAvailable()) {
+        InAppBrowser.openAuth(url, deepLink, {
+          // iOS Properties
+          ephemeralWebSession: false,
+          // Android Properties
+          showTitle: false,
+          enableUrlBarHiding: true,
+          enableDefaultShare: false
+        }).then((response) => {
+          if (
+            response.type === 'success' &&
+            response.url
+          ) {
+            openUrl(response.url)
+          }
+        })
+      } else openUrl(url)
+    } catch (error) {
+      openUrl(url)
+    }
+  }
+...
+```
+
+### Authentication
+
+Using in-app browser tabs (like SFAuthenticationSession/ASWebAuthenticationSession and Android Custom Tabs) where available. Embedded user-agents, known as web-views (like UIWebView and WKWebView), are explicitly not supported due to the usability and security reasons documented in [Section 8.12 of RFC 8252](https://tools.ietf.org/html/rfc8252#section-8.12).
 
 ## Credits 👍
 * **React Native InAppBrowser:** [InAppBrowser for React Native](https://github.com/proyecto26/react-native-inappbrowser)

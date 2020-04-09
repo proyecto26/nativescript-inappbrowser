@@ -22,6 +22,11 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [2.3.0] - 2020-04-08
+### Added
+- Added `ephemeralWebSession` option to supports `ephemeralWebBrowserSession` on iOS 13.
+- Fix issue loading initial url from Android resume event for authentication purposes.
+
 ## [2.2.0] - 2019-11-14
 ### Added
 - Validate if the **type** of the auth result is different to `cancel` before to check the url of the last redirection from **Android**.
@@ -60,7 +65,8 @@ in case of vulnerabilities.
 - Methods to open and close external urls to authenticate the user **(openAuth, closeAuth)** using deep linking.
 - `isAvailable` method to detect if the device supports the plugin.
 
-[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.0.0...v2.1.0

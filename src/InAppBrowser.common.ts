@@ -1,12 +1,8 @@
-import {
-  on as onEvent,
-  off as offEvent,
-  android,
-  resumeEvent,
-  ApplicationEventData,
-  AndroidApplication,
-  AndroidActivityEventData
-} from 'tns-core-modules/application';
+export enum BROWSER_TYPES {
+  CANCEL = 'cancel',
+  DISMISS = 'dismiss',
+  SUCCESS = 'success'
+}
 
 export type RedirectEvent = {
   url: 'string'
@@ -34,70 +30,4 @@ export function getDefaultOptions(url: string, options: any) {
     modalEnabled: options.modalEnabled !== undefined ? options.modalEnabled : true,
     enableBarCollapsing: !!options.enableBarCollapsing
   };
-}
-
-let _redirectHandler: (args: ApplicationEventData) => void;
-
-function _waitForRedirectAsync(returnUrl: string): Promise<RedirectResult> {
-  return new Promise(resolve => {
-    _redirectHandler = (args: ApplicationEventData) => {
-      let url = '';
-      if (android) {
-        const currentActivity = args.object.foregroundActivity || args.object.startActivity;
-        url += currentActivity.getIntent().getData();
-      }
-      if (url.startsWith(returnUrl)) {
-        resolve({ url: url, type: 'success' });
-      }
-    };
-    onEvent(resumeEvent, _redirectHandler);
-  });
-}
-
-/* Android polyfill for AuthenticationSession flow */
-export function openAuthSessionPolyfillAsync(
-  startUrl: string,
-  returnUrl: string,
-  options: any,
-  open: (
-    url: string,
-    options?: any,
-  ) => Promise<BrowserResult>
-): Promise<AuthSessionResult> {
-  return Promise.race([
-    open(startUrl, options).then(function(result: AuthSessionResult) {
-      return _checkResultAndReturnUrl(returnUrl, result);
-    }),
-    _waitForRedirectAsync(returnUrl)
-  ]);
-}
-
-function _checkResultAndReturnUrl(
-  returnUrl: string,
-  result: AuthSessionResult
-): Promise<AuthSessionResult> {
-  return new Promise(function(resolve) {
-    if (android && result.type !== 'cancel') {
-      android.once(
-        AndroidApplication.activityResumedEvent,
-        function(args: AndroidActivityEventData) {
-          const url = '' + args.activity.getIntent().getData();
-          if (url.startsWith(returnUrl)) {
-            resolve({ url: url, type: 'success' });
-          } else {
-            resolve(result);
-          }
-        }
-      );
-    } else {
-      resolve(result);
-    }
-  });
-}
-
-export function closeAuthSessionPolyfillAsync(): void {
-  if (_redirectHandler) {
-    offEvent(resumeEvent, _redirectHandler);
-    _redirectHandler = null;
-  }
 }

@@ -67,7 +67,7 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
       switch (this.resultType) {
         case 'cancel':
           BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity closed');
-          BROWSER_ACTIVITY_EVENTS.set('resultType', 'cancel');
+          BROWSER_ACTIVITY_EVENTS.set('resultType', this.resultType);
           break;
         default:
           BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity destroyed');

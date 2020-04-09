@@ -20,10 +20,13 @@ import {
 import {
   BrowserResult,
   AuthSessionResult,
-  getDefaultOptions,
+  getDefaultOptions
+} from './InAppBrowser.common';
+
+import {
   openAuthSessionPolyfillAsync,
   closeAuthSessionPolyfillAsync
-} from './InAppBrowser.common';
+} from './utils.android';
 
 declare let global: any;
 
@@ -80,7 +83,10 @@ class InAppBrowserModule extends java.lang.Object {
     return Promise.resolve(true);
   }
 
-  open(url: string, inAppBrowserOptions: InAppBrowserOptions = {}): Promise<BrowserResult> {
+  open(
+    url: string,
+    options: InAppBrowserOptions = {}
+  ): Promise<BrowserResult> {
     const mOpenBrowserPromise = InAppBrowserModule.redirectResolve;
     if (mOpenBrowserPromise) {
       this.flowDidFinish();
@@ -95,11 +101,11 @@ class InAppBrowserModule extends java.lang.Object {
       return Promise.reject(new Error(InAppBrowserModule.ERROR_CODE));
     }
 
-    const options: InAppBrowserOptions = getDefaultOptions(url, inAppBrowserOptions);
+    const inAppBrowserOptions: InAppBrowserOptions = getDefaultOptions(url, options);
 
     const builder = new CustomTabsIntent.Builder();
-    if (options[InAppBrowserModule.KEY_TOOLBAR_COLOR]) {
-      const colorString = options[InAppBrowserModule.KEY_TOOLBAR_COLOR];
+    if (inAppBrowserOptions[InAppBrowserModule.KEY_TOOLBAR_COLOR]) {
+      const colorString = inAppBrowserOptions[InAppBrowserModule.KEY_TOOLBAR_COLOR];
       try {
         builder.setToolbarColor(new Color(colorString).android);
       } catch (error) {
@@ -107,8 +113,8 @@ class InAppBrowserModule extends java.lang.Object {
                 "Invalid toolbar color '" + colorString + "': " + error.message);
       }
     }
-    if (options[InAppBrowserModule.KEY_SECONDARY_TOOLBAR_COLOR]) {
-      const colorString = options[InAppBrowserModule.KEY_SECONDARY_TOOLBAR_COLOR];
+    if (inAppBrowserOptions[InAppBrowserModule.KEY_SECONDARY_TOOLBAR_COLOR]) {
+      const colorString = inAppBrowserOptions[InAppBrowserModule.KEY_SECONDARY_TOOLBAR_COLOR];
       try {
         builder.setSecondaryToolbarColor(new Color(colorString).android);
       } catch (error) {
@@ -116,21 +122,21 @@ class InAppBrowserModule extends java.lang.Object {
                 "Invalid secondary toolbar color '" + colorString + "': " + error.message);
       }
     }
-    if (options[InAppBrowserModule.KEY_ENABLE_URL_BAR_HIDING]) {
+    if (inAppBrowserOptions[InAppBrowserModule.KEY_ENABLE_URL_BAR_HIDING]) {
       builder.enableUrlBarHiding();
     }
-    if (options[InAppBrowserModule.KEY_DEFAULT_SHARE_MENU_ITEM]) {
+    if (inAppBrowserOptions[InAppBrowserModule.KEY_DEFAULT_SHARE_MENU_ITEM]) {
       builder.addDefaultShareMenuItem();
     }
     const context = ad.getApplicationContext();
-    if (options[InAppBrowserModule.KEY_ANIMATIONS]) {
-      const animations = options[InAppBrowserModule.KEY_ANIMATIONS];
+    if (inAppBrowserOptions[InAppBrowserModule.KEY_ANIMATIONS]) {
+      const animations = inAppBrowserOptions[InAppBrowserModule.KEY_ANIMATIONS];
       this.applyAnimation(context, builder, animations);
     }
 
     const customTabsIntent = builder.build();
 
-    const keyHeaders = options[InAppBrowserModule.KEY_HEADERS];
+    const keyHeaders = inAppBrowserOptions[InAppBrowserModule.KEY_HEADERS];
     if (keyHeaders) {
       const headers = new Bundle();
       for (const key in keyHeaders) {
@@ -141,7 +147,7 @@ class InAppBrowserModule extends java.lang.Object {
       customTabsIntent.intent.putExtra(Browser.EXTRA_HEADERS, headers);
     }
 
-    if (options[InAppBrowserModule.KEY_FORCE_CLOSE_ON_REDIRECTION]) {
+    if (inAppBrowserOptions[InAppBrowserModule.KEY_FORCE_CLOSE_ON_REDIRECTION]) {
       customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
       customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -149,8 +155,8 @@ class InAppBrowserModule extends java.lang.Object {
 
     const intent = customTabsIntent.intent;
     intent.setData(Uri.parse(url));
-    if (options[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]) {
-      builder.setShowTitle(!!options[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]);
+    if (inAppBrowserOptions[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]) {
+      builder.setShowTitle(!!inAppBrowserOptions[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]);
     }
     else {
       intent.putExtra(CustomTabsIntent.EXTRA_TITLE_VISIBILITY_STATE, CustomTabsIntent.NO_TITLE);
@@ -196,22 +202,22 @@ class InAppBrowserModule extends java.lang.Object {
   async openAuth(
     url: string,
     redirectUrl: string,
-    inAppBrowserOptions: InAppBrowserOptions = {}
+    options: InAppBrowserOptions = {}
   ): Promise<AuthSessionResult> {
-    const options = getDefaultOptions(url, inAppBrowserOptions);
+    const inAppBrowserOptions = getDefaultOptions(url, options);
     try {
       return await openAuthSessionPolyfillAsync(
-        url, redirectUrl, options, (startUrl, opt) => this.open(startUrl, opt)
+        url, redirectUrl, inAppBrowserOptions, (startUrl, opt) => this.open(startUrl, opt)
       );
     } finally {
-      this.close();
       closeAuthSessionPolyfillAsync();
+      this.close();
     }
   }
 
   public closeAuth(): void {
-    this.close();
     closeAuthSessionPolyfillAsync();
+    this.close();
   }
 
   public onEvent(event: EventData): void {
