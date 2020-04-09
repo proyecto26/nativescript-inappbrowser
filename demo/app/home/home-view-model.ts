@@ -2,7 +2,7 @@ import { Observable } from 'tns-core-modules/data/observable';
 import { openUrl } from 'tns-core-modules/utils/utils';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import InAppBrowser from 'nativescript-inappbrowser';
-import { android } from "tns-core-modules/application";
+import { getDeepLink, sleep } from './utilities';
 
 export class HelloWorldModel extends Observable {
   private _url: string;
@@ -25,11 +25,7 @@ export class HelloWorldModel extends Observable {
     }
   }
 
-  sleep (timeout) {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-  }
-
-  openLink = async () => {
+  async openLink() {
     try {
       const { url } = this;
       if (await InAppBrowser.isAvailable()) {
@@ -63,7 +59,7 @@ export class HelloWorldModel extends Observable {
             'my-custom-header': 'my custom header value'
           }
         });
-        await this.sleep(800);
+        await sleep(800);
         alert({
           title: 'Response',
           message: JSON.stringify(result),
@@ -83,24 +79,29 @@ export class HelloWorldModel extends Observable {
     }
   }
 
-  getDeepLink = (path = '') => {
-    const scheme = 'my-demo';
-    const prefix = android ? `${scheme}://demo/` : `${scheme}://`;
-    return prefix + path;
-  }
-
-  tryDeepLinking = async () => {
-    const loginUrl = `https://proyecto26.github.io/react-native-inappbrowser/`;
-    const redirectUrl = this.getDeepLink('home');
+  async tryDeepLinking() {
+    const loginUrl = `https://proyecto26.github.io/react-native-inappbrowser`;
+    const redirectUrl = getDeepLink('home');
     const url = `${loginUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`;
-    if (await InAppBrowser.isAvailable()) {
-      const result = await InAppBrowser.openAuth(url, redirectUrl);
-      await this.sleep(800);
-      alert({
-        title: 'Response',
-        message: JSON.stringify(result),
-        okButtonText: 'Ok'
-      });
+    try {
+      if (await InAppBrowser.isAvailable()) {
+        const result = await InAppBrowser.openAuth(url, redirectUrl, {
+          // iOS Properties
+          ephemeralWebSession: true,
+          // Android Properties
+          showTitle: false,
+          enableUrlBarHiding: true,
+          enableDefaultShare: true
+        });
+        await sleep(800);
+        alert({
+          title: 'Response',
+          message: JSON.stringify(result),
+          okButtonText: 'Ok'
+        });
+      }
+    } catch {
+      alert('Something’s wrong with the app :(');
     }
   }
 }
