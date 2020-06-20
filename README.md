@@ -223,15 +223,20 @@ import { getDeepLink } from './utilities';
 
 Using in-app browser tabs (like SFAuthenticationSession/ASWebAuthenticationSession and Android Custom Tabs) where available. Embedded user-agents, known as web-views (like UIWebView and WKWebView), are explicitly not supported due to the usability and security reasons documented in [Section 8.12 of RFC 8252](https://tools.ietf.org/html/rfc8252#section-8.12).
 
-## Credits 👍
-* **React Native InAppBrowser:** [InAppBrowser for React Native](https://github.com/proyecto26/react-native-inappbrowser)
-
 ## Contributors ✨
-Thanks goes to these wonderful people:
-<!-- CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+Please do contribute! Issues and pull requests are welcome.
+
+### Code Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+
+[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/0)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/0)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/1)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/1)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/2)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/2)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/3)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/3)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/4)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/4)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/5)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/5)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/6)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/6)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/7)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/7)
+
+### Collaborators
+<!-- COLLABORATORS-LIST:START - Do not remove or modify this section -->
 | [<img alt="jdnichollsc" src="https://avatars3.githubusercontent.com/u/2154886?v=3" width="100" /><br /><sub><b>Juan Nicholls</b></sub>](https://github.com/jdnichollsc)<br />[✉](mailto:jdnichollsc@hotmail.com) | [<img alt="NathanaelA" src="https://avatars3.githubusercontent.com/u/850871?v=3" width="100" /><br /><sub><b>Nathanael Anderson</b></sub>](https://github.com/NathanaelA)<br />[✉](mailto:nathan@master-technology.com) |
 | :---: | :---: |
-<!-- CONTRIBUTORS-LIST:END -->
+<!-- COLLABORATORS-LIST:END -->
 
 ### Financial Contributors
 
@@ -255,6 +260,9 @@ Support this project with your organization. Your logo will show up here with a 
 <a href="https://opencollective.com/proyecto26/organization/7/website"><img src="https://opencollective.com/proyecto26/organization/7/avatar.svg"></a>
 <a href="https://opencollective.com/proyecto26/organization/8/website"><img src="https://opencollective.com/proyecto26/organization/8/avatar.svg"></a>
 <a href="https://opencollective.com/proyecto26/organization/9/website"><img src="https://opencollective.com/proyecto26/organization/9/avatar.svg"></a>
+
+## Credits 👍
+* **React Native InAppBrowser:** [InAppBrowser for React Native](https://github.com/proyecto26/react-native-inappbrowser)
 
 ## Supporting 🍻
 I believe in Unicorns 🦄
