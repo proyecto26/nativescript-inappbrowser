@@ -56,6 +56,8 @@ Methods       | Action
 
 ### iOS Options
 
+Style and display options are only available for the `open()` method.
+
 Property       | Description
 -------------- | ------
 `dismissButtonStyle` (String)        | The style of the dismiss button. [`done`/`close`/`cancel`]
@@ -67,7 +69,7 @@ Property       | Description
 `modalTransitionStyle` (String)      | The transition style to use when presenting the view controller. [`coverVertical`/`flipHorizontal`/`crossDissolve`/`partialCurl`]
 `modalEnabled` (Boolean)             | Present the **SafariViewController** modally or as push instead. [`true`/`false`]
 `enableBarCollapsing` (Boolean)      | Determines whether the browser's tool bars will collapse or not. [`true`/`false`]
-`ephemeralWebSession` (Boolean)      | Prevent re-use cookies of previous session (openAuth only) [`true`/`false`]
+`ephemeralWebSession` (Boolean)      | Prevent re-use cookies of previous session **(openAuth only)** [`true`/`false`]
 
 ### Android Options
 Property       | Description
@@ -146,8 +148,8 @@ import InAppBrowser from 'nativescript-inappbrowser'
 
 ### Authentication Flow using Deep Linking
 
-In order to redirect back to your application from a web browser, you must specify a unique URI to your app. To do this,
-define your app scheme and replace `my-scheme` and `my-host` with your info.
+In order to redirect back to your application from a web browser, you must specify a unique URI to your app (e.g. *my-scheme://my-host*).
+To do this, define your app scheme and replace `my-scheme` and `my-host` with your info.
 
 - Enable deep linking (Android) - **[AndroidManifest.xml](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/Android/src/main/AndroidManifest.xml#L41)**
 ```
