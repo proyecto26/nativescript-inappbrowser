@@ -6,10 +6,7 @@ import Browser = android.provider.Browser;
 import Pattern = java.util.regex.Pattern;
 import AssertionError = java.lang.AssertionError;
 
-import { Color } from 'tns-core-modules/color';
-import { ad } from 'tns-core-modules/utils/utils';
-import { android as androidApp } from 'tns-core-modules/application';
-import { EventData } from 'tns-core-modules/data/observable';
+import { Color, Utils, Application, EventData } from '@nativescript/core';
 import {
   ChromeTabsEvent,
   BROWSER_ACTIVITY_EVENTS,
@@ -96,7 +93,7 @@ class InAppBrowserModule extends java.lang.Object {
       return Promise.resolve(result);
     }
 
-    this.currentActivity = androidApp.foregroundActivity || androidApp.startActivity;
+    this.currentActivity = Application.android.foregroundActivity || Application.android.startActivity;
     if (!this.currentActivity) {
       return Promise.reject(new Error(InAppBrowserModule.ERROR_CODE));
     }
@@ -128,7 +125,7 @@ class InAppBrowserModule extends java.lang.Object {
     if (inAppBrowserOptions[InAppBrowserModule.KEY_DEFAULT_SHARE_MENU_ITEM]) {
       builder.addDefaultShareMenuItem();
     }
-    const context = ad.getApplicationContext();
+    const context = Utils.android.getApplicationContext();
     if (inAppBrowserOptions[InAppBrowserModule.KEY_ANIMATIONS]) {
       const animations = inAppBrowserOptions[InAppBrowserModule.KEY_ANIMATIONS];
       this.applyAnimation(context, builder, animations);

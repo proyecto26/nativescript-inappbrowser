@@ -3,14 +3,11 @@ import Intent = android.content.Intent;
 import NfcAdapter = android.nfc.NfcAdapter;
 
 import {
-  on as onEvent,
-  off as offEvent,
-  android as androidApp,
-  resumeEvent,
+  Application,
   ApplicationEventData,
   AndroidApplication,
   AndroidActivityEventData
-} from 'tns-core-modules/application';
+} from '@nativescript/core';
 import {
   RedirectResult,
   BrowserResult,
@@ -55,7 +52,7 @@ function _waitForRedirectAsync(
         resolve({ url: url, type: BROWSER_TYPES.SUCCESS });
       }
     };
-    onEvent(resumeEvent, _redirectHandler);
+    Application.on(Application.resumeEvent, _redirectHandler);
   });
 }
 
@@ -82,8 +79,8 @@ function _checkResultAndReturnUrl(
   result: AuthSessionResult
 ): Promise<AuthSessionResult> {
   return new Promise(function(resolve) {
-    if (androidApp && result.type !== BROWSER_TYPES.CANCEL) {
-      androidApp.once(
+    if (Application.android && result.type !== BROWSER_TYPES.CANCEL) {
+      Application.android.once(
         AndroidApplication.activityResumedEvent,
         function(args: AndroidActivityEventData) {
           const url = getInitialURL(args.activity);
@@ -100,7 +97,7 @@ function _checkResultAndReturnUrl(
 
 export function closeAuthSessionPolyfillAsync(): void {
   if (_redirectHandler) {
-    offEvent(resumeEvent, _redirectHandler);
+    Application.off(Application.resumeEvent, _redirectHandler);
     _redirectHandler = null;
   }
 }
