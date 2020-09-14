@@ -57,7 +57,7 @@
 	"license": "MIT",
 	"homepage": "https://github.com/proyecto26/nativescript-inappbrowser",
 	"devDependencies": {
-		"tns-core-modules": "^6.5.1",
+		"@nativescript/core": "^6.5.1",
 		"tns-platform-declarations": "^6.5.1",
 		"typescript": "~3.8.3",
 		"prompt": "^1.0.0",

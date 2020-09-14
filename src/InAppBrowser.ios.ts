@@ -1,5 +1,4 @@
-import { Color } from 'tns-core-modules/color';
-import { ios } from 'tns-core-modules/utils/utils';
+import { Color, Utils } from '@nativescript/core';
 
 import {
   BrowserResult,
@@ -46,7 +45,7 @@ const getPresentationStyle = function (styleKey: string): UIModalPresentationSty
     overCurrentContext: UIModalPresentationStyle.OverCurrentContext,
     popover: UIModalPresentationStyle.Popover
   };
-  const defaultModalPresentationStyle = ios.MajorVersion >= 13 ?
+  const defaultModalPresentationStyle = Utils.ios.MajorVersion >= 13 ?
     UIModalPresentationStyle.Automatic : UIModalPresentationStyle.FullScreen;
   return styles[styleKey] !== undefined ? styles[styleKey] : defaultModalPresentationStyle;
 };
@@ -65,7 +64,7 @@ const DEFAULT_PROTOCOLS = [
   SFSafariViewControllerDelegate,
   UIAdaptivePresentationControllerDelegate
 ];
-const protocols = ios.MajorVersion >= 13 ? [
+const protocols = Utils.ios.MajorVersion >= 13 ? [
   ...DEFAULT_PROTOCOLS,
   ASWebAuthenticationPresentationContextProviding
 ] : DEFAULT_PROTOCOLS;
@@ -81,7 +80,7 @@ class InAppBrowserModule extends NSObject {
   private animated = false;
 
   public isAvailable(): Promise<boolean> {
-    return Promise.resolve(ios.MajorVersion >= 9);
+    return Promise.resolve(Utils.ios.MajorVersion >= 9);
   }
   public open(
     authURL: string,
@@ -94,7 +93,7 @@ class InAppBrowserModule extends NSObject {
       this.animated = inAppBrowserOptions.animated;
 
       const url = NSURL.URLWithString(inAppBrowserOptions['url']);
-      if (ios.MajorVersion >= 11) {
+      if (Utils.ios.MajorVersion >= 11) {
         const config = SFSafariViewControllerConfiguration.alloc().init();
         config.barCollapsingEnabled = inAppBrowserOptions.enableBarCollapsing;
         config.entersReaderIfAvailable = inAppBrowserOptions.readerMode;
@@ -107,7 +106,7 @@ class InAppBrowserModule extends NSObject {
       }
       this.safariVC.delegate = this;
 
-      if (ios.MajorVersion >= 11) {
+      if (Utils.ios.MajorVersion >= 11) {
         if (inAppBrowserOptions.dismissButtonStyle === 'done') {
           this.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Done;
         }
@@ -119,7 +118,7 @@ class InAppBrowserModule extends NSObject {
         }
       }
 
-      if (ios.MajorVersion >= 10) {
+      if (Utils.ios.MajorVersion >= 10) {
         if (inAppBrowserOptions.preferredBarTintColor) {
           this.safariVC.preferredBarTintColor = new Color(inAppBrowserOptions.preferredBarTintColor).ios;
         }
@@ -138,7 +137,7 @@ class InAppBrowserModule extends NSObject {
         if (this.animated) {
           safariHackVC.modalTransitionStyle = getTransitionStyle(inAppBrowserOptions.modalTransitionStyle);
         }
-        if (ios.MajorVersion >= 13) {
+        if (Utils.ios.MajorVersion >= 13) {
           safariHackVC.modalInPresentation = true;
           if (safariHackVC['setModalInPresentation'])
             safariHackVC['setModalInPresentation'](true);
@@ -172,13 +171,13 @@ class InAppBrowserModule extends NSObject {
       ...options,
       ephemeralWebSession: options.ephemeralWebSession !== undefined ? options.ephemeralWebSession : false,
     };
-    if (ios.MajorVersion >= 11) {
+    if (Utils.ios.MajorVersion >= 11) {
       return new Promise<AuthSessionResult>((resolve, reject) => {
         if (!this.initializeWebBrowser(resolve, reject)) return;
 
         const url = NSURL.URLWithString(authUrl);
         this.authSession = (
-          ios.MajorVersion >= 12 ? ASWebAuthenticationSession : SFAuthenticationSession
+          Utils.ios.MajorVersion >= 12 ? ASWebAuthenticationSession : SFAuthenticationSession
         ).alloc().initWithURLCallbackURLSchemeCompletionHandler(
           url,
           redirectUrl,
@@ -197,7 +196,7 @@ class InAppBrowserModule extends NSObject {
             this.flowDidFinish();
           }
         );
-        if (ios.MajorVersion >= 13) {
+        if (Utils.ios.MajorVersion >= 13) {
           const webAuthSession = this.authSession as ASWebAuthenticationSession;
           // Prevent re-use cookie from last auth session
           webAuthSession.prefersEphemeralWebBrowserSession = inAppBrowserOptions.ephemeralWebSession;
@@ -216,7 +215,7 @@ class InAppBrowserModule extends NSObject {
     }
   }
   public closeAuth() {
-    if (ios.MajorVersion >= 11) {
+    if (Utils.ios.MajorVersion >= 11) {
       const authSession: SFAuthenticationSession | ASWebAuthenticationSession = this.authSession;
       authSession.cancel();
       if (this.redirectResolve) {
