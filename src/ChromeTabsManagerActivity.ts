@@ -1,8 +1,9 @@
+import { Observable } from '@nativescript/core';
+
 import Context = android.content.Context;
 import Intent = android.content.Intent;
 import Bundle = android.os.Bundle;
 
-import { Observable } from '@nativescript/core';
 
 export class ChromeTabsEvent extends Observable {
   public message: String;
