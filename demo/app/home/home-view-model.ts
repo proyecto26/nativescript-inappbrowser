@@ -1,7 +1,5 @@
-import { Observable } from 'tns-core-modules/data/observable';
-import { openUrl } from 'tns-core-modules/utils/utils';
-import { alert } from 'tns-core-modules/ui/dialogs';
-import InAppBrowser from 'nativescript-inappbrowser';
+import { Observable, Utils, Dialogs } from '@nativescript/core';
+import { InAppBrowser } from 'nativescript-inappbrowser';
 import { getDeepLink, sleep } from './utilities';
 
 export class HelloWorldModel extends Observable {
@@ -60,18 +58,18 @@ export class HelloWorldModel extends Observable {
           }
         });
         await sleep(800);
-        alert({
+        Dialogs.alert({
           title: 'Response',
           message: JSON.stringify(result),
           okButtonText: 'Ok'
         });
       }
       else {
-        openUrl(url);
+        Utils.openUrl(url);
       }
     }
     catch (error) {
-      alert({
+      Dialogs.alert({
         title: 'Error',
         message: error.message,
         okButtonText: 'Ok'
@@ -94,14 +92,14 @@ export class HelloWorldModel extends Observable {
           enableDefaultShare: true
         });
         await sleep(800);
-        alert({
+        Dialogs.alert({
           title: 'Response',
           message: JSON.stringify(result),
           okButtonText: 'Ok'
         });
       }
     } catch {
-      alert('Something’s wrong with the app :(');
+      Dialogs.alert('Something’s wrong with the app :(');
     }
   }
 }
