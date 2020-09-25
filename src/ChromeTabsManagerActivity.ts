@@ -20,6 +20,7 @@ const DEFAULT_RESULT_TYPE = 'dismiss';
  * Manages the custom chrome tabs intent by detecting when it is dismissed by the user and allowing
  * to close it programmatically when needed.
  */
+@NativeClass()
 @JavaProxy('com.proyecto26.inappbrowser.ChromeTabsManagerActivity')
 export class ChromeTabsManagerActivity extends android.app.Activity {
   private mOpened = false;
