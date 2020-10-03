@@ -1,8 +1,6 @@
-import { android } from "tns-core-modules/application";
-
 export const getDeepLink = (path = "") => {
   const scheme = 'my-demo';
-  const prefix = android ? `${scheme}://demo/` : `${scheme}://`;
+  const prefix = global.isAndroid ? `${scheme}://demo/` : `${scheme}://`;
   return prefix + path;
 };
 
