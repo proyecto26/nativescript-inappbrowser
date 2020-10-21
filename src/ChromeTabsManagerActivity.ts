@@ -1,8 +1,9 @@
+import { Observable } from '@nativescript/core';
+
 import Context = android.content.Context;
 import Intent = android.content.Intent;
 import Bundle = android.os.Bundle;
 
-import { Observable } from 'tns-core-modules/data/observable';
 
 export class ChromeTabsEvent extends Observable {
   public message: String;
@@ -19,6 +20,7 @@ const DEFAULT_RESULT_TYPE = 'dismiss';
  * Manages the custom chrome tabs intent by detecting when it is dismissed by the user and allowing
  * to close it programmatically when needed.
  */
+@NativeClass()
 @JavaProxy('com.proyecto26.inappbrowser.ChromeTabsManagerActivity')
 export class ChromeTabsManagerActivity extends android.app.Activity {
   private mOpened = false;
@@ -67,7 +69,7 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
       switch (this.resultType) {
         case 'cancel':
           BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity closed');
-          BROWSER_ACTIVITY_EVENTS.set('resultType', 'cancel');
+          BROWSER_ACTIVITY_EVENTS.set('resultType', this.resultType);
           break;
         default:
           BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity destroyed');

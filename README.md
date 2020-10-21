@@ -29,6 +29,7 @@
 </p>
 
 <h1 align="center">InAppBrowser for NativeScript</h1>
+<h3 align="center">Provides access to the system's web browser and supports handling redirects</h3>
 <h4 align="center"><a href="https://developer.chrome.com/multidevice/android/customtabs#whatarethey">Chrome Custom Tabs</a> for Android & <a href="https://developer.apple.com/documentation/safariservices">SafariServices</a>/<a href="https://developer.apple.com/documentation/authenticationservices">AuthenticationServices</a> for iOS.</h4>
 
 <p align="center">
@@ -66,6 +67,7 @@ Property       | Description
 `modalTransitionStyle` (String)      | The transition style to use when presenting the view controller. [`coverVertical`/`flipHorizontal`/`crossDissolve`/`partialCurl`]
 `modalEnabled` (Boolean)             | Present the **SafariViewController** modally or as push instead. [`true`/`false`]
 `enableBarCollapsing` (Boolean)      | Determines whether the browser's tool bars will collapse or not. [`true`/`false`]
+`ephemeralWebSession` (Boolean)      | Prevent re-use cookies of previous session (openAuth only) [`true`/`false`]
 
 ### Android Options
 Property       | Description
@@ -142,15 +144,100 @@ import InAppBrowser from 'nativescript-inappbrowser'
 ...
 ```
 
-## Credits 👍
-* **React Native InAppBrowser:** [InAppBrowser for React Native](https://github.com/proyecto26/react-native-inappbrowser)
+### Authentication Flow using Deep Linking
+
+In order to redirect back to your application from a web browser, you must specify a unique URI to your app. To do this,
+define your app scheme and replace `my-scheme` and `my-host` with your info.
+
+- Enable deep linking (Android) - **[AndroidManifest.xml](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/Android/src/main/AndroidManifest.xml#L41)**
+```
+<intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data android:scheme="my-scheme" android:host="my-host" android:pathPrefix="" />
+</intent-filter>
+```
+
+- Enable deep linking (iOS) - **[Info.plist](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/iOS/Info.plist#L21)**
+```
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleURLName</key>
+    <string>my-scheme</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>my-scheme</string>
+    </array>
+  </dict>
+</array>
+```
+
+- utilities.ts
+```javascript
+import { android } from "tns-core-modules/application";
+export const getDeepLink = (path = "") => {
+  const scheme = 'my-scheme';
+  const prefix = android ? `${scheme}://my-host/` : `${scheme}://`;
+  return prefix + path;
+}
+```
+
+- home-page.ts
+```javascript
+import { openUrl } from 'tns-core-modules/utils/utils';
+import InAppBrowser from 'nativescript-inappbrowser';
+import { getDeepLink } from './utilities';
+...
+  async onLogin() {
+    const deepLink = getDeepLink("callback")
+    const url = `https://my-auth-login-page.com?redirect_uri=${deepLink}`
+    try {
+      if (await InAppBrowser.isAvailable()) {
+        InAppBrowser.openAuth(url, deepLink, {
+          // iOS Properties
+          ephemeralWebSession: false,
+          // Android Properties
+          showTitle: false,
+          enableUrlBarHiding: true,
+          enableDefaultShare: false
+        }).then((response) => {
+          if (
+            response.type === 'success' &&
+            response.url
+          ) {
+            openUrl(response.url)
+          }
+        })
+      } else openUrl(url)
+    } catch (error) {
+      openUrl(url)
+    }
+  }
+...
+```
+
+### Authentication
+
+Using in-app browser tabs (like SFAuthenticationSession/ASWebAuthenticationSession and Android Custom Tabs) where available. Embedded user-agents, known as web-views (like UIWebView and WKWebView), are explicitly not supported due to the usability and security reasons documented in [Section 8.12 of RFC 8252](https://tools.ietf.org/html/rfc8252#section-8.12).
 
 ## Contributors ✨
-Thanks goes to these wonderful people:
-<!-- CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+Please do contribute! Issues and pull requests are welcome.
+
+### Code Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+
+[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/0)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/0)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/1)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/1)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/2)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/2)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/3)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/3)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/4)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/4)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/5)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/5)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/6)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/6)[![](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/images/7)](https://sourcerer.io/fame/jdnichollsc/proyecto26/nativescript-inappbrowser/links/7)
+
+### Collaborators
+<!-- COLLABORATORS-LIST:START - Do not remove or modify this section -->
 | [<img alt="jdnichollsc" src="https://avatars3.githubusercontent.com/u/2154886?v=3" width="100" /><br /><sub><b>Juan Nicholls</b></sub>](https://github.com/jdnichollsc)<br />[✉](mailto:jdnichollsc@hotmail.com) | [<img alt="NathanaelA" src="https://avatars3.githubusercontent.com/u/850871?v=3" width="100" /><br /><sub><b>Nathanael Anderson</b></sub>](https://github.com/NathanaelA)<br />[✉](mailto:nathan@master-technology.com) |
 | :---: | :---: |
-<!-- CONTRIBUTORS-LIST:END -->
+<!-- COLLABORATORS-LIST:END -->
 
 ### Financial Contributors
 
@@ -175,10 +262,18 @@ Support this project with your organization. Your logo will show up here with a 
 <a href="https://opencollective.com/proyecto26/organization/8/website"><img src="https://opencollective.com/proyecto26/organization/8/avatar.svg"></a>
 <a href="https://opencollective.com/proyecto26/organization/9/website"><img src="https://opencollective.com/proyecto26/organization/9/avatar.svg"></a>
 
+## Credits 👍
+* **React Native InAppBrowser:** [InAppBrowser for React Native](https://github.com/proyecto26/react-native-inappbrowser)
+
 ## Supporting 🍻
 I believe in Unicorns 🦄
 Support [me](http://www.paypal.me/jdnichollsc/2), if you do too.
-[Professionally supported nativescript-inappbrowser is coming soon](https://tidelift.com/subscription/pkg/npm-nativescript-inappbrowser?utm_source=npm-nativescript-inappbrowser&utm_medium=referral&utm_campaign=readme)
+
+## Enterprise 💼
+
+Available as part of the Tidelift Subscription.
+
+The maintainers of InAppBrowser for NativeScript and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. [Learn more.](https://tidelift.com/subscription/pkg/npm-nativescript-inappbrowser?utm_source=npm-nativescript-inappbrowser&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
 
 ## Security contact information 🚨
 To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security). Tidelift will coordinate the fix and disclosure.
