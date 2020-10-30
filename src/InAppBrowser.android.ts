@@ -21,13 +21,17 @@ import {
   BrowserResult,
   getDefaultOptions,
   InAppBrowserOptions,
-  InAppBrowserClassMethods
+  InAppBrowserClassMethods,
+  RedirectResolve,
+  RedirectReject,
+  BROWSER_TYPES,
 } from './InAppBrowser.common';
 import {
   Builder,
   getDrawableId,
   toolbarIsLight,
   CustomTabsIntent,
+  DISMISSED_EVENT,
   ARROW_BACK_WHITE,
   ARROW_BACK_BLACK,
   getPreferredPackages,
@@ -59,9 +63,9 @@ function setup() {
     private static KEY_BROWSER_PACKAGE = "browserPackage";
     private static KEY_SHOW_IN_RECENTS = "showInRecents";
   
-    private static redirectResolve: any;
-    private static redirectReject: any;
-    private isLightTheme: Boolean;
+    private static redirectResolve: RedirectResolve;
+    private static redirectReject: RedirectReject;
+    private isLightTheme: boolean;
     private currentActivity: any;
     private animationIdentifierPattern = Pattern.compile("^.+:.+/");
   
@@ -84,7 +88,7 @@ function setup() {
       if (mOpenBrowserPromise) {
         this.flowDidFinish();
         const result: BrowserResult = {
-          type: 'cancel'
+          type: BROWSER_TYPES.CANCEL
         };
         return Promise.resolve(result);
       }
@@ -207,7 +211,7 @@ function setup() {
         return;
       }
   
-      BROWSER_ACTIVITY_EVENTS.off('DismissedEvent');
+      BROWSER_ACTIVITY_EVENTS.off(DISMISSED_EVENT);
   
       const result: BrowserResult = {
         type: 'dismiss'
@@ -243,7 +247,7 @@ function setup() {
     }
   
     public onEvent(event: EventData): void {
-      BROWSER_ACTIVITY_EVENTS.off('DismissedEvent');
+      BROWSER_ACTIVITY_EVENTS.off(DISMISSED_EVENT);
   
       if (!InAppBrowserModule.redirectResolve) {
         throw new AssertionError();
@@ -252,12 +256,12 @@ function setup() {
       InAppBrowserModule.redirectResolve({
         type: browserEvent.resultType,
         message: browserEvent.message
-      });
+      } as BrowserResult);
       this.flowDidFinish();
     }
   
     private registerEvent(): void {
-      BROWSER_ACTIVITY_EVENTS.once('DismissedEvent', (e) => this.onEvent(e));
+      BROWSER_ACTIVITY_EVENTS.once(DISMISSED_EVENT, (e) => this.onEvent(e));
     }
   
     private resolveAnimationIdentifierIfNeeded(context: Context, identifier: string): number {

@@ -37,6 +37,7 @@ export const LOCAL_PACKAGE = "com.google.android.apps.chrome";
 export const ACTION_CUSTOM_TABS_CONNECTION = "android.support.customtabs.action.CustomTabsService";
 export const ARROW_BACK_BLACK = 'ic_arrow_back_black';
 export const ARROW_BACK_WHITE = 'ic_arrow_back_white';
+export const DISMISSED_EVENT = 'DismissedEvent';
 
 /**
  * Save the handler of the redirection event in order to removes listener later.
