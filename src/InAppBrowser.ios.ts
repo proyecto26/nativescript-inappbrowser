@@ -111,6 +111,10 @@ function setup() {
           // This is a hack to present the SafariViewController modally
           const safariHackVC = UINavigationController.alloc().initWithRootViewController(this.safariVC);
           safariHackVC.setNavigationBarHiddenAnimated(true, false);
+
+          // To disable "Swipe to dismiss" gesture which sometimes causes a bug where `safariViewControllerDidFinish` 
+          // is not called.
+          this.safariVC.modalPresentationStyle = UIModalPresentationStyle.OverFullScreen;
           safariHackVC.modalPresentationStyle = getPresentationStyle(inAppBrowserOptions.modalPresentationStyle);
           if (this.animated) {
             safariHackVC.modalTransitionStyle = getTransitionStyle(inAppBrowserOptions.modalTransitionStyle);

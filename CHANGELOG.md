@@ -33,6 +33,7 @@ in case of vulnerabilities.
 - Android `isAvailable` method checks **Custom Tab** support.
 - Added a null check for `redirectResolve` in `safariViewControllerDidFinish`.
 - Fixed `AppStateActiveOnce` event listener.
+- Disable swipe to dismiss gesture for modal.
 
 ## [2.3.0] - 2020-04-08
 ### Added
