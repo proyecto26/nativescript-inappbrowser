@@ -118,7 +118,7 @@ async function checkResultAndReturnUrl(
 ): Promise<AuthSessionResult> {
   if (Application.android && result.type !== BROWSER_TYPES.CANCEL) {
     try {
-      const activity = await handleAppStateActiveOnce()
+      const activity = await handleAppStateActiveOnce();
       const url = getInitialURL(activity);
       return url && url.startsWith(returnUrl)
         ? { url: url, type: BROWSER_TYPES.SUCCESS }
@@ -171,7 +171,7 @@ export function getDefaultBrowser(context: Context): string {
     CHROME_PACKAGE_DEV,
     LOCAL_PACKAGE
   ]));
-  if (packageName == null && resolveInfos != null && resolveInfos.size() > 0){
+  if (packageName == null && resolveInfos != null && resolveInfos.size() > 0) {
     return resolveInfos.get(0).serviceInfo.packageName;
   }
   return packageName;
