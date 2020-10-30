@@ -1,4 +1,4 @@
-import { NativeScriptConfig } from '@nativescript/core'
+import { NativeScriptConfig } from '@nativescript/core';
 
 export default {
   id: 'org.nativescript.demo',
@@ -9,4 +9,4 @@ export default {
   },
   useLegacyWorkflow: false,
   appPath: 'app',
-} as NativeScriptConfig
+} as NativeScriptConfig;

@@ -27,11 +27,11 @@ export function getPresentationStyle (styleKey: string): UIModalPresentationStyl
   return presentationStyles[styleKey] !== undefined
     ? presentationStyles[styleKey]
     : defaultModalPresentationStyle;
-};
+}
 
 export function getTransitionStyle (styleKey: string): UIModalTransitionStyle {
   return transitionStyles[styleKey] !== undefined ? transitionStyles[styleKey] : UIModalTransitionStyle.CoverVertical;
-};
+}
 
 export function dismissWithoutAnimation(controller: SFSafariViewController): void {
   const transition = CATransition.animation();
