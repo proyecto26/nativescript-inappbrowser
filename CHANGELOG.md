@@ -22,6 +22,18 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [3.0.0] - 2020-10-30
+### Added
+- Added `hasBackButton` option to sets a back arrow instead of the default X icon to close the custom tab.
+- Added default browser configuration for custom tab if any.
+- Added `browserPackage` option to use a Package name of a browser to be used to handle Custom Tabs.
+- Added `showInRecents` option to determine whether browsed website should be shown as separate entry in Android recents/multitasking view.
+
+### Fixed
+- Android `isAvailable` method checks **Custom Tab** support.
+- Added a null check for `redirectResolve` in `safariViewControllerDidFinish`.
+- Fixed `AppStateActiveOnce` event listener.
+
 ## [2.3.0] - 2020-04-08
 ### Added
 - Added `ephemeralWebSession` option to supports `ephemeralWebBrowserSession` on iOS 13.
@@ -65,7 +77,8 @@ in case of vulnerabilities.
 - Methods to open and close external urls to authenticate the user **(openAuth, closeAuth)** using deep linking.
 - `isAvailable` method to detect if the device supports the plugin.
 
-[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.3.0...v3.0.0
 [2.3.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.1.0...v2.1.1

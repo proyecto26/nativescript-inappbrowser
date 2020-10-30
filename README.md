@@ -86,10 +86,9 @@ Property       | Description
 
 ### Demo
 
-```javascript
-import { openUrl } from 'tns-core-modules/utils/utils'
-import { alert } from 'tns-core-modules/ui/dialogs'
-import { InAppBrowser } from 'nativescript-inappbrowser'
+```ts
+import { Utils, Dialogs } from '@nativescript/core';
+import { InAppBrowser } from 'nativescript-inappbrowser';
 
 ...
   openLink = async () => {
@@ -124,24 +123,27 @@ import { InAppBrowser } from 'nativescript-inappbrowser'
           },
           headers: {
             'my-custom-header': 'my custom header value'
-          }
-        })
-        alert({
+          },
+          hasBackButton: true,
+          browserPackage: '',
+          showInRecents: false
+        });
+        Dialogs.alert({
           title: 'Response',
           message: JSON.stringify(result),
           okButtonText: 'Ok'
-        })
+        });
       }
       else {
-        openUrl(url);
+        Utils.openUrl(url);
       }
     }
     catch(error) {
-      alert({
+      Dialogs.alert({
         title: 'Error',
         message: error.message,
         okButtonText: 'Ok'
-      })
+      });
     }
   }
 ...
@@ -181,22 +183,21 @@ define your app scheme and replace `my-scheme` and `my-host` with your info.
 
 - utilities.ts
 ```javascript
-import { android } from "tns-core-modules/application";
 export const getDeepLink = (path = "") => {
   const scheme = 'my-scheme';
-  const prefix = android ? `${scheme}://my-host/` : `${scheme}://`;
+  const prefix = global.isAndroid ? `${scheme}://my-host/` : `${scheme}://`;
   return prefix + path;
 }
 ```
 
 - home-page.ts
-```javascript
-import { openUrl } from 'tns-core-modules/utils/utils';
+```ts
+import { Utils, Dialogs } from '@nativescript/core';
 import { InAppBrowser } from 'nativescript-inappbrowser';
 import { getDeepLink } from './utilities';
 ...
   async onLogin() {
-    const deepLink = getDeepLink("callback")
+    const deepLink = getDeepLink('callback')
     const url = `https://my-auth-login-page.com?redirect_uri=${deepLink}`
     try {
       if (await InAppBrowser.isAvailable()) {
@@ -212,12 +213,12 @@ import { getDeepLink } from './utilities';
             response.type === 'success' &&
             response.url
           ) {
-            openUrl(response.url)
+            Utils.openUrl(response.url)
           }
         })
-      } else openUrl(url)
+      } else Utils.openUrl(url)
     } catch (error) {
-      openUrl(url)
+      Utils.openUrl(url)
     }
   }
 ...

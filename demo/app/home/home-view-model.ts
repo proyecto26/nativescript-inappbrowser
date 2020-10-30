@@ -55,7 +55,10 @@ export class HelloWorldModel extends Observable {
           },
           headers: {
             'my-custom-header': 'my custom header value'
-          }
+          },
+          hasBackButton: true,
+          browserPackage: '',
+          showInRecents: false
         });
         await sleep(800);
         Dialogs.alert({

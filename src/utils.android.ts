@@ -81,9 +81,7 @@ function waitForRedirectAsync(
 ): Promise<RedirectResult> {
   return new Promise(resolve => {
     _redirectHandler = (args: ApplicationEventData) => {
-      // TODO: Debug args.android
-      const currentActivity = args.object.foregroundActivity || args.object.startActivity;
-      const url = getInitialURL(currentActivity);
+      const url = getInitialURL(args.android);
       if (url && url.startsWith(returnUrl)) {
         resolve({ url: url, type: BROWSER_TYPES.SUCCESS });
       }
@@ -99,7 +97,6 @@ function handleAppStateActiveOnce(): Promise<Activity> {
   return new Promise(function (resolve) {
     // Browser can be closed before handling AppState change
     if (!Application.android.paused) {
-      // TODO: Debug
       const activity = Application.android.foregroundActivity || Application.android.startActivity;
       return resolve(activity);
     }
