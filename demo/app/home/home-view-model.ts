@@ -35,7 +35,7 @@ export class HelloWorldModel extends Observable {
           readerMode: false,
           animated: true,
           modalPresentationStyle: 'fullScreen',
-          modalTransitionStyle: 'partialCurl',
+          modalTransitionStyle: 'coverVertical',
           modalEnabled: true,
           enableBarCollapsing: false,
           // Android Properties

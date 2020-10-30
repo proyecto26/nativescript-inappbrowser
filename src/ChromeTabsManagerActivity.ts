@@ -1,8 +1,9 @@
-import { Observable } from '@nativescript/core';
-
 import Context = android.content.Context;
 import Intent = android.content.Intent;
 import Bundle = android.os.Bundle;
+
+import { Observable } from '@nativescript/core';
+import { BROWSER_TYPES } from './InAppBrowser.common'; 
 
 
 export class ChromeTabsEvent extends Observable {
@@ -59,7 +60,7 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
     if (!this.mOpened) {
       this.mOpened = true;
     } else {
-      this.resultType = 'cancel';
+      this.resultType = BROWSER_TYPES.CANCEL;
       this.finish();
     }
   }
@@ -67,7 +68,7 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
   onDestroy(): void {
     if (this.resultType) {
       switch (this.resultType) {
-        case 'cancel':
+        case BROWSER_TYPES.CANCEL:
           BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity closed');
           BROWSER_ACTIVITY_EVENTS.set('resultType', this.resultType);
           break;

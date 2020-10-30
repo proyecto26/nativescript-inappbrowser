@@ -33,7 +33,7 @@
 <h4 align="center"><a href="https://developer.chrome.com/multidevice/android/customtabs#whatarethey">Chrome Custom Tabs</a> for Android & <a href="https://developer.apple.com/documentation/safariservices">SafariServices</a>/<a href="https://developer.apple.com/documentation/authenticationservices">AuthenticationServices</a> for iOS.</h4>
 
 <p align="center">
-  <img width="400px" src="img/inappbrowser.png">
+  <img width="400px" src="https://github.com/proyecto26/nativescript-inappbrowser/blob/develop/img/inappbrowser.png?raw=true">
 </p>
 
 ## Getting started
@@ -80,13 +80,16 @@ Property       | Description
 `animations` (Object)             | Sets the start and exit animations. [`{ startEnter, startExit, endEnter, endExit }`]
 `headers` (Object)                | The data are key/value pairs, they will be sent in the HTTP request headers for the provided url. [`{ 'Authorization': 'Bearer ...' }`]
 `forceCloseOnRedirection` (Boolean) | Open Custom Tab in a new task to avoid issues redirecting back to app scheme. [`true`/`false`]
+`hasBackButton` (Boolean)         | Sets a back arrow instead of the default `X` icon to close the custom tab. [`true`/`false`]
+`browserPackage` (String)         | Package name of a browser to be used to handle Custom Tabs.
+`showInRecents` (Boolean)         | Determining whether browsed website should be shown as separate entry in Android recents/multitasking view. [`true`/`false`]
 
 ### Demo
 
 ```javascript
 import { openUrl } from 'tns-core-modules/utils/utils'
 import { alert } from 'tns-core-modules/ui/dialogs'
-import InAppBrowser from 'nativescript-inappbrowser'
+import { InAppBrowser } from 'nativescript-inappbrowser'
 
 ...
   openLink = async () => {
@@ -101,7 +104,7 @@ import InAppBrowser from 'nativescript-inappbrowser'
           readerMode: false,
           animated: true,
           modalPresentationStyle: 'fullScreen',
-          modalTransitionStyle: 'partialCurl',
+          modalTransitionStyle: 'coverVertical',
           modalEnabled: true,
           enableBarCollapsing: false,
           // Android Properties
@@ -155,7 +158,7 @@ define your app scheme and replace `my-scheme` and `my-host` with your info.
     <action android:name="android.intent.action.VIEW" />
     <category android:name="android.intent.category.DEFAULT" />
     <category android:name="android.intent.category.BROWSABLE" />
-    <data android:scheme="my-scheme" android:host="my-host" android:pathPrefix="" />
+    <data android:scheme="my-scheme" android:host="my-host" />
 </intent-filter>
 ```
 
@@ -189,7 +192,7 @@ export const getDeepLink = (path = "") => {
 - home-page.ts
 ```javascript
 import { openUrl } from 'tns-core-modules/utils/utils';
-import InAppBrowser from 'nativescript-inappbrowser';
+import { InAppBrowser } from 'nativescript-inappbrowser';
 import { getDeepLink } from './utilities';
 ...
   async onLogin() {
