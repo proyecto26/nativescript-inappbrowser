@@ -1,62 +1,51 @@
-import { Color, Utils, Application, EventData } from '@nativescript/core';
 import Uri = android.net.Uri;
 import Bundle = android.os.Bundle;
+import TextUtils = android.text.TextUtils;
 import Intent = android.content.Intent;
 import Context = android.content.Context;
+import Color = android.graphics.Color;
+import BitmapFactory = android.graphics.BitmapFactory;
 import Browser = android.provider.Browser;
 import Pattern = java.util.regex.Pattern;
 import AssertionError = java.lang.AssertionError;
 
+import { Utils, Application, EventData } from '@nativescript/core';
 import {
   ChromeTabsEvent,
   BROWSER_ACTIVITY_EVENTS,
   createStartIntent,
   createDismissIntent
 } from './ChromeTabsManagerActivity';
-
 import {
+  Animations,
   BrowserResult,
-  AuthSessionResult,
-  getDefaultOptions
+  getDefaultOptions,
+  InAppBrowserOptions,
+  InAppBrowserClassMethods,
+  RedirectResolve,
+  RedirectReject,
+  BROWSER_TYPES,
 } from './InAppBrowser.common';
-
 import {
+  Builder,
+  getDrawableId,
+  toolbarIsLight,
+  CustomTabsIntent,
+  DISMISSED_EVENT,
+  ARROW_BACK_WHITE,
+  ARROW_BACK_BLACK,
+  getPreferredPackages,
   openAuthSessionPolyfillAsync,
-  closeAuthSessionPolyfillAsync
+  closeAuthSessionPolyfillAsync,
 } from './utils.android';
-import { InAppBrowserClassMethods } from '.';
 
 declare let global: any;
-
-type Builder = androidx.browser.customtabs.CustomTabsIntent.Builder;
-const CustomTabsIntent = (useAndroidX() ? androidx.browser : android.support).customtabs.CustomTabsIntent;
-function useAndroidX() {
-  return global.androidx && global.androidx.browser;
-}
-
-type Animations = {
-  startEnter: string,
-  startExit: string,
-  endEnter: string,
-  endExit: string
-};
-
-type InAppBrowserOptions = {
-  showTitle?: boolean,
-  toolbarColor?: string,
-  secondaryToolbarColor?: string,
-  enableUrlBarHiding?: boolean,
-  enableDefaultShare?: boolean,
-  forceCloseOnRedirection?: boolean,
-  animations?: Animations,
-  headers?: { [key: string]: string }
-};
 
 let InAppBrowserModuleInstance: InAppBrowserClassMethods;
 
 function setup() {
   @NativeClass()
-  class InAppBrowserModule extends java.lang.Object {
+  class InAppBrowserModule extends java.lang.Object implements InAppBrowserClassMethods {
     private static ERROR_CODE = "InAppBrowser";
     private static KEY_TOOLBAR_COLOR = "toolbarColor";
     private static KEY_SECONDARY_TOOLBAR_COLOR = "secondaryToolbarColor";
@@ -70,9 +59,13 @@ function setup() {
     private static KEY_ANIMATION_START_EXIT = "startExit";
     private static KEY_ANIMATION_END_ENTER = "endEnter";
     private static KEY_ANIMATION_END_EXIT = "endExit";
+    private static KEY_HAS_BACK_BUTTON = "hasBackButton";
+    private static KEY_BROWSER_PACKAGE = "browserPackage";
+    private static KEY_SHOW_IN_RECENTS = "showInRecents";
   
-    private static redirectResolve: any;
-    private static redirectReject: any;
+    private static redirectResolve: RedirectResolve;
+    private static redirectReject: RedirectReject;
+    private isLightTheme: boolean;
     private currentActivity: any;
     private animationIdentifierPattern = Pattern.compile("^.+:.+/");
   
@@ -81,19 +74,21 @@ function setup() {
       return global.__native(this);
     }
   
-    isAvailable(): Promise<boolean> {
-      return Promise.resolve(true);
+    isAvailable() {
+      const context = Utils.android.getApplicationContext();
+      const resolveInfos = getPreferredPackages(context);
+      return Promise.resolve(!(resolveInfos === null || resolveInfos.isEmpty()));
     }
   
     open(
       url: string,
-      options: InAppBrowserOptions = {}
+      options?: InAppBrowserOptions,
     ): Promise<BrowserResult> {
       const mOpenBrowserPromise = InAppBrowserModule.redirectResolve;
       if (mOpenBrowserPromise) {
         this.flowDidFinish();
         const result: BrowserResult = {
-          type: 'cancel'
+          type: BROWSER_TYPES.CANCEL
         };
         return Promise.resolve(result);
       }
@@ -103,13 +98,14 @@ function setup() {
         return Promise.reject(new Error(InAppBrowserModule.ERROR_CODE));
       }
   
-      const inAppBrowserOptions: InAppBrowserOptions = getDefaultOptions(url, options);
+      const inAppBrowserOptions = getDefaultOptions(url, options);
   
       const builder = new CustomTabsIntent.Builder();
       if (inAppBrowserOptions[InAppBrowserModule.KEY_TOOLBAR_COLOR]) {
         const colorString = inAppBrowserOptions[InAppBrowserModule.KEY_TOOLBAR_COLOR];
         try {
-          builder.setToolbarColor(new Color(colorString).android);
+          builder.setToolbarColor(Color.parseColor(colorString));
+          this.isLightTheme = toolbarIsLight(colorString);
         } catch (error) {
           throw new Error(
                   "Invalid toolbar color '" + colorString + "': " + error.message);
@@ -118,25 +114,32 @@ function setup() {
       if (inAppBrowserOptions[InAppBrowserModule.KEY_SECONDARY_TOOLBAR_COLOR]) {
         const colorString = inAppBrowserOptions[InAppBrowserModule.KEY_SECONDARY_TOOLBAR_COLOR];
         try {
-          builder.setSecondaryToolbarColor(new Color(colorString).android);
+          builder.setSecondaryToolbarColor(Color.parseColor(colorString));
         } catch (error) {
           throw new Error(
                   "Invalid secondary toolbar color '" + colorString + "': " + error.message);
         }
       }
-      if (inAppBrowserOptions[InAppBrowserModule.KEY_ENABLE_URL_BAR_HIDING]) {
-        builder.enableUrlBarHiding();
-      }
+
       if (inAppBrowserOptions[InAppBrowserModule.KEY_DEFAULT_SHARE_MENU_ITEM]) {
         builder.addDefaultShareMenuItem();
       }
-      const context = Utils.android.getApplicationContext();
+      const context = Utils.android.getApplicationContext() as Context;
       if (inAppBrowserOptions[InAppBrowserModule.KEY_ANIMATIONS]) {
         const animations = inAppBrowserOptions[InAppBrowserModule.KEY_ANIMATIONS];
         this.applyAnimation(context, builder, animations);
       }
+      if (inAppBrowserOptions[InAppBrowserModule.KEY_HAS_BACK_BUTTON]) {
+        builder.setCloseButtonIcon(BitmapFactory.decodeResource(
+          context.getResources(),
+          this.isLightTheme
+            ? getDrawableId(ARROW_BACK_BLACK)
+            : getDrawableId(ARROW_BACK_WHITE)
+        ));
+      }
   
       const customTabsIntent = builder.build();
+      const intent = customTabsIntent.intent;
   
       const keyHeaders = inAppBrowserOptions[InAppBrowserModule.KEY_HEADERS];
       if (keyHeaders) {
@@ -146,16 +149,36 @@ function setup() {
             headers.putString(key, keyHeaders[key]);
           }
         }
-        customTabsIntent.intent.putExtra(Browser.EXTRA_HEADERS, headers);
+        intent.putExtra(Browser.EXTRA_HEADERS, headers);
       }
   
       if (inAppBrowserOptions[InAppBrowserModule.KEY_FORCE_CLOSE_ON_REDIRECTION]) {
-        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       }
-  
-      const intent = customTabsIntent.intent;
+
+      if (!inAppBrowserOptions[InAppBrowserModule.KEY_SHOW_IN_RECENTS]) {
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+      }
+      
+      intent.putExtra(
+        CustomTabsIntent.EXTRA_ENABLE_URLBAR_HIDING,
+        !!inAppBrowserOptions[InAppBrowserModule.KEY_ENABLE_URL_BAR_HIDING]
+      );
+      try {
+        if (inAppBrowserOptions[InAppBrowserModule.KEY_BROWSER_PACKAGE] !== undefined) {
+          const packageName = inAppBrowserOptions[InAppBrowserModule.KEY_BROWSER_PACKAGE];
+          if (!TextUtils.isEmpty(packageName)) {
+            intent.setPackage(packageName);
+          }
+        } else {
+          const packageName = inAppBrowserOptions[InAppBrowserModule.KEY_BROWSER_PACKAGE];
+          intent.setPackage(packageName);
+        }
+      } catch (error) {
+        if (error.printStackTrace) error.printStackTrace();
+      }
+
       intent.setData(Uri.parse(url));
       if (inAppBrowserOptions[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]) {
         builder.setShowTitle(!!inAppBrowserOptions[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]);
@@ -177,7 +200,7 @@ function setup() {
       });
     }
   
-    public close(): void {
+    public close() {
       if (!InAppBrowserModule.redirectResolve) {
         return;
       }
@@ -188,7 +211,7 @@ function setup() {
         return;
       }
   
-      BROWSER_ACTIVITY_EVENTS.off('DismissedEvent');
+      BROWSER_ACTIVITY_EVENTS.off(DISMISSED_EVENT);
   
       const result: BrowserResult = {
         type: 'dismiss'
@@ -204,17 +227,18 @@ function setup() {
     async openAuth(
       url: string,
       redirectUrl: string,
-      options: InAppBrowserOptions = {}
-    ): Promise<AuthSessionResult> {
-      const inAppBrowserOptions = getDefaultOptions(url, options);
+      options?: InAppBrowserOptions,
+    ) {
+      let response = null;
       try {
-        return await openAuthSessionPolyfillAsync(
-          url, redirectUrl, inAppBrowserOptions, (startUrl, opt) => this.open(startUrl, opt)
+        response = await openAuthSessionPolyfillAsync(
+          (startUrl, opt) => this.open(startUrl, opt), url, redirectUrl, options
         );
       } finally {
         closeAuthSessionPolyfillAsync();
         this.close();
       }
+      return response;
     }
   
     public closeAuth(): void {
@@ -223,7 +247,7 @@ function setup() {
     }
   
     public onEvent(event: EventData): void {
-      BROWSER_ACTIVITY_EVENTS.off('DismissedEvent');
+      BROWSER_ACTIVITY_EVENTS.off(DISMISSED_EVENT);
   
       if (!InAppBrowserModule.redirectResolve) {
         throw new AssertionError();
@@ -232,12 +256,12 @@ function setup() {
       InAppBrowserModule.redirectResolve({
         type: browserEvent.resultType,
         message: browserEvent.message
-      });
+      } as BrowserResult);
       this.flowDidFinish();
     }
   
     private registerEvent(): void {
-      BROWSER_ACTIVITY_EVENTS.once('DismissedEvent', (e) => this.onEvent(e));
+      BROWSER_ACTIVITY_EVENTS.once(DISMISSED_EVENT, (e) => this.onEvent(e));
     }
   
     private resolveAnimationIdentifierIfNeeded(context: Context, identifier: string): number {

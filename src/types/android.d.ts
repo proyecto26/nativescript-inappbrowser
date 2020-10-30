@@ -1,11 +1,15 @@
 declare namespace android {
   export namespace support {
     export namespace customtabs {
+      export class CustomTabsClient {
+        static getPackageName(context: android.content.Context, list: java.util.List): string;
+      }
       export class CustomTabsIntent {
         launchUrl(context: android.content.Context, url: android.net.Uri): void;
         intent: android.content.Intent;
         static NO_TITLE: number;
         static EXTRA_TITLE_VISIBILITY_STATE: string;
+        static EXTRA_ENABLE_URLBAR_HIDING: string;
         startAnimationBundle: android.os.Bundle;
       }
       namespace CustomTabsIntent {
@@ -17,8 +21,9 @@ declare namespace android {
           setSecondaryToolbarColor(color: number): this;
           addDefaultShareMenuItem(): this;
           enableUrlBarHiding(): this;
-          setStartAnimations(context: android.content.Context, enterResId: number, exitResId: number);
-          setExitAnimations(context: android.content.Context, enterResId: number, exitResId: number);
+          setStartAnimations(context: android.content.Context, enterResId: number, exitResId: number): this;
+          setExitAnimations(context: android.content.Context, enterResId: number, exitResId: number): this;
+          setCloseButtonIcon(icon: android.graphics.Bitmap): this;
         }
       }
     }
@@ -28,11 +33,15 @@ declare namespace android {
 declare namespace androidx {
   export namespace browser {
     export namespace customtabs {
+      export class CustomTabsClient {
+        static getPackageName(context: android.content.Context, list: java.util.List): string;
+      }
       export class CustomTabsIntent {
         launchUrl(context: android.content.Context, url: android.net.Uri): void;
         intent: android.content.Intent;
         static NO_TITLE: number;
         static EXTRA_TITLE_VISIBILITY_STATE: string;
+        static EXTRA_ENABLE_URLBAR_HIDING: string;
         startAnimationBundle: android.os.Bundle;
       }
       namespace CustomTabsIntent {
@@ -44,8 +53,9 @@ declare namespace androidx {
           setSecondaryToolbarColor(color: number): this;
           addDefaultShareMenuItem(): this;
           enableUrlBarHiding(): this;
-          setStartAnimations(context: android.content.Context, enterResId: number, exitResId: number);
-          setExitAnimations(context: android.content.Context, enterResId: number, exitResId: number);
+          setStartAnimations(context: android.content.Context, enterResId: number, exitResId: number): this;
+          setExitAnimations(context: android.content.Context, enterResId: number, exitResId: number): this;
+          setCloseButtonIcon(icon: android.graphics.Bitmap): this;
         }
       }
     }

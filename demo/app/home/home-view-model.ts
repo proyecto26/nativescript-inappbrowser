@@ -35,7 +35,7 @@ export class HelloWorldModel extends Observable {
           readerMode: false,
           animated: true,
           modalPresentationStyle: 'fullScreen',
-          modalTransitionStyle: 'partialCurl',
+          modalTransitionStyle: 'coverVertical',
           modalEnabled: true,
           enableBarCollapsing: false,
           // Android Properties
@@ -55,7 +55,10 @@ export class HelloWorldModel extends Observable {
           },
           headers: {
             'my-custom-header': 'my custom header value'
-          }
+          },
+          hasBackButton: true,
+          browserPackage: '',
+          showInRecents: false
         });
         await sleep(800);
         Dialogs.alert({

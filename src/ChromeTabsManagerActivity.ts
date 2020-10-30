@@ -1,8 +1,10 @@
-import { Observable } from '@nativescript/core';
-
 import Context = android.content.Context;
 import Intent = android.content.Intent;
 import Bundle = android.os.Bundle;
+
+import { Observable } from '@nativescript/core';
+import { BROWSER_TYPES } from './InAppBrowser.common';
+import { DISMISSED_EVENT } from './utils.android';
 
 
 export class ChromeTabsEvent extends Observable {
@@ -14,7 +16,7 @@ export const BROWSER_ACTIVITY_EVENTS = new ChromeTabsEvent();
 
 const KEY_BROWSER_INTENT = 'browserIntent';
 const BROWSER_RESULT_TYPE = 'browserResultType';
-const DEFAULT_RESULT_TYPE = 'dismiss';
+const DEFAULT_RESULT_TYPE = BROWSER_TYPES.DISMISS;
 
 /**
  * Manages the custom chrome tabs intent by detecting when it is dismissed by the user and allowing
@@ -59,7 +61,7 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
     if (!this.mOpened) {
       this.mOpened = true;
     } else {
-      this.resultType = 'cancel';
+      this.resultType = BROWSER_TYPES.CANCEL;
       this.finish();
     }
   }
@@ -67,7 +69,7 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
   onDestroy(): void {
     if (this.resultType) {
       switch (this.resultType) {
-        case 'cancel':
+        case BROWSER_TYPES.CANCEL:
           BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity closed');
           BROWSER_ACTIVITY_EVENTS.set('resultType', this.resultType);
           break;
@@ -77,7 +79,7 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
           break;
       }
       BROWSER_ACTIVITY_EVENTS.notify({
-        eventName: 'DismissedEvent',
+        eventName: DISMISSED_EVENT,
         object: BROWSER_ACTIVITY_EVENTS
       });
       this.resultType = null;
