@@ -98,10 +98,13 @@ function setup() {
   
         if (Utils.ios.MajorVersion >= 10) {
           if (inAppBrowserOptions.preferredBarTintColor) {
-            this.safariVC.preferredBarTintColor = new Color(inAppBrowserOptions.preferredBarTintColor).ios;
+            const color = inAppBrowserOptions.preferredBarTintColor instanceof Color ? inAppBrowserOptions.preferredBarTintColor : new Color(inAppBrowserOptions.preferredBarTintColor);
+
+            this.safariVC.preferredBarTintColor = color.ios;
           }
           if (inAppBrowserOptions.preferredControlTintColor) {
-            this.safariVC.preferredControlTintColor = new Color(inAppBrowserOptions.preferredControlTintColor).ios;
+            const color = inAppBrowserOptions.preferredControlTintColor instanceof Color ? inAppBrowserOptions.preferredControlTintColor : new Color(inAppBrowserOptions.preferredControlTintColor);
+            this.safariVC.preferredControlTintColor = color.ios;
           }
         }
   
