@@ -3,7 +3,6 @@ import Bundle = android.os.Bundle;
 import TextUtils = android.text.TextUtils;
 import Intent = android.content.Intent;
 import Context = android.content.Context;
-// import Color = android.graphics.Color;
 import BitmapFactory = android.graphics.BitmapFactory;
 import Browser = android.provider.Browser;
 import Pattern = java.util.regex.Pattern;
