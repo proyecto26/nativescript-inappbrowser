@@ -38,6 +38,8 @@ import {
   closeAuthSessionPolyfillAsync,
 } from './utils.android';
 
+import { parseColor } from './utils.common';
+
 declare let global: any;
 
 let InAppBrowserModuleInstance: InAppBrowserClassMethods;
@@ -100,25 +102,30 @@ function setup() {
       const inAppBrowserOptions = getDefaultOptions(url, options);
   
       const builder = new CustomTabsIntent.Builder();
-      if (inAppBrowserOptions[InAppBrowserModule.KEY_TOOLBAR_COLOR]) {
-        const colorString = inAppBrowserOptions[InAppBrowserModule.KEY_TOOLBAR_COLOR];
-        const color = colorString instanceof Color ? colorString : new Color(colorString);
-        try {
-          builder.setToolbarColor(color.android);
-          this.isLightTheme = toolbarIsLight(color.android);
-        } catch (error) {
-          throw new Error(
-                  "Invalid toolbar color '" + colorString + "': " + error.message);
+      let colorString = inAppBrowserOptions[InAppBrowserModule.KEY_TOOLBAR_COLOR];
+      if (colorString) {
+        const color = parseColor(colorString);
+        if (color) {
+          try {
+            builder.setToolbarColor(color.android);
+            this.isLightTheme = toolbarIsLight(color.android);
+          } catch (error) {
+            throw new Error(
+                    "Invalid toolbar color '" + colorString + "': " + error.message);
+          }
         }
+        
       }
-      if (inAppBrowserOptions[InAppBrowserModule.KEY_SECONDARY_TOOLBAR_COLOR]) {
-        const colorString = inAppBrowserOptions[InAppBrowserModule.KEY_SECONDARY_TOOLBAR_COLOR];
-        const color = colorString instanceof Color ? colorString : new Color(colorString);
-        try {
-          builder.setSecondaryToolbarColor(color.android);
-        } catch (error) {
-          throw new Error(
-                  "Invalid secondary toolbar color '" + colorString + "': " + error.message);
+      colorString = inAppBrowserOptions[InAppBrowserModule.KEY_SECONDARY_TOOLBAR_COLOR];
+      if (colorString) {
+        const color = parseColor(colorString);
+        if (color) {
+          try {
+            builder.setSecondaryToolbarColor(color.android);
+          } catch (error) {
+            throw new Error(
+                    "Invalid secondary toolbar color '" + colorString + "': " + error.message);
+          }
         }
       }
 

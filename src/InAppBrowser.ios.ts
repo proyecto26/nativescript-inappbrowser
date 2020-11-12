@@ -1,4 +1,5 @@
 import { Color, Utils } from '@nativescript/core';
+import { parseColor } from 'utils.common';
 
 import {
   BrowserResult,
@@ -98,13 +99,16 @@ function setup() {
   
         if (Utils.ios.MajorVersion >= 10) {
           if (inAppBrowserOptions.preferredBarTintColor) {
-            const color = inAppBrowserOptions.preferredBarTintColor instanceof Color ? inAppBrowserOptions.preferredBarTintColor : new Color(inAppBrowserOptions.preferredBarTintColor);
-
-            this.safariVC.preferredBarTintColor = color.ios;
+            const color = parseColor(inAppBrowserOptions.preferredBarTintColor);
+            if (color) {
+              this.safariVC.preferredBarTintColor = color.ios;
+            }
           }
           if (inAppBrowserOptions.preferredControlTintColor) {
-            const color = inAppBrowserOptions.preferredControlTintColor instanceof Color ? inAppBrowserOptions.preferredControlTintColor : new Color(inAppBrowserOptions.preferredControlTintColor);
-            this.safariVC.preferredControlTintColor = color.ios;
+            const color = parseColor(inAppBrowserOptions.preferredBarTintColor);
+            if (color) {
+              this.safariVC.preferredControlTintColor = color.ios;
+            }
           }
         }
   
