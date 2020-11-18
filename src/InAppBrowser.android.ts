@@ -104,28 +104,27 @@ function setup() {
       const builder = new CustomTabsIntent.Builder();
       let colorString = inAppBrowserOptions[InAppBrowserModule.KEY_TOOLBAR_COLOR];
       if (colorString) {
-        const color = parseColor(colorString);
-        if (color) {
-          try {
+        try {
+          const color = parseColor(colorString);
+          if (color) {
             builder.setToolbarColor(color.android);
             this.isLightTheme = toolbarIsLight(color.android);
-          } catch (error) {
-            throw new Error(
-                    "Invalid toolbar color '" + colorString + "': " + error.message);
           }
+        } catch (error) {
+          throw new Error(
+                  "Invalid toolbar color '" + colorString + "': " + error.message);
         }
-        
       }
       colorString = inAppBrowserOptions[InAppBrowserModule.KEY_SECONDARY_TOOLBAR_COLOR];
       if (colorString) {
-        const color = parseColor(colorString);
-        if (color) {
-          try {
+        try {
+          const color = parseColor(colorString);
+          if (color) {
             builder.setSecondaryToolbarColor(color.android);
-          } catch (error) {
-            throw new Error(
-                    "Invalid secondary toolbar color '" + colorString + "': " + error.message);
           }
+        } catch (error) {
+          throw new Error(
+                  "Invalid secondary toolbar color '" + colorString + "': " + error.message);
         }
       }
 
