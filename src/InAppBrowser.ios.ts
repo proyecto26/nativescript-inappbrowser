@@ -1,5 +1,5 @@
 import { Color, Utils } from '@nativescript/core';
-import { parseColor } from 'utils.common';
+import { parseColor } from './utils.common';
 
 import {
   BrowserResult,
