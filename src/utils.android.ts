@@ -156,8 +156,8 @@ export function getPreferredPackages(context: Context): List<ResolveInfo> {
   return resolveInfos;
 }
 
-export function toolbarIsLight(themeColor: string): boolean {
-  return ColorUtils.calculateLuminance(Color.parseColor(themeColor)) > 0.5;
+export function toolbarIsLight(themeColor: number): boolean {
+  return ColorUtils.calculateLuminance(themeColor) > 0.5;
 }
 
 export function getDefaultBrowser(context: Context): string {

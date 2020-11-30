@@ -1,3 +1,5 @@
+import { Color } from "@nativescript/core";
+
 export interface RedirectEvent {
   url: 'string';
 }
@@ -14,8 +16,8 @@ export interface RedirectResult {
 
 type InAppBrowseriOSOptions = {
   dismissButtonStyle?: 'done' | 'close' | 'cancel',
-  preferredBarTintColor?: string,
-  preferredControlTintColor?: string,
+  preferredBarTintColor?: string | Color,
+  preferredControlTintColor?: string | Color,
   readerMode?: boolean,
   animated?: boolean,
   modalPresentationStyle?:
@@ -48,8 +50,8 @@ export type Animations = {
 
 type InAppBrowserAndroidOptions = {
   showTitle?: boolean,
-  toolbarColor?: string,
-  secondaryToolbarColor?: string,
+  toolbarColor?: string | Color,
+  secondaryToolbarColor?: string | Color,
   enableUrlBarHiding?: boolean,
   enableDefaultShare?: boolean,
   forceCloseOnRedirection?: boolean,
