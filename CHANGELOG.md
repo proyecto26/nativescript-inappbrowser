@@ -22,8 +22,13 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [3.0.1] - 2020-11-30
+### Fixed
+- Fix colors not working with instance of Color by [@farfromrefug](https://github.com/farfromrefug) ([#50](https://github.com/proyecto26/nativescript-inappbrowser/pull/50)).
+
 ## [3.0.0] - 2020-10-30
 ### Added
+- {N} 7 updates by [@NathanWalker](https://github.com/NathanWalker) ([#40](https://github.com/proyecto26/nativescript-inappbrowser/pull/40)).
 - Added `hasBackButton` option to sets a back arrow instead of the default X icon to close the custom tab.
 - Added default browser configuration for custom tab if any.
 - Added `browserPackage` option to use a Package name of a browser to be used to handle Custom Tabs.
@@ -78,7 +83,8 @@ in case of vulnerabilities.
 - Methods to open and close external urls to authenticate the user **(openAuth, closeAuth)** using deep linking.
 - `isAvailable` method to detect if the device supports the plugin.
 
-[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.1...HEAD
+[3.0.1]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.3.0...v3.0.0
 [2.3.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.1.1...v2.2.0
