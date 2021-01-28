@@ -105,7 +105,7 @@ function setup() {
             }
           }
           if (inAppBrowserOptions.preferredControlTintColor) {
-            const color = parseColor(inAppBrowserOptions.preferredBarTintColor);
+            const color = parseColor(inAppBrowserOptions.preferredControlTintColor);
             if (color) {
               this.safariVC.preferredControlTintColor = color.ios;
             }
