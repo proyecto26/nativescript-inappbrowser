@@ -228,6 +228,14 @@ import { getDeepLink } from './utilities';
 
 Using in-app browser tabs (like SFAuthenticationSession/ASWebAuthenticationSession and Android Custom Tabs) where available. Embedded user-agents, known as web-views (like UIWebView and WKWebView), are explicitly not supported due to the usability and security reasons documented in [Section 8.12 of RFC 8252](https://tools.ietf.org/html/rfc8252#section-8.12).
 
+## Credits 👍
+* **React Native InAppBrowser:** [InAppBrowser for React Native](https://github.com/proyecto26/react-native-inappbrowser)
+
+## Contributing ✨
+When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.  
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated** ❤️.  
+You can learn more about how you can contribute to this project in the [contribution guide](https://github.com/proyecto26/nativescript-inappbrowser/blob/develop/CONTRIBUTING.md).
+
 ## Contributors ✨
 Please do contribute! Issues and pull requests are welcome.
 
@@ -266,9 +274,6 @@ Support this project with your organization. Your logo will show up here with a 
 <a href="https://opencollective.com/proyecto26/organization/8/website"><img src="https://opencollective.com/proyecto26/organization/8/avatar.svg"></a>
 <a href="https://opencollective.com/proyecto26/organization/9/website"><img src="https://opencollective.com/proyecto26/organization/9/avatar.svg"></a>
 
-## Credits 👍
-* **React Native InAppBrowser:** [InAppBrowser for React Native](https://github.com/proyecto26/react-native-inappbrowser)
-
 ## Supporting 🍻
 I believe in Unicorns 🦄
 Support [me](http://www.paypal.me/jdnichollsc/2), if you do too.
@@ -281,6 +286,9 @@ The maintainers of InAppBrowser for NativeScript and thousands of other packages
 
 ## Security contact information 🚨
 To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security). Tidelift will coordinate the fix and disclosure.
+
+## License ⚖️
+This repository is available under the [MIT License](https://github.com/proyecto26/nativescript-inappbrowser/blob/develop/LICENSE).
 
 ## Happy coding 💯
 Made with ❤️
