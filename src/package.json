@@ -1,6 +1,6 @@
 {
 	"name": "nativescript-inappbrowser",
-	"version": "3.0.1",
+	"version": "3.0.2",
 	"description": "InAppBrowser for NativeScript",
 	"main": "InAppBrowser",
 	"typings": "index.d.ts",
