@@ -149,13 +149,27 @@ import { InAppBrowser } from 'nativescript-inappbrowser';
 ...
 ```
 
+### Enabling Custom Tabs - Android 11 (API 30) and above
+
+Android 11 and above needs a query section in it's AndroidManifest to check if an installed browser matches the Custom
+Tabs support.
+
+- Enable custom tabs for Android 11 - **[AndroidManifest.xml](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/Android/src/main/AndroidManifest.xml#L51)** 
+```xml
+<queries>
+    <intent>
+        <action android:name="android.support.customtabs.action.CustomTabsService" />
+    </intent>
+</queries>
+```
+
 ### Authentication Flow using Deep Linking
 
 In order to redirect back to your application from a web browser, you must specify a unique URI to your app. To do this,
 define your app scheme and replace `my-scheme` and `my-host` with your info.
 
 - Enable deep linking (Android) - **[AndroidManifest.xml](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/Android/src/main/AndroidManifest.xml#L41)**
-```
+```xml
 <intent-filter>
     <action android:name="android.intent.action.VIEW" />
     <category android:name="android.intent.category.DEFAULT" />
@@ -165,7 +179,7 @@ define your app scheme and replace `my-scheme` and `my-host` with your info.
 ```
 
 - Enable deep linking (iOS) - **[Info.plist](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/iOS/Info.plist#L21)**
-```
+```xml
 <key>CFBundleURLTypes</key>
 <array>
   <dict>
