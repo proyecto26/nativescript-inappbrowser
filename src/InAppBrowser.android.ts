@@ -257,7 +257,7 @@ function setup() {
       BROWSER_ACTIVITY_EVENTS.off(DISMISSED_EVENT);
   
       if (!InAppBrowserModule.redirectResolve) {
-        throw new AssertionError();
+        return;
       }
       const browserEvent = <ChromeTabsEvent>event.object;
       InAppBrowserModule.redirectResolve({
