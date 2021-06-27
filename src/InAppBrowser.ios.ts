@@ -1,5 +1,5 @@
-import { Color, Utils } from '@nativescript/core';
-import { parseColor } from './utils.common';
+import { Utils } from '@nativescript/core';
+import { parseColor, log } from './utils.common';
 
 import {
   BrowserResult,
@@ -53,7 +53,7 @@ function setup() {
       reject: RedirectReject
     ) {
       if (this.redirectReject) {
-        this.redirectReject(InAppBrowserErrorMessage);
+        this.redirectReject(new Error(InAppBrowserErrorMessage));
         return false;
       }
       this.redirectResolve = resolve;
@@ -71,18 +71,27 @@ function setup() {
         const inAppBrowserOptions = getDefaultOptions(authURL, options);
         this.animated = inAppBrowserOptions.animated;
   
-        const url = NSURL.URLWithString(inAppBrowserOptions.url);
-        if (Utils.ios.MajorVersion >= 11) {
-          const config = SFSafariViewControllerConfiguration.alloc().init();
-          config.barCollapsingEnabled = inAppBrowserOptions.enableBarCollapsing;
-          config.entersReaderIfAvailable = inAppBrowserOptions.readerMode;
-          this.safariVC = SFSafariViewController.alloc().initWithURLConfiguration(url, config);
-        } else {
-          this.safariVC = SFSafariViewController.alloc().initWithURLEntersReaderIfAvailable(
-            url,
-            inAppBrowserOptions.readerMode
-          );
+        try {
+          // Safari View Controller to authorize request
+          const url = NSURL.URLWithString(inAppBrowserOptions.url);
+          if (Utils.ios.MajorVersion >= 11) {
+            const config = SFSafariViewControllerConfiguration.alloc().init();
+            config.barCollapsingEnabled = inAppBrowserOptions.enableBarCollapsing;
+            config.entersReaderIfAvailable = inAppBrowserOptions.readerMode;
+            this.safariVC = SFSafariViewController.alloc().initWithURLConfiguration(url, config);
+          } else {
+            this.safariVC = SFSafariViewController.alloc().initWithURLEntersReaderIfAvailable(
+              url,
+              inAppBrowserOptions.readerMode
+            );
+          }
+        } catch (error) {
+          reject(new Error("Unable to open url."));
+          this.flowDidFinish();
+          log(`InAppBrowser: ${error}`);
+          return;
         }
+        
         this.safariVC.delegate = this;
   
         if (Utils.ios.MajorVersion >= 11) {
@@ -119,7 +128,7 @@ function setup() {
           const safariHackVC = UINavigationController.alloc().initWithRootViewController(this.safariVC);
           safariHackVC.setNavigationBarHiddenAnimated(true, false);
 
-          // To disable "Swipe to dismiss" gesture which sometimes causes a bug where `safariViewControllerDidFinish` 
+          // To disable "Swipe to dismiss" gesture which sometimes causes a bug where `safariViewControllerDidFinish`
           // is not called.
           this.safariVC.modalPresentationStyle = UIModalPresentationStyle.OverFullScreen;
           safariHackVC.modalPresentationStyle = getPresentationStyle(inAppBrowserOptions.modalPresentationStyle);
@@ -165,24 +174,27 @@ function setup() {
           if (!this.initializeWebBrowser(resolve, reject)) return;
   
           const url = NSURL.URLWithString(authUrl);
+          const escapedRedirectURL = NSURL.URLWithString(redirectUrl).scheme;
           this.authSession = (
             Utils.ios.MajorVersion >= 12 ? ASWebAuthenticationSession : SFAuthenticationSession
           ).alloc().initWithURLCallbackURLSchemeCompletionHandler(
             url,
-            redirectUrl,
+            escapedRedirectURL,
             (callbackURL, error) => {
-              if (!error) {
-                this.redirectResolve({
-                  type: BROWSER_TYPES.SUCCESS,
-                  url: callbackURL.absoluteString
-                });
+              if (this.redirectResolve) {
+                if (!error) {
+                  this.redirectResolve({
+                    type: BROWSER_TYPES.SUCCESS,
+                    url: callbackURL.absoluteString
+                  });
+                }
+                else {
+                  this.redirectResolve({
+                    type: BROWSER_TYPES.CANCEL
+                  });
+                }
+                this.flowDidFinish();
               }
-              else {
-                this.redirectResolve({
-                  type: BROWSER_TYPES.CANCEL
-                });
-              }
-              this.flowDidFinish();
             }
           );
           if (Utils.ios.MajorVersion >= 13) {

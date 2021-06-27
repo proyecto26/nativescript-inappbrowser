@@ -36,13 +36,52 @@
   <img width="400px" src="https://github.com/proyecto26/nativescript-inappbrowser/blob/develop/img/inappbrowser.png?raw=true">
 </p>
 
+## Who is using InAppBrowser?
+
+Do you want to see this package in action? Check these awesome projects, yay! 🎉
+- [Oxycar](https://oxycar.com) - Offers innovative ways to facilitate home-work journeys.
+- [Pegus Digital](https://pegus.digital/) - Your innovation partner in digital product development.
+
+Share your awesome project [here](hhttps://github.com/proyecto26/nativescript-inappbrowser/issues/49)! ❤️
+
 ## Getting started
 
 ```javascript
 tns plugin add nativescript-inappbrowser
 ```
 
+### Manual installation
 
+- **Android Platform with Android Support:**
+
+  Modify your **android/build.gradle** configuration:
+  ```
+  buildscript {
+    ext {
+      buildToolsVersion = "28.0.3"
+      minSdkVersion = 16
+      compileSdkVersion = 28
+      targetSdkVersion = 28
+      // Only using Android Support libraries
+      supportLibVersion = "28.0.0"
+    }
+  ```
+
+- **Android Platform with AndroidX:**
+
+  Modify your **android/build.gradle** configuration:
+  ```
+  buildscript {
+    ext {
+      buildToolsVersion = "28.0.3"
+      minSdkVersion = 16
+      compileSdkVersion = 28
+      targetSdkVersion = 28
+      // Remove 'supportLibVersion' property and put specific versions for AndroidX libraries
+      androidXBrowser = "1.0.0"
+      // Put here other AndroidX dependencies
+    }
+  ```
 
 ## Usage
 
@@ -75,6 +114,8 @@ Property       | Description
 `showTitle` (Boolean)   | Sets whether the title should be shown in the custom tab. [`true`/`false`]
 `toolbarColor` (String)           | Sets the toolbar color. [`gray`/`#808080`]
 `secondaryToolbarColor` (String)  | Sets the color of the secondary toolbar. [`white`/`#FFFFFF`]
+`navigationBarColor` (String)     | Sets the navigation bar color. [`gray`/`#808080`]
+`navigationBarDividerColor` (String) | Sets the navigation bar divider color.  [`white`/`#FFFFFF`]
 `enableUrlBarHiding` (Boolean)    | Enables the url bar to hide as the user scrolls down on the page. [`true`/`false`]
 `enableDefaultShare` (Boolean)    | Adds a default share item to the menu. [`true`/`false`]
 `animations` (Object)             | Sets the start and exit animations. [`{ startEnter, startExit, endEnter, endExit }`]
@@ -93,7 +134,7 @@ import { InAppBrowser } from 'nativescript-inappbrowser';
 ...
   openLink = async () => {
     try {
-      const url = 'https://www.google.com'
+      const url = 'https://www.proyecto26.com'
       if (await InAppBrowser.isAvailable()) {
         const result = await InAppBrowser.open(url, {
           // iOS Properties
@@ -110,6 +151,8 @@ import { InAppBrowser } from 'nativescript-inappbrowser';
           showTitle: true,
           toolbarColor: '#6200EE',
           secondaryToolbarColor: 'black',
+          navigationBarColor: 'black',
+          navigationBarDividerColor: 'white',
           enableUrlBarHiding: true,
           enableDefaultShare: true,
           forceCloseOnRedirection: false,
@@ -156,12 +199,16 @@ define your app scheme and replace `my-scheme` and `my-host` with your info.
 
 - Enable deep linking (Android) - **[AndroidManifest.xml](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/Android/src/main/AndroidManifest.xml#L41)**
 ```
-<intent-filter>
-    <action android:name="android.intent.action.VIEW" />
-    <category android:name="android.intent.category.DEFAULT" />
-    <category android:name="android.intent.category.BROWSABLE" />
-    <data android:scheme="my-scheme" android:host="my-host" />
-</intent-filter>
+<activity
+  ...
+  android:launchMode="singleTask">
+  <intent-filter>
+      <action android:name="android.intent.action.VIEW" />
+      <category android:name="android.intent.category.DEFAULT" />
+      <category android:name="android.intent.category.BROWSABLE" />
+      <data android:scheme="my-scheme" android:host="my-host" android:pathPrefix="" />
+  </intent-filter>
+</activity>
 ```
 
 - Enable deep linking (iOS) - **[Info.plist](https://github.com/proyecto26/nativescript-inappbrowser/blob/master/demo/app/App_Resources/iOS/Info.plist#L21)**
@@ -217,12 +264,16 @@ import { getDeepLink } from './utilities';
           }
         })
       } else Utils.openUrl(url)
-    } catch (error) {
+    } catch {
       Utils.openUrl(url)
     }
   }
 ...
 ```
+
+### StatusBar
+
+The StatusBar will keep the last one provided in your app. So if the StatusBar is `dark-content` before you open the browser this will keep it.
 
 ### Authentication
 
@@ -277,6 +328,14 @@ Support this project with your organization. Your logo will show up here with a 
 ## Supporting 🍻
 I believe in Unicorns 🦄
 Support [me](http://www.paypal.me/jdnichollsc/2), if you do too.
+
+Donate **Ethereum**, **ADA**, **BNB**, **SHIBA**, **USDT**, **DOGE**:
+
+![Wallet address](https://user-images.githubusercontent.com/2154886/123501719-84bf1900-d60c-11eb-882c-98a499cea323.png)
+
+> Wallet address: 0x3F9fA8021B43ACe578C2352861Cf335449F33427
+
+Please let us know your contributions! 🙏
 
 ## Enterprise 💼
 

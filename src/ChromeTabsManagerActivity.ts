@@ -5,11 +5,13 @@ import Bundle = android.os.Bundle;
 import { Observable } from '@nativescript/core';
 import { BROWSER_TYPES } from './InAppBrowser.common';
 import { DISMISSED_EVENT } from './utils.android';
+import { log } from './utils.common';
 
 
 export class ChromeTabsEvent extends Observable {
-  public message: String;
-  public resultType: String;
+  public message: string;
+  public resultType: string;
+  public isError: boolean
 }
 
 export const BROWSER_ACTIVITY_EVENTS = new ChromeTabsEvent();
@@ -17,6 +19,16 @@ export const BROWSER_ACTIVITY_EVENTS = new ChromeTabsEvent();
 const KEY_BROWSER_INTENT = 'browserIntent';
 const BROWSER_RESULT_TYPE = 'browserResultType';
 const DEFAULT_RESULT_TYPE = BROWSER_TYPES.DISMISS;
+
+const notifyMessage = (message: string, resultType: BROWSER_TYPES, isError = false) => {
+  BROWSER_ACTIVITY_EVENTS.set('message', message);
+  BROWSER_ACTIVITY_EVENTS.set('resultType', resultType);
+  BROWSER_ACTIVITY_EVENTS.set('isError', isError);
+  BROWSER_ACTIVITY_EVENTS.notify({
+    eventName: DISMISSED_EVENT,
+    object: BROWSER_ACTIVITY_EVENTS
+  });
+};
 
 /**
  * Manages the custom chrome tabs intent by detecting when it is dismissed by the user and allowing
@@ -27,6 +39,7 @@ const DEFAULT_RESULT_TYPE = BROWSER_TYPES.DISMISS;
 export class ChromeTabsManagerActivity extends android.app.Activity {
   private mOpened = false;
   private resultType = null;
+  private isError = false;
 
   constructor() {
     super();
@@ -34,21 +47,28 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
   }
 
   public onCreate(savedInstanceState?: Bundle): void {
-    super.onCreate(savedInstanceState);
+    try {
+      super.onCreate(savedInstanceState);
 
-    // This activity gets opened in 2 different ways. If the extra KEY_BROWSER_INTENT is present we
-    // start that intent and if it is not it means this activity was started with FLAG_ACTIVITY_CLEAR_TOP
-    // in order to close the intent that was started previously so we just close this.
-    if (
-      this.getIntent().hasExtra(KEY_BROWSER_INTENT)
-      && (!savedInstanceState || !savedInstanceState.getString(BROWSER_RESULT_TYPE))
-    ) {
-      const browserIntent = <Intent>this.getIntent().getParcelableExtra(KEY_BROWSER_INTENT);
-      browserIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-      this.startActivity(browserIntent);
-      this.resultType = DEFAULT_RESULT_TYPE;
-    } else {
+      // This activity gets opened in 2 different ways. If the extra KEY_BROWSER_INTENT is present we
+      // start that intent and if it is not it means this activity was started with FLAG_ACTIVITY_CLEAR_TOP
+      // in order to close the intent that was started previously so we just close this.
+      if (
+        this.getIntent().hasExtra(KEY_BROWSER_INTENT)
+        && (!savedInstanceState || !savedInstanceState.getString(BROWSER_RESULT_TYPE))
+      ) {
+        const browserIntent = <Intent>this.getIntent().getParcelableExtra(KEY_BROWSER_INTENT);
+        browserIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        this.startActivity(browserIntent);
+        this.resultType = DEFAULT_RESULT_TYPE;
+      } else {
+        this.finish();
+      }
+    } catch (error) {
+      this.isError = true;
+      notifyMessage('Unable to open url.', this.resultType, this.isError);
       this.finish();
+      log(`InAppBrowser: ${error}`);
     }
   }
 
@@ -70,18 +90,12 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
     if (this.resultType) {
       switch (this.resultType) {
         case BROWSER_TYPES.CANCEL:
-          BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity closed');
-          BROWSER_ACTIVITY_EVENTS.set('resultType', this.resultType);
+          notifyMessage('chrome tabs activity closed', this.resultType, this.isError);
           break;
         default:
-          BROWSER_ACTIVITY_EVENTS.set('message', 'chrome tabs activity destroyed');
-          BROWSER_ACTIVITY_EVENTS.set('resultType', DEFAULT_RESULT_TYPE);
+          notifyMessage('chrome tabs activity destroyed', DEFAULT_RESULT_TYPE, this.isError);
           break;
       }
-      BROWSER_ACTIVITY_EVENTS.notify({
-        eventName: DISMISSED_EVENT,
-        object: BROWSER_ACTIVITY_EVENTS
-      });
       this.resultType = null;
     }
     super.onDestroy();

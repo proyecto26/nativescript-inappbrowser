@@ -9,7 +9,7 @@ export class HelloWorldModel extends Observable {
     super();
 
     // Initialize default values.
-    this._url = 'https://www.google.com';
+    this._url = 'https://nativescript.org';
   }
 
   get url(): string {
@@ -42,6 +42,8 @@ export class HelloWorldModel extends Observable {
           showTitle: true,
           toolbarColor: '#6200EE',
           secondaryToolbarColor: 'black',
+          navigationBarColor: 'black',
+          navigationBarDividerColor: 'white',
           enableUrlBarHiding: true,
           enableDefaultShare: true,
           forceCloseOnRedirection: true,

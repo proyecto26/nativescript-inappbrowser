@@ -6,9 +6,8 @@ import Context = android.content.Context;
 import BitmapFactory = android.graphics.BitmapFactory;
 import Browser = android.provider.Browser;
 import Pattern = java.util.regex.Pattern;
-import AssertionError = java.lang.AssertionError;
 
-import { Utils, Application, EventData, Color } from '@nativescript/core';
+import { Utils, Application, EventData } from '@nativescript/core';
 import {
   ChromeTabsEvent,
   BROWSER_ACTIVITY_EVENTS,
@@ -38,7 +37,7 @@ import {
   closeAuthSessionPolyfillAsync,
 } from './utils.android';
 
-import { parseColor } from './utils.common';
+import { tryParseColor } from './utils.common';
 
 declare let global: any;
 
@@ -47,28 +46,30 @@ let InAppBrowserModuleInstance: InAppBrowserClassMethods;
 function setup() {
   @NativeClass()
   class InAppBrowserModule extends java.lang.Object implements InAppBrowserClassMethods {
-    private static ERROR_CODE = "InAppBrowser";
-    private static KEY_TOOLBAR_COLOR = "toolbarColor";
-    private static KEY_SECONDARY_TOOLBAR_COLOR = "secondaryToolbarColor";
-    private static KEY_ENABLE_URL_BAR_HIDING = "enableUrlBarHiding";
-    private static KEY_SHOW_PAGE_TITLE = "showTitle";
-    private static KEY_DEFAULT_SHARE_MENU_ITEM = "enableDefaultShare";
-    private static KEY_FORCE_CLOSE_ON_REDIRECTION = "forceCloseOnRedirection";
-    private static KEY_ANIMATIONS = "animations";
-    private static KEY_HEADERS = "headers";
-    private static KEY_ANIMATION_START_ENTER = "startEnter";
-    private static KEY_ANIMATION_START_EXIT = "startExit";
-    private static KEY_ANIMATION_END_ENTER = "endEnter";
-    private static KEY_ANIMATION_END_EXIT = "endExit";
-    private static KEY_HAS_BACK_BUTTON = "hasBackButton";
-    private static KEY_BROWSER_PACKAGE = "browserPackage";
-    private static KEY_SHOW_IN_RECENTS = "showInRecents";
+    private static ERROR_CODE = 'InAppBrowser';
+    private static KEY_TOOLBAR_COLOR = 'toolbarColor';
+    private static KEY_SECONDARY_TOOLBAR_COLOR = 'secondaryToolbarColor';
+    private static KEY_NAVIGATION_BAR_COLOR = 'navigationBarColor';
+    private static KEY_NAVIGATION_BAR_DIVIDER_COLOR = 'navigationBarDividerColor';
+    private static KEY_ENABLE_URL_BAR_HIDING = 'enableUrlBarHiding';
+    private static KEY_SHOW_PAGE_TITLE = 'showTitle';
+    private static KEY_DEFAULT_SHARE_MENU_ITEM = 'enableDefaultShare';
+    private static KEY_FORCE_CLOSE_ON_REDIRECTION = 'forceCloseOnRedirection';
+    private static KEY_ANIMATIONS = 'animations';
+    private static KEY_HEADERS = 'headers';
+    private static KEY_ANIMATION_START_ENTER = 'startEnter';
+    private static KEY_ANIMATION_START_EXIT = 'startExit';
+    private static KEY_ANIMATION_END_ENTER = 'endEnter';
+    private static KEY_ANIMATION_END_EXIT = 'endExit';
+    private static KEY_HAS_BACK_BUTTON = 'hasBackButton';
+    private static KEY_BROWSER_PACKAGE = 'browserPackage';
+    private static KEY_SHOW_IN_RECENTS = 'showInRecents';
   
     private static redirectResolve: RedirectResolve;
     private static redirectReject: RedirectReject;
     private isLightTheme: boolean;
     private currentActivity: any;
-    private animationIdentifierPattern = Pattern.compile("^.+:.+/");
+    private animationIdentifierPattern = Pattern.compile('^.+:.+/');
   
     constructor() {
       super();
@@ -81,7 +82,7 @@ function setup() {
       return Promise.resolve(!(resolveInfos === null || resolveInfos.isEmpty()));
     }
   
-    open(
+    async open(
       url: string,
       options?: InAppBrowserOptions,
     ): Promise<BrowserResult> {
@@ -98,33 +99,42 @@ function setup() {
       if (!this.currentActivity) {
         return Promise.reject(new Error(InAppBrowserModule.ERROR_CODE));
       }
+      const result = new Promise<BrowserResult>(function (resolve, reject) {
+        InAppBrowserModule.redirectResolve = resolve;
+        InAppBrowserModule.redirectReject = reject;
+      });
   
       const inAppBrowserOptions = getDefaultOptions(url, options);
   
       const builder = new CustomTabsIntent.Builder();
       let colorString = inAppBrowserOptions[InAppBrowserModule.KEY_TOOLBAR_COLOR];
+      this.isLightTheme = false;
       if (colorString) {
-        try {
-          const color = parseColor(colorString);
-          if (color) {
-            builder.setToolbarColor(color.android);
-            this.isLightTheme = toolbarIsLight(color.android);
-          }
-        } catch (error) {
-          throw new Error(
-                  "Invalid toolbar color '" + colorString + "': " + error.message);
+        const color = tryParseColor(colorString, 'Invalid toolbar color');
+        if (color) {
+          builder.setToolbarColor(color.android);
+          this.isLightTheme = toolbarIsLight(color.android);
         }
       }
       colorString = inAppBrowserOptions[InAppBrowserModule.KEY_SECONDARY_TOOLBAR_COLOR];
       if (colorString) {
-        try {
-          const color = parseColor(colorString);
-          if (color) {
-            builder.setSecondaryToolbarColor(color.android);
-          }
-        } catch (error) {
-          throw new Error(
-                  "Invalid secondary toolbar color '" + colorString + "': " + error.message);
+        const color = tryParseColor(colorString, 'Invalid secondary toolbar color');
+        if (color) {
+          builder.setSecondaryToolbarColor(color.android);
+        }
+      }
+      colorString = inAppBrowserOptions[InAppBrowserModule.KEY_NAVIGATION_BAR_COLOR];
+      if (colorString) {
+        const color = tryParseColor(colorString, 'Invalid navigation bar color');
+        if (color) {
+          builder.setSecondaryToolbarColor(color.android);
+        }
+      }
+      colorString = inAppBrowserOptions[InAppBrowserModule.KEY_NAVIGATION_BAR_DIVIDER_COLOR];
+      if (colorString) {
+        const color = tryParseColor(colorString, 'Invalid navigation bar divider color');
+        if (color) {
+          builder.setSecondaryToolbarColor(color.android);
         }
       }
 
@@ -183,8 +193,12 @@ function setup() {
           intent.setPackage(packageName);
         }
       } catch (error) {
-        if (error.printStackTrace) error.printStackTrace();
+        if (error.printStackTrace) {
+          error.printStackTrace();
+        }
       }
+
+      this.registerEvent();
 
       intent.setData(Uri.parse(url));
       if (inAppBrowserOptions[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]) {
@@ -193,18 +207,13 @@ function setup() {
       else {
         intent.putExtra(CustomTabsIntent.EXTRA_TITLE_VISIBILITY_STATE, CustomTabsIntent.NO_TITLE);
       }
-  
-      this.registerEvent();
-  
+
       this.currentActivity.startActivity(
         createStartIntent(this.currentActivity, intent),
         customTabsIntent.startAnimationBundle
       );
   
-      return new Promise(function (resolve, reject) {
-        InAppBrowserModule.redirectResolve = resolve;
-        InAppBrowserModule.redirectReject = reject;
-      });
+      return result;
     }
   
     public close() {
@@ -257,13 +266,17 @@ function setup() {
       BROWSER_ACTIVITY_EVENTS.off(DISMISSED_EVENT);
   
       if (!InAppBrowserModule.redirectResolve) {
-        throw new AssertionError();
+        return;
       }
       const browserEvent = <ChromeTabsEvent>event.object;
-      InAppBrowserModule.redirectResolve({
-        type: browserEvent.resultType,
-        message: browserEvent.message
-      } as BrowserResult);
+      if (browserEvent.isError) {
+        InAppBrowserModule.redirectReject(new Error(browserEvent.message));
+      } else {
+        InAppBrowserModule.redirectResolve({
+          type: browserEvent.resultType,
+          message: browserEvent.message
+        } as BrowserResult);
+      }
       this.flowDidFinish();
     }
   
@@ -275,7 +288,7 @@ function setup() {
       if (this.animationIdentifierPattern.matcher(identifier).find()) {
         return context.getResources().getIdentifier(identifier, null, null);
       } else {
-        return context.getResources().getIdentifier(identifier, "anim", context.getPackageName());
+        return context.getResources().getIdentifier(identifier, 'anim', context.getPackageName());
       }
     }
   

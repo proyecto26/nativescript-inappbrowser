@@ -6,3 +6,19 @@ export function parseColor(color: string | Color) {
   }
   return color as Color;
 }
+
+export function tryParseColor(colorString: string | Color, errorMessage: string) {
+  try {
+    return parseColor(colorString);
+  } catch (error) {
+    throw new Error(`${errorMessage} ${colorString}: ${error.message}`);
+  }
+}
+
+export function log(message: string, ...optionalParams: any[]): void {
+  const nglog = (<any>global).__nslog;
+  if (nglog) {
+    nglog(message, ...optionalParams);
+  }
+  console.log(message, ...optionalParams);
+}
