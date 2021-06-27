@@ -42,7 +42,7 @@ Do you want to see this package in action? Check these awesome projects, yay! �
 - [Oxycar](https://oxycar.com) - Offers innovative ways to facilitate home-work journeys.
 - [Pegus Digital](https://pegus.digital/) - Your innovation partner in digital product development.
 
-Share your awesome project [here](hhttps://github.com/proyecto26/nativescript-inappbrowser/issues/49)! ❤️
+Share your awesome project [here](https://github.com/proyecto26/nativescript-inappbrowser/issues/49)! ❤️
 
 ## Getting started
 
