@@ -23,10 +23,10 @@ const DEFAULT_RESULT_TYPE = BROWSER_TYPES.DISMISS;
 const notifyMessage = (message: string, resultType: BROWSER_TYPES, isError = false) => {
   BROWSER_ACTIVITY_EVENTS.set('message', message);
   BROWSER_ACTIVITY_EVENTS.set('resultType', resultType);
+  BROWSER_ACTIVITY_EVENTS.set('isError', isError);
   BROWSER_ACTIVITY_EVENTS.notify({
     eventName: DISMISSED_EVENT,
-    object: BROWSER_ACTIVITY_EVENTS,
-    isError
+    object: BROWSER_ACTIVITY_EVENTS
   });
 };
 
@@ -39,6 +39,7 @@ const notifyMessage = (message: string, resultType: BROWSER_TYPES, isError = fal
 export class ChromeTabsManagerActivity extends android.app.Activity {
   private mOpened = false;
   private resultType = null;
+  private isError = false;
 
   constructor() {
     super();
@@ -64,7 +65,8 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
         this.finish();
       }
     } catch (error) {
-      notifyMessage('Unable to open url.', BROWSER_TYPES.CANCEL, true);
+      this.isError = true;
+      notifyMessage('Unable to open url.', this.resultType, this.isError);
       this.finish();
       log(`InAppBrowser: ${error}`);
     }
@@ -88,10 +90,10 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
     if (this.resultType) {
       switch (this.resultType) {
         case BROWSER_TYPES.CANCEL:
-          notifyMessage('chrome tabs activity closed', this.resultType);
+          notifyMessage('chrome tabs activity closed', this.resultType, this.isError);
           break;
         default:
-          notifyMessage('chrome tabs activity destroyed', DEFAULT_RESULT_TYPE);
+          notifyMessage('chrome tabs activity destroyed', DEFAULT_RESULT_TYPE, this.isError);
           break;
       }
       this.resultType = null;

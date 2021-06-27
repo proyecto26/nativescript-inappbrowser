@@ -46,30 +46,30 @@ let InAppBrowserModuleInstance: InAppBrowserClassMethods;
 function setup() {
   @NativeClass()
   class InAppBrowserModule extends java.lang.Object implements InAppBrowserClassMethods {
-    private static ERROR_CODE = "InAppBrowser";
-    private static KEY_TOOLBAR_COLOR = "toolbarColor";
-    private static KEY_SECONDARY_TOOLBAR_COLOR = "secondaryToolbarColor";
-    private static KEY_NAVIGATION_BAR_COLOR = "navigationBarColor";
-    private static KEY_NAVIGATION_BAR_DIVIDER_COLOR = "navigationBarDividerColor";
-    private static KEY_ENABLE_URL_BAR_HIDING = "enableUrlBarHiding";
-    private static KEY_SHOW_PAGE_TITLE = "showTitle";
-    private static KEY_DEFAULT_SHARE_MENU_ITEM = "enableDefaultShare";
-    private static KEY_FORCE_CLOSE_ON_REDIRECTION = "forceCloseOnRedirection";
-    private static KEY_ANIMATIONS = "animations";
-    private static KEY_HEADERS = "headers";
-    private static KEY_ANIMATION_START_ENTER = "startEnter";
-    private static KEY_ANIMATION_START_EXIT = "startExit";
-    private static KEY_ANIMATION_END_ENTER = "endEnter";
-    private static KEY_ANIMATION_END_EXIT = "endExit";
-    private static KEY_HAS_BACK_BUTTON = "hasBackButton";
-    private static KEY_BROWSER_PACKAGE = "browserPackage";
-    private static KEY_SHOW_IN_RECENTS = "showInRecents";
+    private static ERROR_CODE = 'InAppBrowser';
+    private static KEY_TOOLBAR_COLOR = 'toolbarColor';
+    private static KEY_SECONDARY_TOOLBAR_COLOR = 'secondaryToolbarColor';
+    private static KEY_NAVIGATION_BAR_COLOR = 'navigationBarColor';
+    private static KEY_NAVIGATION_BAR_DIVIDER_COLOR = 'navigationBarDividerColor';
+    private static KEY_ENABLE_URL_BAR_HIDING = 'enableUrlBarHiding';
+    private static KEY_SHOW_PAGE_TITLE = 'showTitle';
+    private static KEY_DEFAULT_SHARE_MENU_ITEM = 'enableDefaultShare';
+    private static KEY_FORCE_CLOSE_ON_REDIRECTION = 'forceCloseOnRedirection';
+    private static KEY_ANIMATIONS = 'animations';
+    private static KEY_HEADERS = 'headers';
+    private static KEY_ANIMATION_START_ENTER = 'startEnter';
+    private static KEY_ANIMATION_START_EXIT = 'startExit';
+    private static KEY_ANIMATION_END_ENTER = 'endEnter';
+    private static KEY_ANIMATION_END_EXIT = 'endExit';
+    private static KEY_HAS_BACK_BUTTON = 'hasBackButton';
+    private static KEY_BROWSER_PACKAGE = 'browserPackage';
+    private static KEY_SHOW_IN_RECENTS = 'showInRecents';
   
     private static redirectResolve: RedirectResolve;
     private static redirectReject: RedirectReject;
     private isLightTheme: boolean;
     private currentActivity: any;
-    private animationIdentifierPattern = Pattern.compile("^.+:.+/");
+    private animationIdentifierPattern = Pattern.compile('^.+:.+/');
   
     constructor() {
       super();
@@ -99,6 +99,10 @@ function setup() {
       if (!this.currentActivity) {
         return Promise.reject(new Error(InAppBrowserModule.ERROR_CODE));
       }
+      const result = new Promise<BrowserResult>(function (resolve, reject) {
+        InAppBrowserModule.redirectResolve = resolve;
+        InAppBrowserModule.redirectReject = reject;
+      });
   
       const inAppBrowserOptions = getDefaultOptions(url, options);
   
@@ -201,7 +205,7 @@ function setup() {
       else {
         intent.putExtra(CustomTabsIntent.EXTRA_TITLE_VISIBILITY_STATE, CustomTabsIntent.NO_TITLE);
       }
-  
+
       this.registerEvent();
 
       this.currentActivity.startActivity(
@@ -209,10 +213,7 @@ function setup() {
         customTabsIntent.startAnimationBundle
       );
   
-      return new Promise(function (resolve, reject) {
-        InAppBrowserModule.redirectResolve = resolve;
-        InAppBrowserModule.redirectReject = reject;
-      });
+      return result;
     }
   
     public close() {
@@ -287,7 +288,7 @@ function setup() {
       if (this.animationIdentifierPattern.matcher(identifier).find()) {
         return context.getResources().getIdentifier(identifier, null, null);
       } else {
-        return context.getResources().getIdentifier(identifier, "anim", context.getPackageName());
+        return context.getResources().getIdentifier(identifier, 'anim', context.getPackageName());
       }
     }
   
