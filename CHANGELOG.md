@@ -22,6 +22,16 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [3.1.0] - 2021-06-27
+
+### Added
+- Add `navigationBarColor` and `navigationBarDividerColor` options by [@jdnichollsc](https://github.com/jdnichollsc).
+- Add try catch block to `Safari View Controller` and `ChromeTabs` to validate the url.
+
+### Fixed
+- Fix invalid scheme with iOS 14.5.
+- Fix `openAuth` crashed when going to be closed and then press the cancel button.
+
 ## [3.0.2] - 2020-02-01
 ### Fixed
 - Fix wrong param passed to parseColor method by [@ronalson](https://github.com/ronalson) ([#56](https://github.com/proyecto26/nativescript-inappbrowser/pull/56)).
@@ -87,7 +97,8 @@ in case of vulnerabilities.
 - Methods to open and close external urls to authenticate the user **(openAuth, closeAuth)** using deep linking.
 - `isAvailable` method to detect if the device supports the plugin.
 
-[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.2...HEAD
+[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.2...v3.1.0
 [3.0.2]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v2.3.0...v3.0.0

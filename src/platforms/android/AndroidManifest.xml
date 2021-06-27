@@ -6,11 +6,17 @@
 	<!--EXAMPLE: uses-permission android:name="android.permission.INTERNET"/> -->
 
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 
 	<application>
-		<activity
-			android:name="com.proyecto26.inappbrowser.ChromeTabsManagerActivity"
-			android:exported="true">
-		</activity>
+			<activity
+					android:name="com.proyecto26.inappbrowser.ChromeTabsManagerActivity"
+					android:exported="true">
+			</activity>
 	</application>
+	<queries>
+			<intent>
+					<action android:name="android.support.customtabs.action.CustomTabsService" />
+			</intent>
+	</queries>
 </manifest>

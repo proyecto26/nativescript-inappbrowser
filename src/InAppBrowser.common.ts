@@ -52,6 +52,8 @@ type InAppBrowserAndroidOptions = {
   showTitle?: boolean,
   toolbarColor?: string | Color,
   secondaryToolbarColor?: string | Color,
+  navigationBarColor?: string | Color,
+  navigationBarDividerColor?: string | Color,
   enableUrlBarHiding?: boolean,
   enableDefaultShare?: boolean,
   forceCloseOnRedirection?: boolean,
@@ -84,7 +86,7 @@ export interface InAppBrowserClassMethods {
 }
 
 export type RedirectResolve = (value?: AuthSessionResult | PromiseLike<AuthSessionResult>) => void;
-export type RedirectReject = (reason?: any) => void;
+export type RedirectReject = (reason?: Error) => void;
 
 export const InAppBrowserErrorMessage = 'Another InAppBrowser is already being presented.';
 
