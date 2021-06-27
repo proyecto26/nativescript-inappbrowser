@@ -198,6 +198,8 @@ function setup() {
         }
       }
 
+      this.registerEvent();
+
       intent.setData(Uri.parse(url));
       if (inAppBrowserOptions[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]) {
         builder.setShowTitle(!!inAppBrowserOptions[InAppBrowserModule.KEY_SHOW_PAGE_TITLE]);
@@ -205,8 +207,6 @@ function setup() {
       else {
         intent.putExtra(CustomTabsIntent.EXTRA_TITLE_VISIBILITY_STATE, CustomTabsIntent.NO_TITLE);
       }
-
-      this.registerEvent();
 
       this.currentActivity.startActivity(
         createStartIntent(this.currentActivity, intent),
