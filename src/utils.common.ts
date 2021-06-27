@@ -16,8 +16,9 @@ export function tryParseColor(colorString: string | Color, errorMessage: string)
 }
 
 export function log(message: string, ...optionalParams: any[]): void {
-	if ((<any>global).__nslog) {
-		(<any>global).__nslog(message, ...optionalParams);
-	}
-	console.log(message, ...optionalParams);
+  const nglog = (<any>global).__nslog;
+  if (nglog) {
+    nglog(message, ...optionalParams);
+  }
+  console.log(message, ...optionalParams);
 }
