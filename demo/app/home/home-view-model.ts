@@ -9,7 +9,7 @@ export class HelloWorldModel extends Observable {
     super();
 
     // Initialize default values.
-    this._url = 'https://www.proyecto26.com';
+    this._url = 'https://nativescript.org';
   }
 
   get url(): string {
