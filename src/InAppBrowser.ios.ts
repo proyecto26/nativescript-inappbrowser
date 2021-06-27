@@ -87,7 +87,7 @@ function setup() {
           }
         } catch (error) {
           reject(new Error("Unable to open url."));
-          this.close();
+          this.flowDidFinish();
           log(`InAppBrowser: ${error}`);
           return;
         }
