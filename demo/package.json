@@ -3,9 +3,9 @@
   "license": "SEE LICENSE IN <your-license-filename>",
   "repository": "<fill-your-repository-here>",
   "dependencies": {
+    "@nativescript/core": "~7.0.0",
     "nativescript-inappbrowser": "file:../src",
-    "nativescript-theme-core": "~2.0.24",
-    "@nativescript/core": "~7.0.0"
+    "nativescript-theme-core": "~2.0.24"
   },
   "devDependencies": {
     "@nativescript/android": "7.0.1",
