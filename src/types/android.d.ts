@@ -19,6 +19,8 @@ declare namespace android {
           setShowTitle(showTitle: boolean): this;
           setToolbarColor(color: number): this;
           setSecondaryToolbarColor(color: number): this;
+          setNavigationBarColor(color: number): this;
+          setNavigationBarDividerColor(color: number): this;
           addDefaultShareMenuItem(): this;
           enableUrlBarHiding(): this;
           setStartAnimations(context: android.content.Context, enterResId: number, exitResId: number): this;
@@ -51,6 +53,8 @@ declare namespace androidx {
           setShowTitle(showTitle: boolean): this;
           setToolbarColor(color: number): this;
           setSecondaryToolbarColor(color: number): this;
+          setNavigationBarColor(color: number): this;
+          setNavigationBarDividerColor(color: number): this;
           addDefaultShareMenuItem(): this;
           enableUrlBarHiding(): this;
           setStartAnimations(context: android.content.Context, enterResId: number, exitResId: number): this;

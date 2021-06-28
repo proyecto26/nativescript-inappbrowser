@@ -1,6 +1,6 @@
 {
 	"name": "nativescript-inappbrowser",
-	"version": "3.1.0",
+	"version": "3.1.1",
 	"description": "InAppBrowser for NativeScript",
 	"main": "InAppBrowser",
 	"typings": "index.d.ts",
@@ -15,6 +15,7 @@
 		"url": "https://github.com/proyecto26/nativescript-inappbrowser.git"
 	},
 	"scripts": {
+		"setup": "npm i && ts-patch install",
 		"tsc": "npm i && ts-patch install && tsc",
 		"build": "npm run tsc && npm run build.native",
 		"build.native": "node scripts/build-native.js",

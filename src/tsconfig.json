@@ -21,12 +21,12 @@
         "noImplicitUseStrict": false,
         "noFallthroughCasesInSwitch": true,
         "baseUrl": ".",
-    		"plugins": [
-    			{
-    				"transform": "@nativescript/webpack/transformers/ns-transform-native-classes",
-    				"type": "raw"
-    			}
-    		]
+        "plugins": [
+            {
+                "transform": "@nativescript/webpack/transformers/ns-transform-native-classes",
+                "type": "raw"
+            }
+        ]
     },
     "exclude": [
         "node_modules"

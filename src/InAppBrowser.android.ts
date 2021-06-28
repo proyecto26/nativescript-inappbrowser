@@ -127,14 +127,14 @@ function setup() {
       if (colorString) {
         const color = tryParseColor(colorString, 'Invalid navigation bar color');
         if (color) {
-          builder.setSecondaryToolbarColor(color.android);
+          builder.setNavigationBarColor(color.android);
         }
       }
       colorString = inAppBrowserOptions[InAppBrowserModule.KEY_NAVIGATION_BAR_DIVIDER_COLOR];
       if (colorString) {
         const color = tryParseColor(colorString, 'Invalid navigation bar divider color');
         if (color) {
-          builder.setSecondaryToolbarColor(color.android);
+          builder.setNavigationBarDividerColor(color.android);
         }
       }
 
