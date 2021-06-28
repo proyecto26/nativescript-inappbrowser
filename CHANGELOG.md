@@ -22,6 +22,11 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [3.1.1] - 2021-06-28
+
+### Fixed
+- Fix issues with `navigationBarColor` and `navigationBarDividerColor` Android options.
+
 ## [3.1.0] - 2021-06-27
 
 ### Added
@@ -97,7 +102,8 @@ in case of vulnerabilities.
 - Methods to open and close external urls to authenticate the user **(openAuth, closeAuth)** using deep linking.
 - `isAvailable` method to detect if the device supports the plugin.
 
-[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.0...HEAD
+[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.1...HEAD
+[3.1.1]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.2...v3.1.0
 [3.0.2]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.0...v3.0.1
