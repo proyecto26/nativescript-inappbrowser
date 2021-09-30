@@ -1,0 +1,12 @@
+{
+    "uses": [
+      "android.nfc:NfcAdapter*",
+      "androidx.browser.customtabs:CustomTabsIntent*",
+      "androidx.core.graphics:ColorUtils*",
+      "android.net:Uri*",
+      "android.text:TextUtils*",
+      "android.provider:Browser*",
+      "java.util.regex:Pattern*",
+      "android.graphics:BitmapFactory*"
+    ]
+}
