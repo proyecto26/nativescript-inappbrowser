@@ -15,17 +15,17 @@
 		"url": "https://github.com/proyecto26/nativescript-inappbrowser.git"
 	},
 	"scripts": {
-		"setup": "npm i && ts-patch install",
-		"tsc": "npm i && ts-patch install && tsc",
+		"setup": "ts-patch install",
+		"tsc": "ts-patch install && tsc",
 		"build": "npm run tsc && npm run build.native",
 		"build.native": "node scripts/build-native.js",
-		"test.android": "npm i && npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch",
-		"test.ios": "npm i && npm run tsc && npm run tslint && cd ../demo && tns build ios && tns test ios --justlaunch",
+		"test.android": "npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch",
+		"test.ios": "npm run tsc && npm run tslint && cd ../demo && tns build ios && tns test ios --justlaunch",
 		"tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"",
-		"ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/node_modules/**' --exclude '**/platforms/**'",
+		"ci.tslint": "tslint '**/*.ts' --config '../tslint.json' --exclude '**/node_modules/**' --exclude '**/platforms/**'",
 		"prepack": "npm run build.native",
-		"demo.ios": "npm i && cd ../demo && tns run ios --inspector",
-		"demo.android": "npm i && cd ../demo && tns run android",
+		"demo.ios": "cd ../demo && tns run ios --inspector",
+		"demo.android": "cd ../demo && tns run android",
 		"demo.reset": "cd ../demo && npx rimraf hooks node_modules platforms package-lock.json",
 		"plugin.prepare": "npm run build && cd ../demo && tns plugin remove nativescript-inappbrowser && tns plugin add ../src",
 		"clean": "npm run demo.reset && npx rimraf node_modules package-lock.json && npm i"
@@ -58,16 +58,16 @@
 	"license": "MIT",
 	"homepage": "https://github.com/proyecto26/nativescript-inappbrowser",
 	"devDependencies": {
-		"@nativescript/core": "~7.0.0",
-		"@nativescript/types": "~7.0.0",
-		"@nativescript/webpack": "~3.0.0",
-		"typescript": "~3.9.0",
-		"prompt": "^1.0.0",
+		"@nativescript/core": "~8.3.1",
+		"@nativescript/types": "~8.3.1",
+		"@nativescript/webpack": "~5.0.8",
+		"typescript": "~4.4.4",
+		"prompt": "^1.2.0",
 		"rimraf": "^3.0.2",
-		"tslint": "^6.1.1",
-		"ts-node": "^9.0.0",
-		"ts-patch": "^1.3.0",
-		"semver": "^7.2.1"
+		"tslint": "^6.1.3",
+		"ts-node": "^10.4.0",
+		"ts-patch": "^1.4.5",
+		"semver": "^7.3.5"
 	},
 	"bootstrapper": "nativescript-plugin-seed"
 }
