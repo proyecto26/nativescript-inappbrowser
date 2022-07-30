@@ -7,7 +7,7 @@ import BitmapFactory = android.graphics.BitmapFactory;
 import Browser = android.provider.Browser;
 import Pattern = java.util.regex.Pattern;
 
-import { Utils, Application, EventData } from '@nativescript/core';
+import { Application, EventData, Utils } from '@nativescript/core';
 import {
   ChromeTabsEvent,
   BROWSER_ACTIVITY_EVENTS,
