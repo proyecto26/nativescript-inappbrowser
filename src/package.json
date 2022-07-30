@@ -17,14 +17,14 @@
 	"scripts": {
 		"setup": "ts-patch install",
 		"tsc": "ts-patch install && tsc",
-		"test.android": "npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch",
-		"test.ios": "npm run tsc && npm run tslint && cd ../demo && tns build ios && tns test ios --justlaunch",
+		"test.android": "npm run tsc && npm run tslint && ns --path ../demo build android && ns --path ../demo test android --justlaunch",
+		"test.ios": "npm run tsc && npm run tslint && ns --path ../demo build ios && ns --path ../demo test ios --justlaunch",
 		"tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"",
 		"ci.tslint": "tslint '**/*.ts' --config '../tslint.json' --exclude '**/node_modules/**' --exclude '**/platforms/**'",
-		"demo.ios": "cd ../demo && tns run ios --inspector",
-		"demo.android": "cd ../demo && tns run android",
-		"demo.reset": "cd ../demo && npx rimraf hooks node_modules platforms package-lock.json",
-		"plugin.prepare": "cd ../demo && tns plugin remove nativescript-inappbrowser && tns plugin add ../src",
+		"demo.ios": "ns --path ../demo debug ios",
+		"demo.android": "ns --path ../demo debug android",
+		"demo.reset": "ns --path ../demo clean",
+		"plugin.prepare": "ns --path ../demo plugin remove nativescript-inappbrowser && ns --path ../demo plugin add .",
 		"clean": "npm run demo.reset && npx rimraf node_modules package-lock.json && npm i"
 	},
 	"keywords": [

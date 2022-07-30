@@ -47,7 +47,7 @@ Share your awesome project [here](https://github.com/proyecto26/nativescript-ina
 ## Getting started
 
 ```javascript
-tns plugin add nativescript-inappbrowser
+ns plugin add nativescript-inappbrowser
 ```
 
 ### Manual installation

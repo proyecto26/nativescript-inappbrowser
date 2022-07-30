@@ -13,10 +13,10 @@ letter.
 
 ### Please, provide the following version numbers that your issue occurs with:
 
-- CLI: (run `tns --version` to fetch it)
+- CLI: (run `ns --version` to fetch it)
 - Cross-platform modules: (check the 'version' attribute in the
-`node_modules/tns-core-modules/package.json` file in your project)
-- Runtime(s): (look for the `"tns-android"` and `"tns-ios"` properties in the `package.json` file of your project)
+`node_modules/@nativescript/core/package.json` file in your project)
+- Runtime(s): (look for the `"@nativescript/android"` and `"@nativescript/ios"` properties in the `package.json` file of your project)
 - Plugin(s): (look for the version numbers in the `package.json` file of your
 project and paste your dependencies and devDependencies here)
 
