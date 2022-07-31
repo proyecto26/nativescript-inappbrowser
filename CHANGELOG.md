@@ -22,6 +22,12 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Added
+- Add custom size option to iOS formSheet Modal by [@ShaneMckenna23](https://github.com/ShaneMckenna23) ([#91](https://github.com/proyecto26/nativescript-inappbrowser/pull/91)).
+
+### Fixed
+- Complete migration to ns8 and fix build issues by [@rigor789](https://github.com/rigor789) ([#92](https://github.com/proyecto26/nativescript-inappbrowser/pull/92)).
+
 ## [3.1.2] - 2021-06-28
 
 ### Fixed

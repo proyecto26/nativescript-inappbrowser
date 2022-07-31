@@ -68,21 +68,33 @@ function setup() {
       return new Promise((resolve, reject) => {
         if (!this.initializeWebBrowser(resolve, reject)) return;
   
-        const inAppBrowserOptions = getDefaultOptions(authURL, options);
-        this.animated = inAppBrowserOptions.animated;
+        const {
+          url,
+          animated,
+          enableBarCollapsing,
+          readerMode,
+          dismissButtonStyle,
+          preferredBarTintColor,
+          preferredControlTintColor,
+          modalEnabled,
+          modalPresentationStyle,
+          modalTransitionStyle,
+          formSheetPreferredContentSize,
+        } = getDefaultOptions(authURL, options);
+        this.animated = animated;
   
         try {
           // Safari View Controller to authorize request
-          const url = NSURL.URLWithString(inAppBrowserOptions.url);
+          const authURL = NSURL.URLWithString(url);
           if (Utils.ios.MajorVersion >= 11) {
             const config = SFSafariViewControllerConfiguration.alloc().init();
-            config.barCollapsingEnabled = inAppBrowserOptions.enableBarCollapsing;
-            config.entersReaderIfAvailable = inAppBrowserOptions.readerMode;
-            this.safariVC = SFSafariViewController.alloc().initWithURLConfiguration(url, config);
+            config.barCollapsingEnabled = enableBarCollapsing;
+            config.entersReaderIfAvailable = readerMode;
+            this.safariVC = SFSafariViewController.alloc().initWithURLConfiguration(authURL, config);
           } else {
             this.safariVC = SFSafariViewController.alloc().initWithURLEntersReaderIfAvailable(
-              url,
-              inAppBrowserOptions.readerMode
+              authURL,
+              readerMode
             );
           }
         } catch (error) {
@@ -95,26 +107,26 @@ function setup() {
         this.safariVC.delegate = this;
   
         if (Utils.ios.MajorVersion >= 11) {
-          if (inAppBrowserOptions.dismissButtonStyle === DISMISS_BUTTON_STYLES.DONE) {
+          if (dismissButtonStyle === DISMISS_BUTTON_STYLES.DONE) {
             this.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Done;
           }
-          else if (inAppBrowserOptions.dismissButtonStyle === DISMISS_BUTTON_STYLES.CLOSE) {
+          else if (dismissButtonStyle === DISMISS_BUTTON_STYLES.CLOSE) {
             this.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Close;
           }
-          else if (inAppBrowserOptions.dismissButtonStyle === DISMISS_BUTTON_STYLES.CANCEL) {
+          else if (dismissButtonStyle === DISMISS_BUTTON_STYLES.CANCEL) {
             this.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Cancel;
           }
         }
   
         if (Utils.ios.MajorVersion >= 10) {
-          if (inAppBrowserOptions.preferredBarTintColor) {
-            const color = parseColor(inAppBrowserOptions.preferredBarTintColor);
+          if (preferredBarTintColor) {
+            const color = parseColor(preferredBarTintColor);
             if (color) {
               this.safariVC.preferredBarTintColor = color.ios;
             }
           }
-          if (inAppBrowserOptions.preferredControlTintColor) {
-            const color = parseColor(inAppBrowserOptions.preferredControlTintColor);
+          if (preferredControlTintColor) {
+            const color = parseColor(preferredControlTintColor);
             if (color) {
               this.safariVC.preferredControlTintColor = color.ios;
             }
@@ -122,8 +134,7 @@ function setup() {
         }
   
         const ctrl = UIApplication.sharedApplication.keyWindow.rootViewController;
-  
-        if (inAppBrowserOptions.modalEnabled) {
+        if (modalEnabled) {
           // This is a hack to present the SafariViewController modally
           const safariHackVC = UINavigationController.alloc().initWithRootViewController(this.safariVC);
           safariHackVC.setNavigationBarHiddenAnimated(true, false);
@@ -131,10 +142,19 @@ function setup() {
           // To disable "Swipe to dismiss" gesture which sometimes causes a bug where `safariViewControllerDidFinish`
           // is not called.
           this.safariVC.modalPresentationStyle = UIModalPresentationStyle.OverFullScreen;
-          safariHackVC.modalPresentationStyle = getPresentationStyle(inAppBrowserOptions.modalPresentationStyle);
+          safariHackVC.modalPresentationStyle = getPresentationStyle(modalPresentationStyle);
           if (this.animated) {
-            safariHackVC.modalTransitionStyle = getTransitionStyle(inAppBrowserOptions.modalTransitionStyle);
+            safariHackVC.modalTransitionStyle = getTransitionStyle(modalTransitionStyle);
           }
+
+          if(safariHackVC.modalPresentationStyle === UIModalPresentationStyle.FormSheet && formSheetPreferredContentSize){
+            const width = formSheetPreferredContentSize.width;
+            const height = formSheetPreferredContentSize.height;
+            if(width && height){
+              safariHackVC.preferredContentSize = CGSizeMake(width, height);
+            }
+          }
+
           if (Utils.ios.MajorVersion >= 13) {
             safariHackVC.modalInPresentation = true;
             if (safariHackVC[setModalInPresentation])
@@ -142,10 +162,10 @@ function setup() {
           }
           safariHackVC.presentationController.delegate = this;
   
-          ctrl.presentViewControllerAnimatedCompletion(safariHackVC, inAppBrowserOptions.animated, null);
+          ctrl.presentViewControllerAnimatedCompletion(safariHackVC, animated, null);
         }
         else {
-          ctrl.presentViewControllerAnimatedCompletion(this.safariVC, inAppBrowserOptions.animated, null);
+          ctrl.presentViewControllerAnimatedCompletion(this.safariVC, animated, null);
         }
       });
     }
@@ -163,12 +183,9 @@ function setup() {
     public async openAuth(
       authUrl: string,
       redirectUrl: string,
-      options: InAppBrowserOptions = {}
+      options?: InAppBrowserOptions,
     ): Promise<AuthSessionResult> {
-      const inAppBrowserOptions = {
-        ...options,
-        ephemeralWebSession: options.ephemeralWebSession !== undefined ? options.ephemeralWebSession : false,
-      };
+      const ephemeralWebSession = !!options?.ephemeralWebSession;
       if (Utils.ios.MajorVersion >= 11) {
         return new Promise<AuthSessionResult>((resolve, reject) => {
           if (!this.initializeWebBrowser(resolve, reject)) return;
@@ -200,7 +217,7 @@ function setup() {
           if (Utils.ios.MajorVersion >= 13) {
             const webAuthSession = this.authSession as ASWebAuthenticationSession;
             // Prevent re-use cookie from last auth session
-            webAuthSession.prefersEphemeralWebBrowserSession = inAppBrowserOptions.ephemeralWebSession;
+            webAuthSession.prefersEphemeralWebBrowserSession = ephemeralWebSession;
             webAuthSession.presentationContextProvider = this;
           }
           this.authSession.start();

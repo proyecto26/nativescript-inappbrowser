@@ -47,7 +47,7 @@ Share your awesome project [here](https://github.com/proyecto26/nativescript-ina
 ## Getting started
 
 ```javascript
-tns plugin add nativescript-inappbrowser
+ns plugin add nativescript-inappbrowser
 ```
 
 ### Manual installation
@@ -107,6 +107,7 @@ Property       | Description
 `modalEnabled` (Boolean)             | Present the **SafariViewController** modally or as push instead. [`true`/`false`]
 `enableBarCollapsing` (Boolean)      | Determines whether the browser's tool bars will collapse or not. [`true`/`false`]
 `ephemeralWebSession` (Boolean)      | Prevent re-use cookies of previous session (openAuth only) [`true`/`false`]
+`formSheetPreferredContentSize` (Object)      | Custom size for iPad `formSheet` modals [`{width: 400, height: 500}`]
 
 ### Android Options
 Property       | Description
