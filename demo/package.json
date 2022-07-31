@@ -1,7 +1,8 @@
 {
-  "description": "NativeScript Application",
-  "license": "SEE LICENSE IN <your-license-filename>",
-  "repository": "<fill-your-repository-here>",
+  "name": "demo",
+  "private": true,
+  "version": "1.0.0",
+  "main": "app/app.ts",
   "dependencies": {
     "@nativescript/core": "~8.3.1",
     "nativescript-inappbrowser": "file:../src",
@@ -12,8 +13,5 @@
     "@nativescript/ios": "8.3.2",
     "@nativescript/webpack": "~5.0.8",
     "typescript": "~4.7.4"
-  },
-  "gitHead": "42f2a6a9c94eaf9c68d2a41e0daaa1a2544bc28f",
-  "readme": "NativeScript Application",
-  "main": "app.js"
+  }
 }
