@@ -1,4 +1,4 @@
-import { Color } from "@nativescript/core";
+import { Color } from '@nativescript/core';
 
 export interface RedirectEvent {
   url: 'string';
@@ -15,11 +15,11 @@ export interface RedirectResult {
 }
 
 type InAppBrowseriOSOptions = {
-  dismissButtonStyle?: 'done' | 'close' | 'cancel',
-  preferredBarTintColor?: string | Color,
-  preferredControlTintColor?: string | Color,
-  readerMode?: boolean,
-  animated?: boolean,
+  dismissButtonStyle?: 'done' | 'close' | 'cancel';
+  preferredBarTintColor?: string | Color;
+  preferredControlTintColor?: string | Color;
+  readerMode?: boolean;
+  animated?: boolean;
   modalPresentationStyle?:
     | 'automatic'
     | 'fullScreen'
@@ -30,42 +30,44 @@ type InAppBrowseriOSOptions = {
     | 'overFullScreen'
     | 'overCurrentContext'
     | 'popover'
-    | 'none',
+    | 'none';
   modalTransitionStyle?:
     | 'coverVertical'
     | 'flipHorizontal'
     | 'crossDissolve'
-    | 'partialCurl',
-  modalEnabled?: boolean,
-  enableBarCollapsing?: boolean,
-  ephemeralWebSession?: boolean,
-  formSheetPreferredContentSize?: { width: number, height: number },
+    | 'partialCurl';
+  modalEnabled?: boolean;
+  enableBarCollapsing?: boolean;
+  ephemeralWebSession?: boolean;
+  formSheetPreferredContentSize?: { width: number; height: number };
 };
 
 export type Animations = {
-  startEnter: string,
-  startExit: string,
-  endEnter: string,
-  endExit: string
+  startEnter: string;
+  startExit: string;
+  endEnter: string;
+  endExit: string;
 };
 
 type InAppBrowserAndroidOptions = {
-  showTitle?: boolean,
-  toolbarColor?: string | Color,
-  secondaryToolbarColor?: string | Color,
-  navigationBarColor?: string | Color,
-  navigationBarDividerColor?: string | Color,
-  enableUrlBarHiding?: boolean,
-  enableDefaultShare?: boolean,
-  forceCloseOnRedirection?: boolean,
-  animations?: Animations,
-  headers?: { [key: string]: string },
-  hasBackButton?: boolean,
-  browserPackage?: string,
-  showInRecents?: boolean,
+  showTitle?: boolean;
+  toolbarColor?: string | Color;
+  secondaryToolbarColor?: string | Color;
+  navigationBarColor?: string | Color;
+  navigationBarDividerColor?: string | Color;
+  enableUrlBarHiding?: boolean;
+  enableDefaultShare?: boolean;
+  forceCloseOnRedirection?: boolean;
+  animations?: Animations;
+  headers?: { [key: string]: string };
+  hasBackButton?: boolean;
+  browserPackage?: string;
+  showInRecents?: boolean;
+  includeReferrer?: boolean;
 };
 
-export type InAppBrowserOptions = InAppBrowserAndroidOptions & InAppBrowseriOSOptions;
+export type InAppBrowserOptions = InAppBrowserAndroidOptions &
+  InAppBrowseriOSOptions;
 
 export type AuthSessionResult = RedirectResult | BrowserResult;
 
@@ -80,27 +82,30 @@ export interface InAppBrowserClassMethods {
   openAuth: (
     url: string,
     redirectUrl: string,
-    options?: InAppBrowserOptions,
+    options?: InAppBrowserOptions
   ) => Promise<AuthSessionResult>;
   closeAuth: () => void;
   isAvailable: () => Promise<boolean>;
 }
 
-export type RedirectResolve = (value?: AuthSessionResult | PromiseLike<AuthSessionResult>) => void;
+export type RedirectResolve = (
+  value?: AuthSessionResult | PromiseLike<AuthSessionResult>
+) => void;
 export type RedirectReject = (reason?: Error) => void;
 
-export const InAppBrowserErrorMessage = 'Another InAppBrowser is already being presented.';
+export const InAppBrowserErrorMessage =
+  'Another InAppBrowser is already being presented.';
 
 export enum BROWSER_TYPES {
   CANCEL = 'cancel',
   DISMISS = 'dismiss',
-  SUCCESS = 'success'
+  SUCCESS = 'success',
 }
 
 export enum DISMISS_BUTTON_STYLES {
   DONE = 'done',
   CLOSE = 'close',
-  CANCEL = 'cancel'
+  CANCEL = 'cancel',
 }
 
 export function getDefaultOptions(

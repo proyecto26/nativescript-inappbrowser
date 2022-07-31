@@ -1,4 +1,4 @@
-import { Color } from "@nativescript/core";
+import { Color } from '@nativescript/core';
 
 export function parseColor(color: string | Color) {
   if (color && !(color instanceof Color)) {

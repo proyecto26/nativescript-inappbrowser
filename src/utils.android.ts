@@ -30,11 +30,11 @@ export const ColorUtils: typeof androidx.core.graphics.ColorUtils = (
     ? androidx.core.graphics
     : (android.support.v4.graphics as any)
 ).ColorUtils;
-export const CHROME_PACKAGE_STABLE = "com.android.chrome";
-export const CHROME_PACKAGE_BETA = "com.chrome.beta";
-export const CHROME_PACKAGE_DEV = "com.chrome.dev";
-export const LOCAL_PACKAGE = "com.google.android.apps.chrome";
-export const ACTION_CUSTOM_TABS_CONNECTION = "android.support.customtabs.action.CustomTabsService";
+export const CHROME_PACKAGE_STABLE = 'com.android.chrome';
+export const CHROME_PACKAGE_BETA = 'com.chrome.beta';
+export const CHROME_PACKAGE_DEV = 'com.chrome.dev';
+export const LOCAL_PACKAGE = 'com.google.android.apps.chrome';
+export const ACTION_CUSTOM_TABS_CONNECTION = 'android.support.customtabs.action.CustomTabsService';
 export const ARROW_BACK_BLACK = 'ic_arrow_back_black';
 export const ARROW_BACK_WHITE = 'ic_arrow_back_white';
 export const DISMISSED_EVENT = 'DismissedEvent';

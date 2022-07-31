@@ -98,7 +98,7 @@ function setup() {
             );
           }
         } catch (error) {
-          reject(new Error("Unable to open url."));
+          reject(new Error('Unable to open url.'));
           this.flowDidFinish();
           log(`InAppBrowser: ${error}`);
           return;

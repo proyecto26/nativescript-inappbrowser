@@ -67,6 +67,7 @@ export class HelloWorldModel extends Observable {
                     hasBackButton: true,
                     browserPackage: "com.android.chrome",
                     showInRecents: true,
+                    includeReferrer: true,
                 });
                 await sleep(800);
                 Dialogs.alert({
