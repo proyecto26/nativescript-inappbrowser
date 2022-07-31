@@ -39,7 +39,7 @@ export class HelloWorldModel extends Observable {
                     modalPresentationStyle: "formSheet",
                     modalTransitionStyle: "coverVertical",
                     modalEnabled: true,
-                    enableBarCollapsing: false,
+                    enableBarCollapsing: true,
                     formSheetPreferredContentSize: {
                         width: widthDIPs - widthDIPs / 6,
                         height: heightDIPs - heightDIPs / 6,
@@ -65,8 +65,8 @@ export class HelloWorldModel extends Observable {
                         "my-custom-header": "my custom header value",
                     },
                     hasBackButton: true,
-                    browserPackage: "",
-                    showInRecents: false,
+                    browserPackage: "com.android.chrome",
+                    showInRecents: true,
                 });
                 await sleep(800);
                 Dialogs.alert({
