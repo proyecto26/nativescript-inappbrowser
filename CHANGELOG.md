@@ -30,6 +30,9 @@ in case of vulnerabilities.
 - Complete migration to ns8 and fix build issues by [@rigor789](https://github.com/rigor789) ([#92](https://github.com/proyecto26/nativescript-inappbrowser/pull/92)).
 - Fix support `Metadata Filtering` for Android by [@jcassidyav](https://github.com/jcassidyav) ([#93](https://github.com/proyecto26/nativescript-inappbrowser/pull/93)).
 
+### Removed
+- Remove `QUERY_ALL_PACKAGES` permission by [@edusperoni](https://github.com/edusperoni) ([#87](https://github.com/proyecto26/nativescript-inappbrowser/pull/87)).
+
 ## [3.1.2] - 2021-06-28
 
 ### Fixed
