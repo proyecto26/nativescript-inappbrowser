@@ -24,6 +24,7 @@ in case of vulnerabilities.
 
 ### Added
 - Add custom size option to iOS formSheet Modal by [@ShaneMckenna23](https://github.com/ShaneMckenna23) ([#91](https://github.com/proyecto26/nativescript-inappbrowser/pull/91)).
+- Add `includeReferrer` to allow adding android package name as referrer for website to track by [@vincent-paing](https://github.com/vincent-paing) ([#95](https://github.com/proyecto26/nativescript-inappbrowser/pull/95)).
 
 ### Fixed
 - Complete migration to ns8 and fix build issues by [@rigor789](https://github.com/rigor789) ([#92](https://github.com/proyecto26/nativescript-inappbrowser/pull/92)).
