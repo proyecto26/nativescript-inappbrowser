@@ -1,41 +1,41 @@
-import { Color } from '@nativescript/core';
+import { Color } from "@nativescript/core";
 
 export interface RedirectEvent {
-  url: 'string';
+  url: "string";
 }
 
 export interface BrowserResult {
-  type: 'cancel' | 'dismiss';
+  type: "cancel" | "dismiss";
   message?: string;
 }
 
 export interface RedirectResult {
-  type: 'success';
+  type: "success";
   url: string;
 }
 
 type InAppBrowseriOSOptions = {
-  dismissButtonStyle?: 'done' | 'close' | 'cancel';
+  dismissButtonStyle?: "done" | "close" | "cancel";
   preferredBarTintColor?: string | Color;
   preferredControlTintColor?: string | Color;
   readerMode?: boolean;
   animated?: boolean;
   modalPresentationStyle?:
-    | 'automatic'
-    | 'fullScreen'
-    | 'pageSheet'
-    | 'formSheet'
-    | 'currentContext'
-    | 'custom'
-    | 'overFullScreen'
-    | 'overCurrentContext'
-    | 'popover'
-    | 'none';
+    | "automatic"
+    | "fullScreen"
+    | "pageSheet"
+    | "formSheet"
+    | "currentContext"
+    | "custom"
+    | "overFullScreen"
+    | "overCurrentContext"
+    | "popover"
+    | "none";
   modalTransitionStyle?:
-    | 'coverVertical'
-    | 'flipHorizontal'
-    | 'crossDissolve'
-    | 'partialCurl';
+    | "coverVertical"
+    | "flipHorizontal"
+    | "crossDissolve"
+    | "partialCurl";
   modalEnabled?: boolean;
   enableBarCollapsing?: boolean;
   ephemeralWebSession?: boolean;
@@ -94,18 +94,18 @@ export type RedirectResolve = (
 export type RedirectReject = (reason?: Error) => void;
 
 export const InAppBrowserErrorMessage =
-  'Another InAppBrowser is already being presented.';
+  "Another InAppBrowser is already being presented.";
 
 export enum BROWSER_TYPES {
-  CANCEL = 'cancel',
-  DISMISS = 'dismiss',
-  SUCCESS = 'success',
+  CANCEL = "cancel",
+  DISMISS = "dismiss",
+  SUCCESS = "success",
 }
 
 export enum DISMISS_BUTTON_STYLES {
-  DONE = 'done',
-  CLOSE = 'close',
-  CANCEL = 'cancel',
+  DONE = "done",
+  CLOSE = "close",
+  CANCEL = "cancel",
 }
 
 export function getDefaultOptions(
@@ -113,7 +113,7 @@ export function getDefaultOptions(
   options: InAppBrowserOptions = {
     animated: true,
     modalEnabled: true,
-    dismissButtonStyle: 'close',
+    dismissButtonStyle: "close",
     readerMode: false,
     enableBarCollapsing: false,
   }
