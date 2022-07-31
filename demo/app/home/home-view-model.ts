@@ -1,4 +1,5 @@
-import { Observable, Utils, Dialogs } from "@nativescript/core";
+import { Dialogs, Observable, Utils } from "@nativescript/core";
+import { Screen } from "@nativescript/core/platform";
 import { InAppBrowser } from "nativescript-inappbrowser";
 import { getDeepLink, sleep } from "./utilities";
 
@@ -27,6 +28,7 @@ export class HelloWorldModel extends Observable {
         try {
             const { url } = this;
             if (await InAppBrowser.isAvailable()) {
+                const { widthDIPs, heightDIPs } = Screen.mainScreen;
                 const result = await InAppBrowser.open(url, {
                     // iOS Properties
                     dismissButtonStyle: "cancel",
@@ -34,10 +36,14 @@ export class HelloWorldModel extends Observable {
                     preferredControlTintColor: "white",
                     readerMode: false,
                     animated: true,
-                    modalPresentationStyle: "fullScreen",
+                    modalPresentationStyle: "formSheet",
                     modalTransitionStyle: "coverVertical",
                     modalEnabled: true,
                     enableBarCollapsing: false,
+                    formSheetPreferredContentSize: {
+                        width: widthDIPs - widthDIPs / 6,
+                        height: heightDIPs - heightDIPs / 6,
+                    },
                     // Android Properties
                     showTitle: true,
                     toolbarColor: "#6200EE",
