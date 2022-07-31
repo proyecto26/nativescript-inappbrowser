@@ -1,13 +1,12 @@
 {
   "uses": [
       "com.proyecto26*:*",
-      "com.proyecto26.inappbrowser:ChromeTabsManagerActivity*",
       "android.app:Activity*",
-      "android.content:ComponentName*",
       "android.content:Context*",
       "android.content:Intent*",
       "android.content.pm:ResolveInfo*",
       "android.content.pm:PackageManager*",
+      "android.content.res:Resources*",
       "android.graphics:BitmapFactory*",
       "android.graphics:Color*",
       "android.net:Uri*",
@@ -23,14 +22,13 @@
       "android.support.customtabs:CustomTabsClient*",
       "android.support.customtabs:CustomTabsIntent*",
       "android.support.customtabs.CustomTabsIntent:Builder*",
-      "android.support.customtabs:action*",
       "android.support.customtabs.action:CustomTabsService*",
-      "android.support.v4:graphics*",
       "android.support.v4.graphics:ColorUtils*",
       "java.lang:Object*",
       "java.lang.reflect:Method*",
       "java.util:List*",
       "java.util:Arrays*",
-      "java.util.regex:Pattern*"
+      "java.util.regex:Pattern*",
+      "java.util.regex:Matcher*"
   ]
 }
