@@ -13,6 +13,7 @@
       "android.graphics:BitmapFactory*",
       "android.graphics:Color*",
       "android.graphics:Bitmap*",
+      "android.util:Log*",
       "android.net:Uri*",
       "android.os:Build*",
       "android.os:Bundle*",

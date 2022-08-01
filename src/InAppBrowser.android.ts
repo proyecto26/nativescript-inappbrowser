@@ -36,14 +36,12 @@ import {
   CustomTabsClient,
   CustomTabsIntent,
   CustomTabsService,
-  CustomTabsServiceConnection,
   DISMISSED_EVENT,
   getDefaultBrowser,
   getDrawableId,
   getPreferredPackages,
   openAuthSessionPolyfillAsync,
   toolbarIsLight,
-  getCustomTabsClient,
 } from "./utils.android";
 import { tryParseColor } from "./utils.common";
 
@@ -433,16 +431,16 @@ function setup() {
     }
 
     public warmup(): boolean {
-      const customTabsClient = getCustomTabsClient();
-      if (customTabsClient?.warmup) {
+      const customTabsClient = CustomTabsController.customTabsClient;
+      if (customTabsClient) {
         return customTabsClient.warmup(long(0));
       }
       return false;
     }
 
     public mayLaunchUrl(mostLikelyUrl: string, otherUrls: Array<string>): void {
-      const customTabsClient = getCustomTabsClient();
-      if (customTabsClient?.newSession) {
+      const customTabsClient = CustomTabsController.customTabsClient;
+      if (customTabsClient) {
         const customTabsSession = customTabsClient.newSession(
           new CustomTabsCallback()
         );

@@ -66,16 +66,6 @@ let _redirectHandler: (args: ApplicationEventData) => void;
  */
 let initialUrl = "";
 
-let customTabsClient: androidx.browser.customtabs.CustomTabsClient;
-
-export function getCustomTabsClient () {
-  return customTabsClient;
-}
-
-export function setCustomTabsClient (client: androidx.browser.customtabs.CustomTabsClient) {
-  customTabsClient = client;
-}
-
 export const getDrawableId = Utils.ad.resources.getDrawableId;
 
 /**
