@@ -16,6 +16,7 @@ import {
   createDismissIntent,
   createStartIntent,
 } from "./ChromeTabsManagerActivity";
+import { CustomTabsController } from "./CustomTabsServiceConnection";
 import {
   Animations,
   BrowserResult,
@@ -35,6 +36,7 @@ import {
   CustomTabsClient,
   CustomTabsIntent,
   CustomTabsService,
+  CustomTabsServiceConnection,
   DISMISSED_EVENT,
   getDefaultBrowser,
   getDrawableId,
@@ -44,7 +46,6 @@ import {
   getCustomTabsClient,
 } from "./utils.android";
 import { tryParseColor } from "./utils.common";
-import { InAppBrowserCustomTabsServiceConnection } from "./CustomTabsServiceConnection";
 
 let InAppBrowserModuleInstance: any;
 
@@ -418,7 +419,7 @@ function setup() {
 
     public onStart(): void {
       const context = Utils.android.getApplicationContext() as Context;
-      const connection = new InAppBrowserCustomTabsServiceConnection();
+      const connection = new CustomTabsController(context);
       const packageName = getDefaultBrowser(context);
       if (packageName) {
         CustomTabsClient.bindCustomTabsService(

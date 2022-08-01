@@ -1,3 +1,4 @@
+import Context = android.content.Context;
 import ComponentName = android.content.ComponentName;
 import CustomTabsClient = androidx.browser.customtabs.CustomTabsClient;
 
@@ -9,24 +10,28 @@ import {
 import { log } from "./utils.common";
 
 @NativeClass()
-@JavaProxy("com.proyecto26.inappbrowser.CustomTabsServiceConnection")
-export class InAppBrowserCustomTabsServiceConnection extends CustomTabsServiceConnection {
-  constructor() {
+class CustomTabsController extends CustomTabsServiceConnection {
+  private readonly context: WeakRef<Context>;
+  constructor(context: Context) {
     super();
+    this.context = new WeakRef(context);
+
     return global.__native(this);
   }
 
   onCustomTabsServiceConnected(name: ComponentName, client: CustomTabsClient) {
     setCustomTabsClient(client);
     if (!client.warmup(long(0))) {
-      console.error(`Couldn't warmup custom tabs client for ${name}`);
+      console.error(`Couldn't warmup custom tabs client for ${name.getClassName()}`);
     }
-    const context = Utils.android.getApplicationContext();
+    const context = this.context.get();
     context.unbindService(this);
   }
 
   onServiceDisconnected(name: ComponentName) {
     setCustomTabsClient(null);
-    log(`Custom tabs service disconnected for ${name}`);
+    log(`Custom tabs service disconnected for ${name.getClassName()}`);
   }
 }
+
+export { CustomTabsController }

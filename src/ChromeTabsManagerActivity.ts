@@ -7,13 +7,13 @@ import { BROWSER_TYPES } from "./InAppBrowser.common";
 import { DISMISSED_EVENT } from "./utils.android";
 import { log } from "./utils.common";
 
-export class ChromeTabsEvent extends Observable {
+class ChromeTabsEvent extends Observable {
   public message: string;
   public resultType: string;
   public isError: boolean;
 }
 
-export const BROWSER_ACTIVITY_EVENTS = new ChromeTabsEvent();
+const BROWSER_ACTIVITY_EVENTS = new ChromeTabsEvent();
 
 const KEY_BROWSER_INTENT = "browserIntent";
 const BROWSER_RESULT_TYPE = "browserResultType";
@@ -39,7 +39,7 @@ const notifyMessage = (
  */
 @NativeClass()
 @JavaProxy("com.proyecto26.inappbrowser.ChromeTabsManagerActivity")
-export class ChromeTabsManagerActivity extends android.app.Activity {
+class ChromeTabsManagerActivity extends android.app.Activity {
   private mOpened = false;
   private resultType = null;
   private isError = false;
@@ -131,21 +131,27 @@ export class ChromeTabsManagerActivity extends android.app.Activity {
   }
 }
 
-export const createStartIntent = (
-  context: Context,
-  authIntent: Intent
-): Intent => {
+const createStartIntent = (context: Context, authIntent: Intent): Intent => {
   let intent = createBaseIntent(context);
   intent.putExtra(KEY_BROWSER_INTENT, authIntent);
   return intent;
 };
 
-export const createDismissIntent = (context: Context): Intent => {
+const createDismissIntent = (context: Context): Intent => {
   let intent = createBaseIntent(context);
   intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
   return intent;
 };
 
-export const createBaseIntent = (context: Context): Intent => {
+const createBaseIntent = (context: Context): Intent => {
   return new Intent(context, ChromeTabsManagerActivity.class);
+};
+
+export {
+  BROWSER_ACTIVITY_EVENTS,
+  ChromeTabsEvent,
+  createStartIntent,
+  createDismissIntent,
+  createBaseIntent,
+  ChromeTabsManagerActivity,
 };

@@ -1,3 +1,6 @@
 {
-  "whitelist-plugins-usages": true
+  "whitelist-plugins-usages": true,
+  "whitelist": [
+    "org.nativescript*:*"
+  ]
 }
