@@ -12,7 +12,7 @@ declare namespace android {
       export class CustomTabsClient extends java.lang.Object {
         static getPackageName(
           context: android.content.Context,
-          list: java.util.List
+          packages: java.util.List<string>
         ): string;
         static bindCustomTabsService(
           context: android.content.Context,
@@ -81,7 +81,7 @@ declare namespace androidx {
       export class CustomTabsClient extends java.lang.Object {
         static getPackageName(
           context: android.content.Context,
-          list: java.util.List
+          packages: java.util.List<string>
         ): string;
         static bindCustomTabsService(
           context: android.content.Context,
