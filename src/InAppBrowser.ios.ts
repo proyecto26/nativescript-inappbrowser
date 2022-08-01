@@ -219,7 +219,10 @@ function setup() {
           if (!this.initializeWebBrowser(resolve, reject)) return;
 
           const url = NSURL.URLWithString(authUrl);
-          const escapedRedirectURL = NSURL.URLWithString(redirectUrl).scheme;
+          let escapedRedirectURL: string = null;
+          if (redirectUrl) {
+            escapedRedirectURL = NSURL.URLWithString(redirectUrl).scheme;
+          }
           this.authSession = (
             Utils.ios.MajorVersion >= 12
               ? ASWebAuthenticationSession
