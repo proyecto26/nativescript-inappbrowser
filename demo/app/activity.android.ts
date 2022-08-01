@@ -3,10 +3,10 @@ import {
     setActivityCallbacks,
     AndroidActivityCallbacks,
 } from "@nativescript/core";
-import { InAppBrowser } from "nativescript-inappbrowser";
+// import { InAppBrowser } from "nativescript-inappbrowser";
 
 @NativeClass()
-@JavaProxy("org.nativescript.MainActivity")
+@JavaProxy("org.nativescript.demo.MainActivity")
 export class Activity extends androidx.appcompat.app.AppCompatActivity {
     public isNativeScriptActivity;
 
@@ -49,7 +49,7 @@ export class Activity extends androidx.appcompat.app.AppCompatActivity {
     public onStart(): void {
         this._callbacks.onStart(this, super.onStart);
         // InAppBrowser initialization for CustomTabsServiceConnection
-        InAppBrowser.onStart();
+        // InAppBrowser.onStart();
     }
 
     public onStop(): void {
