@@ -12,14 +12,14 @@ export class HelloWorldModel extends Observable {
         // Initialize default values.
         this._url = "https://nativescript.org";
         if (InAppBrowser.warmup()) {
-            console.log("Warmup successful");
+            console.log("Warmup successful!");
             InAppBrowser.mayLaunchUrl(this._url, [
                 "https://twitter.com/NativeScript",
                 "https://github.com/NativeScript/NativeScript",
                 "https://openjsf.org"
             ]);
         } else {
-            console.log("Warmup failed");
+            console.log("Warmup failed :(");
         }
     }
 

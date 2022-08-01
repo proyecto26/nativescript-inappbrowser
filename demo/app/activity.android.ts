@@ -27,8 +27,6 @@ export class Activity extends androidx.appcompat.app.AppCompatActivity {
             this.getIntent(),
             super.onCreate
         );
-        // InAppBrowser initialization (Connect to the Custom Tabs service)
-        InAppBrowser.onStart();
     }
 
     public onNewIntent(intent: android.content.Intent): void {
@@ -50,6 +48,8 @@ export class Activity extends androidx.appcompat.app.AppCompatActivity {
 
     public onStart(): void {
         this._callbacks.onStart(this, super.onStart);
+        // InAppBrowser initialization (Connect to the Custom Tabs service)
+        InAppBrowser.onStart();
     }
 
     public onStop(): void {
