@@ -86,6 +86,10 @@ export interface InAppBrowserClassMethods {
   ) => Promise<AuthSessionResult>;
   closeAuth: () => void;
   isAvailable: () => Promise<boolean>;
+  // Android only
+  onStart(): void;
+  warmup: () => boolean;
+  mayLaunchUrl: (mostLikelyUrl: string, otherUrls: Array<string>) => void;
 }
 
 export type RedirectResolve = (

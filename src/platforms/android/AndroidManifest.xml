@@ -8,6 +8,10 @@
 			android:name="com.proyecto26.inappbrowser.ChromeTabsManagerActivity"
 			android:exported="true">
 		</activity>
+		<activity
+			android:name="com.proyecto26.inappbrowser.CustomTabsServiceConnection"
+			android:exported="true">
+		</activity>
 	</application>
 	<queries>
 		<intent>

@@ -303,6 +303,15 @@ function setup() {
       this.redirectResolve = null;
       this.redirectReject = null;
     }
+    onStart() {
+      log("onStart is not supported on iOS");
+    }
+    warmup() {
+      return false;
+    }
+    mayLaunchUrl(url: string, otherUrls: Array<string>) {
+      log(`mayLaunchUrl is not supported on iOS. url: ${url}, otherUrls: ${otherUrls}`);
+    }
   }
 
   return InAppBrowserModule.new();
