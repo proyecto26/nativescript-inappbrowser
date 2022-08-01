@@ -4,6 +4,7 @@ import CustomTabsClient = androidx.browser.customtabs.CustomTabsClient;
 import Log = android.util.Log;
 
 import { CustomTabsServiceConnection } from "./utils.android";
+import { log } from "./utils.common";
 
 @NativeClass()
 class CustomTabsController extends CustomTabsServiceConnection {
@@ -24,11 +25,12 @@ class CustomTabsController extends CustomTabsServiceConnection {
     }
     const context = this.context.get();
     context.unbindService(this);
+    log("Custom tabs service connected");
   }
 
   onServiceDisconnected(_: ComponentName) {
     CustomTabsController.customTabsClient = null;
-    Log.d(CustomTabsController.TAG, "Custom tabs service disconnected");
+    log("Custom tabs service disconnected");
   }
 }
 

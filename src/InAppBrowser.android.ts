@@ -8,6 +8,7 @@ import BitmapFactory = android.graphics.BitmapFactory;
 import Browser = android.provider.Browser;
 import Pattern = java.util.regex.Pattern;
 import ArrayList = java.util.ArrayList;
+import Log = android.util.Log;
 
 import { Application, EventData, Utils } from "@nativescript/core";
 import {
@@ -426,7 +427,7 @@ function setup() {
           connection
         );
       } else {
-        console.error("No browser supported to bind custom tab service");
+        Log.e(InAppBrowserModule.ERROR_CODE, "No browser supported to bind custom tab service");
       }
     }
 
@@ -446,10 +447,9 @@ function setup() {
         );
         if (customTabsSession != null) {
           const otherUrlBundles = new ArrayList<Bundle>(otherUrls.length);
-
           for (let index = 0; index < otherUrls.length; index++) {
             const link = otherUrls[index];
-            if (link != null) {
+            if (link) {
               const bundle = new Bundle();
               bundle.putParcelable(CustomTabsService.KEY_URL, Uri.parse(link));
               otherUrlBundles.add(bundle);
