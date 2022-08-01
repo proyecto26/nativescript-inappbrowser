@@ -7,42 +7,46 @@ import Context = android.content.Context;
 import BitmapFactory = android.graphics.BitmapFactory;
 import Browser = android.provider.Browser;
 import Pattern = java.util.regex.Pattern;
+import ArrayList = java.util.ArrayList;
+import Log = android.util.Log;
 
 import { Application, EventData, Utils } from "@nativescript/core";
 import {
-  ChromeTabsEvent,
   BROWSER_ACTIVITY_EVENTS,
-  createStartIntent,
+  ChromeTabsEvent,
   createDismissIntent,
+  createStartIntent,
 } from "./ChromeTabsManagerActivity";
+import { CustomTabsController } from "./CustomTabsServiceConnection";
 import {
   Animations,
   BrowserResult,
-  getDefaultOptions,
-  InAppBrowserOptions,
-  InAppBrowserClassMethods,
-  RedirectResolve,
-  RedirectReject,
   BROWSER_TYPES,
+  getDefaultOptions,
+  InAppBrowserClassMethods,
+  InAppBrowserOptions,
+  RedirectReject,
+  RedirectResolve,
 } from "./InAppBrowser.common";
 import {
-  Builder,
-  getDrawableId,
-  toolbarIsLight,
-  CustomTabsIntent,
-  DISMISSED_EVENT,
-  ARROW_BACK_WHITE,
   ARROW_BACK_BLACK,
+  ARROW_BACK_WHITE,
+  Builder,
+  closeAuthSessionPolyfillAsync,
+  CustomTabsCallback,
+  CustomTabsClient,
+  CustomTabsIntent,
+  CustomTabsService,
+  DISMISSED_EVENT,
+  getDefaultBrowser,
+  getDrawableId,
   getPreferredPackages,
   openAuthSessionPolyfillAsync,
-  closeAuthSessionPolyfillAsync,
+  toolbarIsLight,
 } from "./utils.android";
-
 import { tryParseColor } from "./utils.common";
 
-declare let global: any;
-
-let InAppBrowserModuleInstance: InAppBrowserClassMethods;
+let InAppBrowserModuleInstance: any;
 
 function setup() {
   @NativeClass()
@@ -223,8 +227,7 @@ function setup() {
             intent.setPackage(packageName);
           }
         } else {
-          const packageName =
-            inAppBrowserOptions[InAppBrowserModule.KEY_BROWSER_PACKAGE];
+          const packageName = getDefaultBrowser(context);
           intent.setPackage(packageName);
         }
       } catch (error) {
@@ -411,6 +414,55 @@ function setup() {
     private flowDidFinish(): void {
       InAppBrowserModule.redirectResolve = null;
       InAppBrowserModule.redirectReject = null;
+    }
+
+    public onStart(): void {
+      const context = Utils.android.getApplicationContext() as Context;
+      const connection = new CustomTabsController(context);
+      const packageName = getDefaultBrowser(context);
+      if (packageName) {
+        CustomTabsClient.bindCustomTabsService(
+          context,
+          packageName,
+          connection
+        );
+      } else {
+        Log.e(InAppBrowserModule.ERROR_CODE, "No browser supported to bind custom tab service");
+      }
+    }
+
+    public warmup(): boolean {
+      const customTabsClient = CustomTabsController.customTabsClient;
+      if (customTabsClient) {
+        return customTabsClient.warmup(long(0));
+      }
+      return false;
+    }
+
+    public mayLaunchUrl(mostLikelyUrl: string, otherUrls: Array<string>): void {
+      const customTabsClient = CustomTabsController.customTabsClient;
+      if (customTabsClient) {
+        const customTabsSession = customTabsClient.newSession(
+          new CustomTabsCallback()
+        );
+        if (customTabsSession != null) {
+          const otherUrlBundles = new ArrayList<Bundle>(otherUrls.length);
+          for (let index = 0; index < otherUrls.length; index++) {
+            const link = otherUrls[index];
+            if (link) {
+              const bundle = new Bundle();
+              bundle.putParcelable(CustomTabsService.KEY_URL, Uri.parse(link));
+              otherUrlBundles.add(bundle);
+            }
+          }
+
+          customTabsSession.mayLaunchUrl(
+            Uri.parse(mostLikelyUrl),
+            null,
+            otherUrlBundles
+          );
+        }
+      }
     }
   }
 

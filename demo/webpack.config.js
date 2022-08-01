@@ -5,6 +5,10 @@ module.exports = (env) => {
   webpack.init(env);
   webpack.useConfig("typescript");
 
+  env.appComponents = (env.appComponents || []).concat([
+    "./app/activity.android",
+  ]);
+
   webpack.chainWebpack((config) => {
     // shared demo code
     config.resolve.alias.set(

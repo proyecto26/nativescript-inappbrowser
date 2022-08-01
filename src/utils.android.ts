@@ -8,19 +8,23 @@ import List = java.util.List;
 import Arrays = java.util.Arrays;
 
 import {
-  Utils,
+  AndroidActivityEventData,
+  AndroidApplication,
   Application,
   ApplicationEventData,
-  AndroidApplication,
-  AndroidActivityEventData,
+  Utils,
 } from "@nativescript/core";
 import {
-  RedirectResult,
-  OpenBrowserAsync,
   AuthSessionResult,
   BROWSER_TYPES,
   InAppBrowserOptions,
+  OpenBrowserAsync,
+  RedirectResult,
 } from "./InAppBrowser.common";
+
+export function useAndroidX() {
+  return global.androidx && global.androidx.browser;
+}
 
 export type Builder = androidx.browser.customtabs.CustomTabsIntent.Builder;
 export const CustomTabsIntent = (
@@ -29,9 +33,20 @@ export const CustomTabsIntent = (
 export const CustomTabsClient = (
   useAndroidX() ? androidx.browser : android.support
 ).customtabs.CustomTabsClient;
+export const CustomTabsServiceConnection = (
+  useAndroidX() ? androidx.browser : android.support
+).customtabs.CustomTabsServiceConnection;
+export const CustomTabsService = (
+  useAndroidX() ? androidx.browser : android.support
+).customtabs.CustomTabsService;
+export const CustomTabsCallback = (
+  useAndroidX() ? androidx.browser : android.support
+).customtabs.CustomTabsCallback;
+
 export const ColorUtils: typeof androidx.core.graphics.ColorUtils = (
   useAndroidX() ? androidx.core.graphics : (android.support.v4.graphics as any)
 ).ColorUtils;
+
 export const CHROME_PACKAGE_STABLE = "com.android.chrome";
 export const CHROME_PACKAGE_BETA = "com.chrome.beta";
 export const CHROME_PACKAGE_DEV = "com.chrome.dev";
@@ -52,10 +67,6 @@ let _redirectHandler: (args: ApplicationEventData) => void;
 let initialUrl = "";
 
 export const getDrawableId = Utils.ad.resources.getDrawableId;
-
-export function useAndroidX() {
-  return global.androidx && global.androidx.browser;
-}
 
 /**
  * Get the url when the app is opened and clear the data for security concerns.

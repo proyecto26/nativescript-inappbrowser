@@ -27,7 +27,7 @@
 		android:launchMode="singleTask">
 
 		<activity
-			android:name="com.tns.NativeScriptActivity"
+			android:name="org.nativescript.demo.MainActivity"
 			android:label="@string/title_activity_kimera"
 			android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|locale|uiMode"
 			android:theme="@style/LaunchScreenTheme"
