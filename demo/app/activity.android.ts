@@ -27,7 +27,7 @@ export class Activity extends androidx.appcompat.app.AppCompatActivity {
             this.getIntent(),
             super.onCreate
         );
-        // InAppBrowser initialization for CustomTabsServiceConnection
+        // InAppBrowser initialization (Connect to the Custom Tabs service)
         InAppBrowser.onStart();
     }
 
