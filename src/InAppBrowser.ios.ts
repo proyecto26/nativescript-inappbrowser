@@ -19,6 +19,7 @@ import {
   setModalInPresentation,
   dismissWithoutAnimation,
   InAppBrowserOpenAuthErrorMessage,
+  getWindow,
 } from "./utils.ios";
 
 const DEFAULT_PROTOCOLS = [
@@ -142,8 +143,8 @@ function setup() {
           }
         }
 
-        const ctrl =
-          UIApplication.sharedApplication.keyWindow.rootViewController;
+        const window = getWindow();
+        const ctrl = window.rootViewController;
         if (modalEnabled) {
           // This is a hack to present the SafariViewController modally
           const safariHackVC =
@@ -198,7 +199,8 @@ function setup() {
       });
     }
     public close() {
-      const ctrl = UIApplication.sharedApplication.keyWindow.rootViewController;
+      const window = getWindow();
+      const ctrl = window.rootViewController;
       ctrl.dismissViewControllerAnimatedCompletion(this.animated, () => {
         if (this.redirectResolve) {
           this.redirectResolve({
@@ -286,7 +288,7 @@ function setup() {
     public presentationAnchorForWebAuthenticationSession(
       _: ASWebAuthenticationSession
     ): UIWindow {
-      return UIApplication.sharedApplication.keyWindow;
+      return getWindow();
     }
     public safariViewControllerDidFinish(
       controller: SFSafariViewController

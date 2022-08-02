@@ -1,4 +1,4 @@
-import { Color } from "@nativescript/core";
+import { Application, Color } from "@nativescript/core";
 
 export function parseColor(color: string | Color) {
   if (color && !(color instanceof Color)) {
@@ -22,6 +22,9 @@ export function log(message: string, ...optionalParams: any[]): void {
   const nglog = (<any>global).__nslog;
   if (nglog) {
     nglog(message, ...optionalParams);
+  }
+  if (Application.android) {
+    android.util.Log.d("JS", message);
   }
   console.log(message, ...optionalParams);
 }

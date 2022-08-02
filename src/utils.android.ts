@@ -3,7 +3,6 @@ import Intent = android.content.Intent;
 import NfcAdapter = android.nfc.NfcAdapter;
 import Context = android.content.Context;
 import ResolveInfo = android.content.pm.ResolveInfo;
-import Color = android.graphics.Color;
 import List = java.util.List;
 import Arrays = java.util.Arrays;
 
@@ -16,9 +15,8 @@ import {
 } from "@nativescript/core";
 import {
   AuthSessionResult,
+  BrowserResult,
   BROWSER_TYPES,
-  InAppBrowserOptions,
-  OpenBrowserAsync,
   RedirectResult,
 } from "./InAppBrowser.common";
 
@@ -61,6 +59,7 @@ export const DISMISSED_EVENT = "DismissedEvent";
  * Save the handler of the redirection event in order to removes listener later.
  */
 let _redirectHandler: (args: ApplicationEventData) => void;
+
 /**
  * Save the previous url in order to avoid loading the same data for a new Authentication flow.
  */
@@ -109,17 +108,15 @@ function waitForRedirectAsync(returnUrl: string): Promise<RedirectResult> {
 function handleAppStateActiveOnce(): Promise<Activity> {
   return new Promise(function (resolve) {
     // Browser can be closed before handling AppState change
-    if (!Application.android.paused) {
-      const activity =
-        Application.android.foregroundActivity ||
-        Application.android.startActivity;
-      return resolve(activity);
+    if (!Application.android.paused && Application.android.foregroundActivity) {
+      resolve(Application.android.foregroundActivity);
+    }
+    function handleAppStateChange(args: AndroidActivityEventData) {
+      resolve(args.activity);
     }
     Application.android.once(
       AndroidApplication.activityResumedEvent,
-      function (args: AndroidActivityEventData) {
-        resolve(args.activity);
-      }
+      handleAppStateChange,
     );
   });
 }
@@ -143,18 +140,16 @@ async function checkResultAndReturnUrl(
 }
 
 /* Android polyfill for AuthenticationSession flow */
-export function openAuthSessionPolyfillAsync(
-  open: OpenBrowserAsync,
-  startUrl: string,
+export async function openAuthSessionPolyfillAsync(
+  open: () => Promise<BrowserResult>,
   returnUrl: string,
-  options?: InAppBrowserOptions
 ): Promise<AuthSessionResult> {
-  return Promise.race([
-    waitForRedirectAsync(returnUrl),
-    open(startUrl, options).then(function (result) {
+  return await Promise.race([
+    open().then(function (result) {
       return checkResultAndReturnUrl(returnUrl, result);
     }),
-  ]);
+    waitForRedirectAsync(returnUrl),
+  ])
 }
 
 export function closeAuthSessionPolyfillAsync(): void {

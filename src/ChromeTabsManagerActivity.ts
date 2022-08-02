@@ -1,11 +1,11 @@
 import Context = android.content.Context;
 import Intent = android.content.Intent;
 import Bundle = android.os.Bundle;
+import Log = android.util.Log;
 
 import { Observable } from "@nativescript/core";
 import { BROWSER_TYPES } from "./InAppBrowser.common";
 import { DISMISSED_EVENT } from "./utils.android";
-import { log } from "./utils.common";
 
 class ChromeTabsEvent extends Observable {
   public message: string;
@@ -18,6 +18,7 @@ const BROWSER_ACTIVITY_EVENTS = new ChromeTabsEvent();
 const KEY_BROWSER_INTENT = "browserIntent";
 const BROWSER_RESULT_TYPE = "browserResultType";
 const DEFAULT_RESULT_TYPE = BROWSER_TYPES.DISMISS;
+const TAG = "ChromeTabsManagerActivity";
 
 const notifyMessage = (
   message: string,
@@ -74,7 +75,7 @@ class ChromeTabsManagerActivity extends android.app.Activity {
       this.isError = true;
       notifyMessage("Unable to open url.", this.resultType, this.isError);
       this.finish();
-      log(`InAppBrowser: ${error}`);
+      Log.e(TAG, error.message);
     }
   }
 
