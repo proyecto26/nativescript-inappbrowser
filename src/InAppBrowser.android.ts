@@ -301,19 +301,15 @@ function setup() {
       redirectUrl: string,
       options?: InAppBrowserOptions
     ) {
-      let response = null;
       try {
-        response = await openAuthSessionPolyfillAsync(
-          (startUrl, opt) => this.open(startUrl, opt),
-          url,
-          redirectUrl,
-          options
+        return await openAuthSessionPolyfillAsync(
+          () => this.open(url, options),
+          redirectUrl
         );
       } finally {
         closeAuthSessionPolyfillAsync();
         this.close();
       }
-      return response;
     }
 
     public closeAuth(): void {

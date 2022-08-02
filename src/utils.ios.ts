@@ -40,6 +40,14 @@ export function getTransitionStyle(styleKey: string): UIModalTransitionStyle {
     : UIModalTransitionStyle.CoverVertical;
 }
 
+export function getWindow(): UIWindow {
+  const sharedApplication = UIApplication.sharedApplication;
+  if (sharedApplication.windows.count > 0 && sharedApplication.windows[0]) {
+    return sharedApplication.windows[0];
+  }
+  return sharedApplication.keyWindow;
+}
+
 export function dismissWithoutAnimation(
   controller: SFSafariViewController
 ): void {
@@ -54,7 +62,8 @@ export function dismissWithoutAnimation(
   controller.view.alpha = 0.05;
   controller.view.frame = CGRectMake(0.0, 0.0, 0.5, 0.5);
 
-  const ctrl = UIApplication.sharedApplication.keyWindow.rootViewController;
+  const window = getWindow();
+  const ctrl = window.rootViewController;
   ctrl.view.layer.addAnimationForKey(transition, animationKey);
   ctrl.dismissViewControllerAnimatedCompletion(false, () => {
     ctrl.view.layer.removeAnimationForKey(animationKey);
