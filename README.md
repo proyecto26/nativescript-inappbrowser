@@ -206,7 +206,7 @@ import { InAppBrowser } from "nativescript-inappbrowser";
 @NativeClass()
 @JavaProxy("org.nativescript.demo.MainActivity")
 export class Activity extends androidx.appcompat.app.AppCompatActivity {
-  public onCreate(): void {
+  public onStart(): void {
     // InAppBrowser initialization for CustomTabsServiceConnection
     InAppBrowser.onStart();
   }
