@@ -22,6 +22,8 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [3.2.0] - 2022-08-02
+
 ### Added
 - Add custom size option to iOS formSheet Modal by [@ShaneMckenna23](https://github.com/ShaneMckenna23) ([#91](https://github.com/proyecto26/nativescript-inappbrowser/pull/91)).
 - Add `includeReferrer` to allow adding android package name as referrer for website to track by [@vincent-paing](https://github.com/vincent-paing) ([#95](https://github.com/proyecto26/nativescript-inappbrowser/pull/95)).
@@ -121,7 +123,8 @@ in case of vulnerabilities.
 - Methods to open and close external urls to authenticate the user **(openAuth, closeAuth)** using deep linking.
 - `isAvailable` method to detect if the device supports the plugin.
 
-[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.2...HEAD
+[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.2...v3.2.0
 [3.1.2]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.2...v3.1.0
