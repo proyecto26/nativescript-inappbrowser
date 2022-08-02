@@ -116,7 +116,7 @@ function handleAppStateActiveOnce(): Promise<Activity> {
     }
     Application.android.once(
       AndroidApplication.activityResumedEvent,
-      handleAppStateChange,
+      handleAppStateChange
     );
   });
 }
@@ -142,14 +142,14 @@ async function checkResultAndReturnUrl(
 /* Android polyfill for AuthenticationSession flow */
 export async function openAuthSessionPolyfillAsync(
   open: () => Promise<BrowserResult>,
-  returnUrl: string,
+  returnUrl: string
 ): Promise<AuthSessionResult> {
   return await Promise.race([
     open().then(function (result) {
       return checkResultAndReturnUrl(returnUrl, result);
     }),
     waitForRedirectAsync(returnUrl),
-  ])
+  ]);
 }
 
 export function closeAuthSessionPolyfillAsync(): void {

@@ -35,10 +35,7 @@ let InAppBrowserModuleInstance: any;
 
 function setup() {
   @NativeClass()
-  class InAppBrowserModule
-    extends NSObject
-    implements InAppBrowserClassMethods
-  {
+  class InAppBrowserModule extends NSObject implements InAppBrowserClassMethods {
     public static ObjCProtocols = protocols;
 
     private safariVC: SFSafariViewController = null;

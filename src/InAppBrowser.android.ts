@@ -50,10 +50,7 @@ let InAppBrowserModuleInstance: any;
 
 function setup() {
   @NativeClass()
-  class InAppBrowserModule
-    extends java.lang.Object
-    implements InAppBrowserClassMethods
-  {
+  class InAppBrowserModule extends java.lang.Object implements InAppBrowserClassMethods {
     private static ERROR_CODE = "InAppBrowser";
     private static KEY_TOOLBAR_COLOR = "toolbarColor";
     private static KEY_SECONDARY_TOOLBAR_COLOR = "secondaryToolbarColor";
