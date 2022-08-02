@@ -1,13 +1,16 @@
-import { Color } from "@nativescript/core";
+import { Application, Color } from "@nativescript/core";
 
 export function parseColor(color: string | Color) {
   if (color && !(color instanceof Color)) {
-     return new Color(color);
+    return new Color(color);
   }
   return color as Color;
 }
 
-export function tryParseColor(colorString: string | Color, errorMessage: string) {
+export function tryParseColor(
+  colorString: string | Color,
+  errorMessage: string
+) {
   try {
     return parseColor(colorString);
   } catch (error) {
@@ -19,6 +22,9 @@ export function log(message: string, ...optionalParams: any[]): void {
   const nglog = (<any>global).__nslog;
   if (nglog) {
     nglog(message, ...optionalParams);
+  }
+  if (Application.android) {
+    android.util.Log.d("JS", message);
   }
   console.log(message, ...optionalParams);
 }

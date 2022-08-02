@@ -1,5 +1,5 @@
-import { Utils } from '@nativescript/core';
-import { parseColor, log } from './utils.common';
+import { Utils } from "@nativescript/core";
+import { parseColor, log } from "./utils.common";
 
 import {
   BrowserResult,
@@ -12,43 +12,44 @@ import {
   DISMISS_BUTTON_STYLES,
   InAppBrowserErrorMessage,
   InAppBrowserClassMethods,
-} from './InAppBrowser.common';
+} from "./InAppBrowser.common";
 import {
   getTransitionStyle,
   getPresentationStyle,
   setModalInPresentation,
   dismissWithoutAnimation,
   InAppBrowserOpenAuthErrorMessage,
-} from './utils.ios';
+  getWindow,
+} from "./utils.ios";
 
 const DEFAULT_PROTOCOLS = [
   SFSafariViewControllerDelegate,
-  UIAdaptivePresentationControllerDelegate
+  UIAdaptivePresentationControllerDelegate,
 ];
-const protocols = Utils.ios.MajorVersion >= 13 ? [
-  ...DEFAULT_PROTOCOLS,
-  ASWebAuthenticationPresentationContextProviding
-] : DEFAULT_PROTOCOLS;
+const protocols =
+  Utils.ios.MajorVersion >= 13
+    ? [...DEFAULT_PROTOCOLS, ASWebAuthenticationPresentationContextProviding]
+    : DEFAULT_PROTOCOLS;
 
 let InAppBrowserModuleInstance: any;
 
 function setup() {
   @NativeClass()
   class InAppBrowserModule extends NSObject implements InAppBrowserClassMethods {
-  
     public static ObjCProtocols = protocols;
-  
+
     private safariVC: SFSafariViewController = null;
     private redirectResolve: RedirectResolve = null;
     private redirectReject: RedirectReject = null;
-    private authSession: SFAuthenticationSession | ASWebAuthenticationSession = null;
+    private authSession: SFAuthenticationSession | ASWebAuthenticationSession =
+      null;
     private animated = false;
-  
+
     public isAvailable(): Promise<boolean> {
       return Promise.resolve(Utils.ios.MajorVersion >= 9);
     }
 
-    private initializeWebBrowser (
+    private initializeWebBrowser(
       resolve: RedirectResolve,
       reject: RedirectReject
     ) {
@@ -67,23 +68,40 @@ function setup() {
     ): Promise<BrowserResult> {
       return new Promise((resolve, reject) => {
         if (!this.initializeWebBrowser(resolve, reject)) return;
-  
-        const inAppBrowserOptions = getDefaultOptions(authURL, options);
-        this.animated = inAppBrowserOptions.animated;
-  
+
+        const {
+          url,
+          animated,
+          enableBarCollapsing,
+          readerMode,
+          dismissButtonStyle,
+          preferredBarTintColor,
+          preferredControlTintColor,
+          modalEnabled,
+          modalPresentationStyle,
+          modalTransitionStyle,
+          formSheetPreferredContentSize,
+        } = getDefaultOptions(authURL, options);
+        this.animated = animated;
+
         try {
           // Safari View Controller to authorize request
-          const url = NSURL.URLWithString(inAppBrowserOptions.url);
+          const authURL = NSURL.URLWithString(url);
           if (Utils.ios.MajorVersion >= 11) {
             const config = SFSafariViewControllerConfiguration.alloc().init();
-            config.barCollapsingEnabled = inAppBrowserOptions.enableBarCollapsing;
-            config.entersReaderIfAvailable = inAppBrowserOptions.readerMode;
-            this.safariVC = SFSafariViewController.alloc().initWithURLConfiguration(url, config);
+            config.barCollapsingEnabled = enableBarCollapsing;
+            config.entersReaderIfAvailable = readerMode;
+            this.safariVC =
+              SFSafariViewController.alloc().initWithURLConfiguration(
+                authURL,
+                config
+              );
           } else {
-            this.safariVC = SFSafariViewController.alloc().initWithURLEntersReaderIfAvailable(
-              url,
-              inAppBrowserOptions.readerMode
-            );
+            this.safariVC =
+              SFSafariViewController.alloc().initWithURLEntersReaderIfAvailable(
+                authURL,
+                readerMode
+              );
           }
         } catch (error) {
           reject(new Error("Unable to open url."));
@@ -91,70 +109,99 @@ function setup() {
           log(`InAppBrowser: ${error}`);
           return;
         }
-        
+
         this.safariVC.delegate = this;
-  
+
         if (Utils.ios.MajorVersion >= 11) {
-          if (inAppBrowserOptions.dismissButtonStyle === DISMISS_BUTTON_STYLES.DONE) {
-            this.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Done;
-          }
-          else if (inAppBrowserOptions.dismissButtonStyle === DISMISS_BUTTON_STYLES.CLOSE) {
-            this.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Close;
-          }
-          else if (inAppBrowserOptions.dismissButtonStyle === DISMISS_BUTTON_STYLES.CANCEL) {
-            this.safariVC.dismissButtonStyle = SFSafariViewControllerDismissButtonStyle.Cancel;
+          if (dismissButtonStyle === DISMISS_BUTTON_STYLES.DONE) {
+            this.safariVC.dismissButtonStyle =
+              SFSafariViewControllerDismissButtonStyle.Done;
+          } else if (dismissButtonStyle === DISMISS_BUTTON_STYLES.CLOSE) {
+            this.safariVC.dismissButtonStyle =
+              SFSafariViewControllerDismissButtonStyle.Close;
+          } else if (dismissButtonStyle === DISMISS_BUTTON_STYLES.CANCEL) {
+            this.safariVC.dismissButtonStyle =
+              SFSafariViewControllerDismissButtonStyle.Cancel;
           }
         }
-  
+
         if (Utils.ios.MajorVersion >= 10) {
-          if (inAppBrowserOptions.preferredBarTintColor) {
-            const color = parseColor(inAppBrowserOptions.preferredBarTintColor);
+          if (preferredBarTintColor) {
+            const color = parseColor(preferredBarTintColor);
             if (color) {
               this.safariVC.preferredBarTintColor = color.ios;
             }
           }
-          if (inAppBrowserOptions.preferredControlTintColor) {
-            const color = parseColor(inAppBrowserOptions.preferredControlTintColor);
+          if (preferredControlTintColor) {
+            const color = parseColor(preferredControlTintColor);
             if (color) {
               this.safariVC.preferredControlTintColor = color.ios;
             }
           }
         }
-  
-        const ctrl = UIApplication.sharedApplication.keyWindow.rootViewController;
-  
-        if (inAppBrowserOptions.modalEnabled) {
+
+        const window = getWindow();
+        const ctrl = window.rootViewController;
+        if (modalEnabled) {
           // This is a hack to present the SafariViewController modally
-          const safariHackVC = UINavigationController.alloc().initWithRootViewController(this.safariVC);
+          const safariHackVC =
+            UINavigationController.alloc().initWithRootViewController(
+              this.safariVC
+            );
           safariHackVC.setNavigationBarHiddenAnimated(true, false);
 
           // To disable "Swipe to dismiss" gesture which sometimes causes a bug where `safariViewControllerDidFinish`
           // is not called.
-          this.safariVC.modalPresentationStyle = UIModalPresentationStyle.OverFullScreen;
-          safariHackVC.modalPresentationStyle = getPresentationStyle(inAppBrowserOptions.modalPresentationStyle);
+          this.safariVC.modalPresentationStyle =
+            UIModalPresentationStyle.OverFullScreen;
+          safariHackVC.modalPresentationStyle = getPresentationStyle(
+            modalPresentationStyle
+          );
           if (this.animated) {
-            safariHackVC.modalTransitionStyle = getTransitionStyle(inAppBrowserOptions.modalTransitionStyle);
+            safariHackVC.modalTransitionStyle =
+              getTransitionStyle(modalTransitionStyle);
           }
+
+          if (
+            safariHackVC.modalPresentationStyle ===
+              UIModalPresentationStyle.FormSheet &&
+            formSheetPreferredContentSize
+          ) {
+            const width = formSheetPreferredContentSize.width;
+            const height = formSheetPreferredContentSize.height;
+            if (width && height) {
+              safariHackVC.preferredContentSize = CGSizeMake(width, height);
+            }
+          }
+
           if (Utils.ios.MajorVersion >= 13) {
             safariHackVC.modalInPresentation = true;
             if (safariHackVC[setModalInPresentation])
               safariHackVC[setModalInPresentation](true);
           }
           safariHackVC.presentationController.delegate = this;
-  
-          ctrl.presentViewControllerAnimatedCompletion(safariHackVC, inAppBrowserOptions.animated, null);
-        }
-        else {
-          ctrl.presentViewControllerAnimatedCompletion(this.safariVC, inAppBrowserOptions.animated, null);
+
+          ctrl.presentViewControllerAnimatedCompletion(
+            safariHackVC,
+            animated,
+            null
+          );
+        } else {
+          ctrl.presentViewControllerAnimatedCompletion(
+            this.safariVC,
+            animated,
+            null
+          );
         }
       });
     }
     public close() {
-      const ctrl = UIApplication.sharedApplication.keyWindow.rootViewController;
+      const window = getWindow();
+      const ctrl = window.rootViewController;
       ctrl.dismissViewControllerAnimatedCompletion(this.animated, () => {
         if (this.redirectResolve) {
           this.redirectResolve({
-            type: 'dismiss'
+            type: "dismiss",
           });
           this.flowDidFinish();
         }
@@ -163,82 +210,89 @@ function setup() {
     public async openAuth(
       authUrl: string,
       redirectUrl: string,
-      options: InAppBrowserOptions = {}
+      options?: InAppBrowserOptions
     ): Promise<AuthSessionResult> {
-      const inAppBrowserOptions = {
-        ...options,
-        ephemeralWebSession: options.ephemeralWebSession !== undefined ? options.ephemeralWebSession : false,
-      };
+      const ephemeralWebSession = !!options?.ephemeralWebSession;
       if (Utils.ios.MajorVersion >= 11) {
         return new Promise<AuthSessionResult>((resolve, reject) => {
           if (!this.initializeWebBrowser(resolve, reject)) return;
-  
+
           const url = NSURL.URLWithString(authUrl);
-          const escapedRedirectURL = NSURL.URLWithString(redirectUrl).scheme;
+          let escapedRedirectURL: string = null;
+          if (redirectUrl) {
+            escapedRedirectURL = NSURL.URLWithString(redirectUrl).scheme;
+          }
           this.authSession = (
-            Utils.ios.MajorVersion >= 12 ? ASWebAuthenticationSession : SFAuthenticationSession
-          ).alloc().initWithURLCallbackURLSchemeCompletionHandler(
-            url,
-            escapedRedirectURL,
-            (callbackURL, error) => {
-              if (this.redirectResolve) {
-                if (!error) {
-                  this.redirectResolve({
-                    type: BROWSER_TYPES.SUCCESS,
-                    url: callbackURL.absoluteString
-                  });
+            Utils.ios.MajorVersion >= 12
+              ? ASWebAuthenticationSession
+              : SFAuthenticationSession
+          )
+            .alloc()
+            .initWithURLCallbackURLSchemeCompletionHandler(
+              url,
+              escapedRedirectURL,
+              (callbackURL, error) => {
+                if (this.redirectResolve) {
+                  if (!error) {
+                    this.redirectResolve({
+                      type: BROWSER_TYPES.SUCCESS,
+                      url: callbackURL.absoluteString,
+                    });
+                  } else {
+                    this.redirectResolve({
+                      type: BROWSER_TYPES.CANCEL,
+                    });
+                  }
+                  this.flowDidFinish();
                 }
-                else {
-                  this.redirectResolve({
-                    type: BROWSER_TYPES.CANCEL
-                  });
-                }
-                this.flowDidFinish();
               }
-            }
-          );
+            );
           if (Utils.ios.MajorVersion >= 13) {
-            const webAuthSession = this.authSession as ASWebAuthenticationSession;
+            const webAuthSession = this
+              .authSession as ASWebAuthenticationSession;
             // Prevent re-use cookie from last auth session
-            webAuthSession.prefersEphemeralWebBrowserSession = inAppBrowserOptions.ephemeralWebSession;
+            webAuthSession.prefersEphemeralWebBrowserSession =
+              ephemeralWebSession;
             webAuthSession.presentationContextProvider = this;
           }
           this.authSession.start();
         });
-      }
-      else {
+      } else {
         this.flowDidFinish();
         const response: AuthSessionResult = {
           type: BROWSER_TYPES.CANCEL,
-          message: InAppBrowserOpenAuthErrorMessage
+          message: InAppBrowserOpenAuthErrorMessage,
         };
         return Promise.resolve(response);
       }
     }
     public closeAuth() {
       if (Utils.ios.MajorVersion >= 11) {
-        const authSession: SFAuthenticationSession | ASWebAuthenticationSession = this.authSession;
+        const authSession:
+          | SFAuthenticationSession
+          | ASWebAuthenticationSession = this.authSession;
         authSession.cancel();
         if (this.redirectResolve) {
           this.redirectResolve({
-            type: BROWSER_TYPES.DISMISS
+            type: BROWSER_TYPES.DISMISS,
           });
           this.flowDidFinish();
         }
-      }
-      else {
+      } else {
         this.close();
       }
     }
-    public presentationAnchorForWebAuthenticationSession(_: ASWebAuthenticationSession): UIWindow {
-      return UIApplication.sharedApplication.keyWindow;
+    public presentationAnchorForWebAuthenticationSession(
+      _: ASWebAuthenticationSession
+    ): UIWindow {
+      return getWindow();
     }
     public safariViewControllerDidFinish(
       controller: SFSafariViewController
     ): void {
       if (this.redirectResolve) {
         this.redirectResolve({
-          type: BROWSER_TYPES.CANCEL
+          type: BROWSER_TYPES.CANCEL,
         });
       }
       this.flowDidFinish();
@@ -251,12 +305,21 @@ function setup() {
       this.redirectResolve = null;
       this.redirectReject = null;
     }
+    onStart() {}
+    warmup() {
+      return false;
+    }
+    mayLaunchUrl(url: string, otherUrls: Array<string>) {
+      log(`mayLaunchUrl is not supported on iOS. url: ${url}, otherUrls: ${otherUrls}`);
+    }
   }
 
   return InAppBrowserModule.new();
 }
 
-if (typeof InAppBrowserModuleInstance === 'undefined') {
+if (typeof InAppBrowserModuleInstance === "undefined") {
   InAppBrowserModuleInstance = setup();
 }
-export const InAppBrowser = <InAppBrowserClassMethods>InAppBrowserModuleInstance;
+export const InAppBrowser = <InAppBrowserClassMethods>(
+  InAppBrowserModuleInstance
+);

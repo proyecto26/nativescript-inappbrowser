@@ -22,6 +22,22 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [3.2.0] - 2022-08-02
+
+### Added
+- Add custom size option to iOS formSheet Modal by [@ShaneMckenna23](https://github.com/ShaneMckenna23) ([#91](https://github.com/proyecto26/nativescript-inappbrowser/pull/91)).
+- Add `includeReferrer` to allow adding android package name as referrer for website to track by [@vincent-paing](https://github.com/vincent-paing) ([#95](https://github.com/proyecto26/nativescript-inappbrowser/pull/95)).
+- Add `warmup` and `mayLaunchUrl` functions for optimization in Android by [@vincent-paing](https://github.com/vincent-paing) ([#97](https://github.com/proyecto26/nativescript-inappbrowser/pull/97)).
+
+### Fixed
+- Complete migration to ns8 and fix build issues by [@rigor789](https://github.com/rigor789) ([#92](https://github.com/proyecto26/nativescript-inappbrowser/pull/92)).
+- Fix support for `Metadata Filtering` from Android by [@jcassidyav](https://github.com/jcassidyav) ([#93](https://github.com/proyecto26/nativescript-inappbrowser/pull/93)).
+- Avoid stringifying null redirect url by [@rmartin48](https://github.com/rmartin48) ([#99](https://github.com/proyecto26/nativescript-inappbrowser/pull/99)).
+- Fix auth redirection logic by [@jdnichollsc](https://github.com/jdnichollsc) ([#100](https://github.com/proyecto26/nativescript-inappbrowser/pull/100)).
+
+### Removed
+- Remove `QUERY_ALL_PACKAGES` permission by [@edusperoni](https://github.com/edusperoni) ([#87](https://github.com/proyecto26/nativescript-inappbrowser/pull/87)).
+
 ## [3.1.2] - 2021-06-28
 
 ### Fixed
@@ -107,7 +123,8 @@ in case of vulnerabilities.
 - Methods to open and close external urls to authenticate the user **(openAuth, closeAuth)** using deep linking.
 - `isAvailable` method to detect if the device supports the plugin.
 
-[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.2...HEAD
+[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.2...v3.2.0
 [3.1.2]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.0.2...v3.1.0
