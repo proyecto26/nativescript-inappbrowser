@@ -219,7 +219,7 @@ You can further optimize performance and pre-render pages [by providing the urls
 constructor() {
   super();
   // Do not call this every time the component render
-  InAppBrowser.mayLaunchUrl(this._url, [
+  InAppBrowser.mayLaunchUrl("https://nativescript.org", [
     "https://twitter.com/NativeScript",
     "https://github.com/NativeScript/NativeScript",
     "https://openjsf.org"
