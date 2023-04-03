@@ -141,7 +141,8 @@ function setup() {
         }
 
         const window = getWindow();
-        const ctrl = window.rootViewController;
+        // 8.3+ supports Utils.ios.getRootViewController
+        const ctrl = Utils.ios.getRootViewController ? Utils.ios.getRootViewController() : window.rootViewController;
         if (modalEnabled) {
           // This is a hack to present the SafariViewController modally
           const safariHackVC =
