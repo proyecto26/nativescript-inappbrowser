@@ -22,6 +22,25 @@ in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-03-16
+### Added
+- add automated release workflow, remove dead Travis CI ([949bf48](https://github.com/proyecto26/nativescript-inappbrowser/commit/949bf4853158b2493a96d3b9463ee7e73634d41b)).
+
+### Changed
+- Update README.md ([a14b560](https://github.com/proyecto26/nativescript-inappbrowser/commit/a14b560f1d10993bb3eab7582c272cc8743c339c)).
+- Bump webpack from 5.74.0 to 5.76.1 in /src ([d418733](https://github.com/proyecto26/nativescript-inappbrowser/commit/d4187335125f945bf4689365c4efc9f05453648b)).
+- Bump json5 from 1.0.1 to 1.0.2 in /src ([5521f3d](https://github.com/proyecto26/nativescript-inappbrowser/commit/5521f3d0d0460e535dc0791982fb4745a4ab5fa7)).
+- Bump decode-uri-component from 0.2.0 to 0.2.2 in /src ([afee5b0](https://github.com/proyecto26/nativescript-inappbrowser/commit/afee5b03fc93edc80b7446f568c095fa582b0b80)).
+- Bump minimatch from 3.0.4 to 3.1.2 in /publish ([9803f48](https://github.com/proyecto26/nativescript-inappbrowser/commit/9803f488890b4c6fddc43d76915fba903d5c9dfc)).
+- Bump loader-utils from 1.4.0 to 1.4.2 in /src ([6fa256f](https://github.com/proyecto26/nativescript-inappbrowser/commit/6fa256fb7134c0b0adac467e2b64b87d091d6494)).
+- Update README.md ([2be5801](https://github.com/proyecto26/nativescript-inappbrowser/commit/2be58015919d3f197f486523f3acc128a45c6f02)).
+
+### Fixed
+- getRootViewController ([7184793](https://github.com/proyecto26/nativescript-inappbrowser/commit/71847933a730b91363cf1fc7073f0d879839ad19)).
+
+
+
+
 ## [3.2.0] - 2022-08-02
 
 ### Added
@@ -123,7 +142,8 @@ in case of vulnerabilities.
 - Methods to open and close external urls to authenticate the user **(openAuth, closeAuth)** using deep linking.
 - `isAvailable` method to detect if the device supports the plugin.
 
-[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.3.0...HEAD
+[3.3.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.2...v3.2.0
 [3.1.2]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/proyecto26/nativescript-inappbrowser/compare/v3.1.0...v3.1.1
