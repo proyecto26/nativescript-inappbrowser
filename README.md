@@ -382,6 +382,8 @@ This repository is available under the [MIT License](https://github.com/proyecto
 * **React Native InAppBrowser:** [InAppBrowser for React Native](https://github.com/proyecto26/react-native-inappbrowser)
 
 ## Happy coding 💯
-Made with ❤️
+Made with ❤️ by [Proyecto 26](https://proyecto26.com) - Changing the world with small contributions.
 
-<img width="150px" src="https://avatars0.githubusercontent.com/u/28855608?s=200&v=4" align="right">
+One hand can accomplish great things, but many can take you into space and beyond! 🌌
+
+Together we do more, together we are more ❤️ <img width="150px" src="https://avatars0.githubusercontent.com/u/28855608?s=200&v=4" align="right">
